@@ -55,3 +55,8 @@ https://lib.marinovic.dev/phoenix
 
 #### En français:
 - https://www.eyrolles.com/Informatique/Livre/elixir-9782416011757/ (le premier et le seul en Français pour le moment)
+
+## Extensions VSCode
+- https://marketplace.visualstudio.com/items?itemName=JakeBecker.elixir-ls (Nom : ElixirLS: Elixir support and debugger )
+
+- https://marketplace.visualstudio.com/items?itemName=benvp.vscode-hex-pm-intellisense (Nom : hex.pm IntelliSense )
