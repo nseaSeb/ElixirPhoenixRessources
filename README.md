@@ -73,3 +73,7 @@ Pour le moment rien à proposer
 -   https://marketplace.visualstudio.com/items?itemName=JakeBecker.elixir-ls (Nom : ElixirLS: Elixir support and debugger )
 
 -   https://marketplace.visualstudio.com/items?itemName=benvp.vscode-hex-pm-intellisense (Nom : hex.pm IntelliSense )
+
+## Autres liens utiles
+
+-   https://kapeli.com/cheat_sheets/Oh-My-Zsh_Git.docset/Contents/Resources/Documents/index (ZSH raccourcis cheatSheet)
