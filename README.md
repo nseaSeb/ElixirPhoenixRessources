@@ -62,7 +62,11 @@ Pour le moment rien à proposer
 -   https://www.youtube.com/@backendstuff (Excellente chaine réalisé par Jacob Luetzow)
 -   https://www.youtube.com/watch?v=g3oyh3g1AtQ (José Valim himself présent bumblebee ML implémentation)
 
-## Livres
+## Livres en Anglais
+
+-   Elixir in Action (le livre le plus apprécié, 3eme edition dec 2023)
+-   Phoenix in Action (Ancienne version de Phoenix...)
+-   Programming Phoenix (Un des plus apprécié à propos de Phoenix)
 
 #### En français:
 
@@ -73,6 +77,10 @@ Pour le moment rien à proposer
 -   https://marketplace.visualstudio.com/items?itemName=JakeBecker.elixir-ls (Nom : ElixirLS: Elixir support and debugger )
 
 -   https://marketplace.visualstudio.com/items?itemName=benvp.vscode-hex-pm-intellisense (Nom : hex.pm IntelliSense )
+
+## Vidéos
+
+-   https://www.youtube.com/watch?v=IiIgm_yaoOA (formation de 5h vraiment bien en Anglais)
 
 ## Autres liens utiles
 
