@@ -11,7 +11,13 @@ Une sorte d'awesome Elixir
 -   https://hex.pm/ (Le gestionnaire de paquets pour l'écosystème Erlang)
 -   https://elixirforum.com/ (Forum Elixir)
 -   https://livebook.dev/ (blocs-notes interactifs)
+
+## Framework et librairies :
+
+-   https://petal.build/ (Petal basé sur Tailwindcss, template pro intéressant comme boilerplate)
 -   https://ash-hq.org/ (Ash Framework (modelisation de domaine))
+-   https://hexdocs.pm/timex/Timex.html (librairie pour les dates)
+-   https://hexdocs.pm/triplex/Triplex.html (Multi-tenant postgres / ecto)
 
 ## Antisèche (Cheatsheet)
 
@@ -81,6 +87,10 @@ Pour le moment rien à proposer
 ## Vidéos
 
 -   https://www.youtube.com/watch?v=IiIgm_yaoOA (formation de 5h vraiment bien en Anglais)
+
+## Conférences
+
+-   https://www.codesync.global/ (Un endroit où retrouver les conférences Elixir)
 
 ## Autres liens utiles
 
