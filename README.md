@@ -30,6 +30,11 @@ https://lib.marinovic.dev/phoenix
 -   https://www.synbioz.com/blog/tech/page/3 (articles de blog du site d'une société de dev)
 -   https://www.cryptr.co/fr/blog/a-simple-introduction-to-phoenix-liveview (intro à liveview)
 
+##### Ecto
+
+-   https://www.cryptr.co/fr/blog/introducing-the-ecto-library-for-elixir
+-   https://www.synbioz.com/blog/tech/introduction-a-phoenix-episode-3
+
 #### En anglais
 
 -   https://geoffreylessel.com/ (article de l'auteur du fameux livre Phoenix in action)
