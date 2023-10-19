@@ -18,6 +18,12 @@ Une sorte d'awesome Elixir
 -   https://ash-hq.org/ (Ash Framework (modelisation de domaine))
 -   https://hexdocs.pm/timex/Timex.html (librairie pour les dates)
 -   https://hexdocs.pm/triplex/Triplex.html (Multi-tenant postgres / ecto)
+-   https://hexdocs.pm/jason/readme.html (JSON)
+-   https://hexdocs.pm/plug_cowboy/Plug.Cowboy.html (HTTP)
+-   https://hexdocs.pm/query_builder/readme.html (Composer des query avec des datas)
+-   https://hexdocs.pm/bcrypt_elixir/readme.html (hash mot de passe bcrypt)
+-   https://hexdocs.pm/tailwind/Tailwind.html (tailwind installateur et exec)
+-   https://hexdocs.pm/faker/readme.html (lib générer des données de tests)
 
 ## Antisèche (Cheatsheet)
 
@@ -25,17 +31,29 @@ https://lib.marinovic.dev/phoenix
 
 ## Liens divers :
 
+---
+
 #### En français:
 
--   https://www.synbioz.com/blog/tech/page/3 (articles de blog du site d'une société de dev)
--   https://www.cryptr.co/fr/blog/a-simple-introduction-to-phoenix-liveview (intro à liveview)
+---
 
-##### Ecto
+-   Blog
 
--   https://www.cryptr.co/fr/blog/introducing-the-ecto-library-for-elixir
--   https://www.synbioz.com/blog/tech/introduction-a-phoenix-episode-3
+    -   -   https://www.synbioz.com/blog/tech/page/3 (articles de blog du site d'une société de dev)
+
+-   Liveview
+
+    -   -   https://www.cryptr.co/fr/blog/a-simple-introduction-to-phoenix-liveview (intro à liveview)
+
+-   Ecto
+    -   -   https://www.cryptr.co/fr/blog/introducing-the-ecto-library-for-elixir
+    -   -   https://www.synbioz.com/blog/tech/introduction-a-phoenix-episode-3
+
+---
 
 #### En anglais
+
+---
 
 -   https://geoffreylessel.com/ (article de l'auteur du fameux livre Phoenix in action)
 -   https://blog.logrocket.com/build-rest-api-elixir-phoenix/ (articles d'un dev)
@@ -49,6 +67,8 @@ https://lib.marinovic.dev/phoenix
 -   https://underjord.io/blog.html
 -   https://danschultzer.com/posts/prefixed-base62-uuidv7-object-ids-with-ecto?utm_medium=email&utm_source=elixir-radar (article sur UUID)
 
+---
+
 ## Newsletters et consorts :
 
 #### En français:
@@ -58,6 +78,8 @@ Pour le moment rien à proposer
 #### En anglais
 
 -   https://elixirstatus.com/ (Annoncez votre nouveau projet, article de blog ou mise à jour de version. )
+
+---
 
 ## Vidéos :
 
