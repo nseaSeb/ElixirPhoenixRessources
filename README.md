@@ -24,6 +24,7 @@ Une sorte d'awesome Elixir
 -   https://hexdocs.pm/bcrypt_elixir/readme.html (hash mot de passe bcrypt)
 -   https://hexdocs.pm/tailwind/Tailwind.html (tailwind installateur et exec)
 -   https://hexdocs.pm/faker/readme.html (lib générer des données de tests)
+-   https://github.com/sezaru/flashy (Lib sympa pour améliorer les messages flash)
 
 ## Antisèche (Cheatsheet)
 
