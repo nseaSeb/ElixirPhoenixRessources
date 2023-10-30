@@ -26,6 +26,13 @@ Une sorte d'awesome Elixir
 -   https://hexdocs.pm/faker/readme.html (lib générer des données de tests)
 -   https://github.com/sezaru/flashy (Lib sympa pour améliorer les messages flash)
 
+## Verificateur de code :
+- https://github.com/jeremyjh/dialyxir (probablement le plus utilisé actuellement)
+- https://github.com/esl/gradient
+- https://github.com/Qqwy/elixir-type_check
+- https://github.com/WhatsApp/eqwalizer
+- https://github.com/josefs/Gradualizer
+  
 ## Antisèche (Cheatsheet)
 
 https://lib.marinovic.dev/phoenix
@@ -111,6 +118,14 @@ Pour le moment rien à proposer
 -   https://marketplace.visualstudio.com/items?itemName=JakeBecker.elixir-ls (Nom : ElixirLS: Elixir support and debugger )
 
 -   https://marketplace.visualstudio.com/items?itemName=benvp.vscode-hex-pm-intellisense (Nom : hex.pm IntelliSense )
+
+## Thèmes VSCode
+-   https://marketplace.visualstudio.com/items?itemName=kkalita.dark-plus-elixir (thème dark dédié Elixir)
+-   https://marketplace.visualstudio.com/items?itemName=maiquitome.elixir-theme
+-   https://draculatheme.com/visual-studio-code
+-   https://marketplace.visualstudio.com/items?itemName=Arsen.darcula-theme-for-elixir
+-   https://marketplace.visualstudio.com/items?itemName=gerane.Theme-Abyss
+-   https://marketplace.visualstudio.com/items?itemName=dustypomerleau.yarra-valley
 
 ## Vidéos
 
