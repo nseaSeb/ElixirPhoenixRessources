@@ -18,7 +18,7 @@ Il suffit donc d'ajouter --binary-id à la config :
 
 ```
 config :monprojet,
-  ecto_repos: [Myproject.Repo]
+  ecto_repos: [Myproject.Repo],
   generators: [binary_id: true]
 ```
 
