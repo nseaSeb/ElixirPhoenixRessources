@@ -11,14 +11,14 @@ Recherchez Ecto vous trouverez normalement quelque chose comme ça :
 
 ```
 config :monprojet,
-  ecto_repos: [Gestiup.Repo]
+  ecto_repos: [Myproject.Repo]
 ```
 
 Il suffit donc d'ajouter --binary-id à la config :
 
 ```
 config :monprojet,
-  ecto_repos: [Gestiup.Repo]
+  ecto_repos: [Myproject.Repo]
   generators: [binary_id: true]
 ```
 
