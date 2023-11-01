@@ -13,18 +13,13 @@ Une sorte d'awesome Elixir
 -   https://livebook.dev/ (blocs-notes interactifs)
 
 ## Framework et librairies :
-
+-   [Liste de librairies](Librairie.md)
 -   https://petal.build/ (Petal basé sur Tailwindcss, template pro intéressant comme boilerplate)
 -   https://ash-hq.org/ (Ash Framework (modelisation de domaine))
--   https://hexdocs.pm/timex/Timex.html (librairie pour les dates)
--   https://hexdocs.pm/triplex/Triplex.html (Multi-tenant postgres / ecto)
--   https://hexdocs.pm/jason/readme.html (JSON)
--   https://hexdocs.pm/plug_cowboy/Plug.Cowboy.html (HTTP)
--   https://hexdocs.pm/query_builder/readme.html (Composer des query avec des datas)
--   https://hexdocs.pm/bcrypt_elixir/readme.html (hash mot de passe bcrypt)
--   https://hexdocs.pm/tailwind/Tailwind.html (tailwind installateur et exec)
--   https://hexdocs.pm/faker/readme.html (lib générer des données de tests)
--   https://github.com/sezaru/flashy (Lib sympa pour améliorer les messages flash)
+
+## Ma modeste contribution :
+-   [Sommaire de mes tips](TipsSommaire.md)
+-   [Mes notes à propos d'Ecto](Ecto.md)
 
 ## Verificateur de code :
 - https://github.com/jeremyjh/dialyxir (probablement le plus utilisé actuellement)
@@ -45,7 +40,7 @@ Une sorte d'awesome Elixir
 #### En français:
 
 ---
-[Sommaire de mes tips](TipsSommaire.md)
+
 
 -   Blog
 
