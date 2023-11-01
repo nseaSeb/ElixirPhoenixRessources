@@ -35,7 +35,8 @@ Une sorte d'awesome Elixir
   
 ## Antisèche (Cheatsheet)
 
-https://lib.marinovic.dev/phoenix
+- https://lib.marinovic.dev/phoenix
+- https://tailwindcomponents.com/cheatsheet/ (Cheatsheet Tailwind)
 
 ## Liens divers :
 
@@ -75,7 +76,7 @@ https://lib.marinovic.dev/phoenix
 -   https://blog.miguelcoba.com/preparing-a-phoenix-16-app-for-deployment-with-elixir-releases (Aricle sur le déploiement)
 -   https://underjord.io/blog.html
 -   https://danschultzer.com/posts/prefixed-base62-uuidv7-object-ids-with-ecto?utm_medium=email&utm_source=elixir-radar (article sur UUID)
-
+- https://hashrocket.com/blog
 ---
 
 ## Newsletters et consorts :
@@ -119,6 +120,22 @@ Pour le moment rien à proposer
 -   https://marketplace.visualstudio.com/items?itemName=JakeBecker.elixir-ls (Nom : ElixirLS: Elixir support and debugger )
 
 -   https://marketplace.visualstudio.com/items?itemName=benvp.vscode-hex-pm-intellisense (Nom : hex.pm IntelliSense )
+-   https://marketplace.visualstudio.com/items?itemName=mrorz.language-gettext (Utile pour les fichiers de localisation)
+-   https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss (intellisense dédié à Tailwindcss)
+
+### Extensions VSCode annexes
+
+-   https://marketplace.visualstudio.com/items?itemName=SimonSiefke.svg-preview (Prévisualiser les SVG
+-   https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-mysql-client2) (DB client dans VSCode)
+-   https://marketplace.visualstudio.com/items?itemName=arturock.gitstash (git stash)
+-   https://marketplace.visualstudio.com/items?itemName=alefragnani.project-manager (manager de projets, pratique pour basuler vers ses projets)
+-   https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv (coloratiion syntaxique dédié aux CSV)
+-   https://marketplace.visualstudio.com/items?itemName=Monish.regexsnippets (snippets regex)
+-   https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh (SSH manipuler vos projets distants)
+-   https://marketplace.visualstudio.com/items?itemName=ms-vscode.remote-explorer (SSH se connecter à une machine distante)
+-   https://marketplace.visualstudio.com/items?itemName=MS-CEINTL.vscode-language-pack-fr (VSCode en français)
+
+
 
 ## Thèmes VSCode
 -   https://marketplace.visualstudio.com/items?itemName=kkalita.dark-plus-elixir (thème dark dédié Elixir)
@@ -139,3 +156,5 @@ Pour le moment rien à proposer
 ## Autres liens utiles
 
 -   https://kapeli.com/cheat_sheets/Oh-My-Zsh_Git.docset/Contents/Resources/Documents/index (ZSH raccourcis cheatSheet)
+- https://github.com/AppFlowy-IO/AppFlowy (Prise de note à la Notion open source installable en local / serveur / docker, écrit en Rust, bloc de code avec coloration syntaxique incluant Elixir et langue Française )
+- https://github.com/toeverything/AFFiNE (Alternative sérieuse à Notion, incluant un panel de dessin à la figma.)
