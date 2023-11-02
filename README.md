@@ -1,8 +1,7 @@
 # <img src="https://hexdocs.pm/phoenix/assets/logo.png"> Ressources Elixir / Phoenix
 
-L'idée ici est de regrouper des ressources à propos d'Elixir / Phoenix principalement en Français.
-
-Une sorte d'awesome Elixir
+L'idée ici, au fur et à mesure de mon apprentissage du langage est de regrouper des ressources à propos d'Elixir / Phoenix principalement en Français ainsi que certaines de mes notes.
+Une sorte d'awesome Elixir.
 
 ## Liens majeurs :
 
@@ -153,3 +152,5 @@ Pour le moment rien à proposer
 -   https://kapeli.com/cheat_sheets/Oh-My-Zsh_Git.docset/Contents/Resources/Documents/index (ZSH raccourcis cheatSheet)
 - https://github.com/AppFlowy-IO/AppFlowy (Prise de note à la Notion open source installable en local / serveur / docker, écrit en Rust, bloc de code avec coloration syntaxique incluant Elixir et langue Française )
 - https://github.com/toeverything/AFFiNE (Alternative sérieuse à Notion, incluant un panel de dessin à la figma.)
+
+*La connaissance grandit quand on la partage.*
