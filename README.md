@@ -81,11 +81,12 @@ Pour le moment rien à proposer
 
 #### En anglais
 
+-   https://elixir.libhunt.com/newsletter?f=es-top-d (Excellente newsletter !)
 -   https://elixirstatus.com/ (Annoncez votre nouveau projet, article de blog ou mise à jour de version. )
 
 ---
 
-## Vidéos :
+## Vidéos, tutos, formations :
 
 #### En français:
 
@@ -96,14 +97,19 @@ Pour le moment rien à proposer
 
 #### En anglais
 
+-   https://www.youtube.com/watch?v=IiIgm_yaoOA (formation de 5h vraiment bien en Anglais)
 -   https://www.youtube.com/@backendstuff (Excellente chaine réalisé par Jacob Luetzow)
 -   https://www.youtube.com/watch?v=g3oyh3g1AtQ (José Valim himself présent bumblebee ML implémentation)
+-   https://pjullrich.gumroad.com/l/bmvp (Formation Phoenix autour d'un projet)
+-   https://discover.gumroad.com/?query=elixir+phoenix (Tuto formation de Gumroad)
 
 ## Livres en Anglais
 
 -   Elixir in Action (le livre le plus apprécié, 3eme edition dec 2023)
 -   Phoenix in Action (Ancienne version de Phoenix...)
 -   Programming Phoenix (Un des plus apprécié à propos de Phoenix)
+-  [Ebook 100 elixir tips](https://miguelcoba.gumroad.com/l/100elixirtips?layout=discover&recommended_by=search&_gl=1*u913bp*_ga*MjAyOTk2MTM1NS4xNjk5NDYxNjk1*_ga_6LJN6D94N6*MTY5OTUxNDE5OC4zLjEuMTY5OTUxNDI2NC4wLjAuMA..)
+
 
 #### En français:
 
@@ -139,9 +145,6 @@ Pour le moment rien à proposer
 -   https://marketplace.visualstudio.com/items?itemName=gerane.Theme-Abyss
 -   https://marketplace.visualstudio.com/items?itemName=dustypomerleau.yarra-valley
 
-## Vidéos
-
--   https://www.youtube.com/watch?v=IiIgm_yaoOA (formation de 5h vraiment bien en Anglais)
 
 ## Conférences
 
