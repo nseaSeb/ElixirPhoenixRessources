@@ -11,3 +11,6 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 
 ## Librairies utilitaires
 -[Manipulation de date avec Timex](./Tips/TimexDate.livemd.md)
+
+## Divers
+-[Stemming reduction de mot](./Tips/stemming.livemd.md)

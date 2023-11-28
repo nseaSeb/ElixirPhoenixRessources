@@ -61,6 +61,7 @@ Une sorte d'awesome Elixir.
 
 -   https://geoffreylessel.com/ (article de l'auteur du fameux livre Phoenix in action)
 -   https://blog.logrocket.com/build-rest-api-elixir-phoenix/ (articles d'un dev)
+-   https://dockyard.com/blog?filter=elixir (Blog d'une agence)
 -   https://elixirschool.com/fr (En anglais pour le moment)
 -   https://akoutmos.com/ (articles d'un dev)
 -   https://blog.sequin.io/between-the-ctrl-cs/ (articles d'un dev)
@@ -97,6 +98,7 @@ Pour le moment rien à proposer
 
 #### En anglais
 
+-   https://online.pragmaticstudio.com/ (Formation qualitative)
 -   https://www.youtube.com/watch?v=IiIgm_yaoOA (formation de 5h vraiment bien en Anglais)
 -   https://www.youtube.com/@backendstuff (Excellente chaine réalisé par Jacob Luetzow)
 -   https://www.youtube.com/watch?v=g3oyh3g1AtQ (José Valim himself présent bumblebee ML implémentation)
