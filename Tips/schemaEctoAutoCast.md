@@ -1,6 +1,6 @@
-## Automatiser la liste du cast d'un schema Ecto :
 [Retour vers le sommaire des tips](../TipsSommaire.md)
 [Accueil](../README.md)
+## Automatiser la liste du cast d'un schema Ecto :
 
 L'idée est donc de ne pas à avoir à ce soucier de mettre à jour la liste à inclure dans la pipe de cast et c'est applicablicable à la
 validation etc.

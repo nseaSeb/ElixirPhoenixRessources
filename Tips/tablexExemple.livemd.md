@@ -1,3 +1,5 @@
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
 # Table de décision
 
 ```elixir
@@ -5,8 +7,6 @@ Mix.install([{:tablex, "~> 0.1.0"}])
 ```
 
 ## Simple exemple d'utilisation de tablex
-[Retour vers le sommaire des tips](../TipsSommaire.md)
-[Accueil](../README.md)
 
 Simple exemple dans livebook repris de ce post https://q-the-hacker.com/post/decision-tables-in-elixir-applications-part-1?utm_medium=email&utm_source=elixir-radar
 

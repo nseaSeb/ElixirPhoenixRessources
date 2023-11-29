@@ -1,6 +1,6 @@
-## --binary_id
 [Retour vers le sommaire des tips](../TipsSommaire.md)
 [Accueil](../README.md)
+## --binary_id
 
 Vous avez oubliez de passer l'option --binary-id lors de la création de votre nouveau projet ?
 Pas de panique !

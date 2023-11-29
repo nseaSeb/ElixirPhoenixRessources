@@ -1,6 +1,6 @@
-# Timex Date notebook
 [Retour vers le sommaire des tips](../TipsSommaire.md)
 [Accueil](../README.md)
+# Timex Date notebook
 
 ```elixir
 Mix.install([{:timex, "~> 3.7", override: true}])
