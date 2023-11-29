@@ -1,4 +1,6 @@
 # Stemming (reduction de mot) exemple
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
 
 ```elixir
 Mix.install([{:stemmer, "~> 1.0"}])

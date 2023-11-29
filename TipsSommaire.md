@@ -10,8 +10,8 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 - [Automatiser la liste du cast d'un schema Ecto](./Tips/schemaEctoAutoCast.md)
 
 ## Librairies utilitaires
--[Manipulation de date avec Timex](./Tips/TimexDate.livemd.md)
+- [Manipulation de date avec Timex](./Tips/TimexDate.livemd.md)
 
 ## Divers
--[Stemming reduction de mot](./Tips/stemming.livemd.md)
--[Exemple Tablex table de décision](./Tips/tablexExemple.livemd.md)
+- [Stemming reduction de mot](./Tips/stemming.livemd.md)
+- [Exemple Tablex table de décision](./Tips/tablexExemple.livemd.md)
