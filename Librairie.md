@@ -7,6 +7,7 @@ https://hexdocs.pm/ (HEXDOCS heberge la documentation des packages HEX.)
 -   https://hexdocs.pm/timex/Timex.html (librairie pour les dates)
 -   https://hexdocs.pm/jason/readme.html (JSON)
 -   https://hexdocs.pm/bcrypt_elixir/readme.html (hash mot de passe bcrypt)
+-   https://hexdocs.pm/tablex/readme.html (table de décision, [Exemple Tablex table de décision](./Tips/tablexExemple.livemd.md))
 
 ## Ecto / DB
 -   https://hexdocs.pm/query_builder/readme.html (Composer des query avec des datas)

@@ -14,3 +14,4 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 
 ## Divers
 -[Stemming reduction de mot](./Tips/stemming.livemd.md)
+-[Exemple Tablex table de décision](./Tips/tablexExemple.livemd.md)
