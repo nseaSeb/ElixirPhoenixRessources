@@ -72,6 +72,7 @@ Une sorte d'awesome Elixir.
 -   https://underjord.io/blog.html
 -   https://danschultzer.com/posts/prefixed-base62-uuidv7-object-ids-with-ecto?utm_medium=email&utm_source=elixir-radar (article sur UUID)
 - https://hashrocket.com/blog
+- https://blog.guzman.codes/using-phoenix-channels-high-memory-usage-save-money-with-erlfullsweepafter?utm_medium=email&utm_source=elixir-radar (channel gestion de la mémoire)
 ---
 
 ## Newsletters et consorts :
@@ -90,7 +91,7 @@ Pour le moment rien à proposer
 ## Vidéos, tutos, formations :
 
 #### En français:
-
+-   https://elixirschool.com/fr (Tout n'est pas encore disponible en Français)
 -   https://www.youtube.com/@xavki (Une mine d'or de vidéos)
 
 -   https://www.youtube.com/@elixirmax6760 (Une chaine youtube dédié à Elixir / Phoenix )
