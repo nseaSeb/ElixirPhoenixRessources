@@ -17,8 +17,8 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 - [Exemple Tablex table de décision](./Tips/tablexExemple.livemd.md)
 
 ## Test unitaire
-- [Test unitaire dans les commentaires](./TU/testUnitaireDansLeCommentaire.md)
+- [Test unitaire dans les commentaires](./Test_unitaire/testUnitaireDansLeCommentaire.md)
 
 
 ## Algo
-- [Binary Search](./Algo/binary_search.livemd.md)
+- [Binary Search](./Algorithme/binary_search.livemd.md)
