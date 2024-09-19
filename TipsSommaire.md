@@ -16,6 +16,9 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 - [Stemming reduction de mot](./Tips/stemming.livemd.md)
 - [Exemple Tablex table de décision](./Tips/tablexExemple.livemd.md)
 
+## Test unitaire
+- [Test unitaire dans les commentaires](./TU/testUnitaireDansLeCommentaire.md)
+
 
 ## Algo
-- [Binary Search](./algo/binary_search.livemd.md)
+- [Binary Search](./Algo/binary_search.livemd.md)
