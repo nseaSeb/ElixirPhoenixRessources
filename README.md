@@ -19,6 +19,8 @@ Une sorte d'awesome Elixir.
 ## Ma modeste contribution :
 -   [Sommaire de mes tips](TipsSommaire.md)
 -   [Mes notes à propos d'Ecto](Ecto.md)
+-   [Example d'implementation Hook sortable.js](https://github.com/nseaSeb/SortableBoilerPlate)
+-   [Example d'implementation Hook click droit](https://github.com/nseaSeb/right-click-elixir)
 
 ## Verificateur de code :
 - https://github.com/jeremyjh/dialyxir (probablement le plus utilisé actuellement)
