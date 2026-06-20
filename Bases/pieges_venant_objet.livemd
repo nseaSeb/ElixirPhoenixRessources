@@ -1,0 +1,208 @@
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
+
+# Bases 0/4 — Pièges quand on vient d'un langage objet
+
+> 🟢 Niveau débutant · Livebook exécutable (aucune dépendance).
+> **Objectif** : désamorcer les réflexes de Java / C# / Python / PHP / JS qui font trébucher en Elixir.
+> **Prérequis** : avoir programmé dans un langage objet.
+> 👉 À lire **en premier** : c'est le changement de mentalité qui débloque tout le reste.
+
+Elixir est **fonctionnel**. Beaucoup d'automatismes objet n'ont pas d'équivalent — et tant mieux, mais il faut le savoir. Passons en revue les pièges les plus fréquents.
+
+## Piège 1 — Pas de classes, pas d'objets
+
+Il n'y a **ni classe, ni objet, ni méthode, ni `new`**. On sépare :
+- les **données** (maps, structs) ;
+- les **fonctions** (regroupées dans des **modules**).
+
+Un module n'est qu'un espace de noms pour des fonctions, **pas** un moule à objets.
+
+```elixir
+# En objet : compte.deposer(100)  — l'objet "compte" porte la donnée ET le comportement.
+# En Elixir : la donnée est passée en argument à une fonction.
+
+defmodule Compte do
+  # La donnée (le solde) entre, une NOUVELLE donnée sort.
+  def deposer(solde, montant), do: solde + montant
+  def retirer(solde, montant), do: solde - montant
+end
+
+solde = 0
+solde = Compte.deposer(solde, 100)
+solde = Compte.retirer(solde, 30)
+solde
+```
+
+Remarquez : `Compte` ne « contient » aucun solde. Le solde vit à l'extérieur et circule.
+
+## Piège 2 — Aucune mutation : on ne modifie jamais en place
+
+Pas de `this.x = ...`. Une fonction renvoie une **nouvelle** valeur ; l'originale est intacte.
+
+```elixir
+panier = %{articles: [], total: 0}
+
+# Ceci NE modifie PAS `panier` : ça renvoie une copie modifiée…
+Map.put(panier, :total, 50)
+
+# …et la preuve, `panier` est inchangé :
+panier
+```
+
+> ⚠️ **L'erreur n°1 du débutant** : appeler une fonction et oublier de récupérer son retour.
+> `Map.put(panier, :total, 50)` tout seul ne sert à rien : il faut `panier = Map.put(...)`.
+
+```elixir
+panier = Map.put(panier, :total, 50)
+panier
+```
+
+## Piège 3 — « Réaffecter » une variable ne mute rien
+
+On peut relier une variable à une nouvelle valeur, mais ça ne touche **pas** les données déjà existantes ni les autres références.
+
+```elixir
+a = [1, 2, 3]
+b = a
+a = [99 | a]
+
+# b pointe toujours sur l'ancienne liste : aucune surprise à distance.
+{a, b}
+```
+
+Conséquence importante **dans les fermetures (closures)** : la valeur est capturée, pas une référence mutable.
+
+```elixir
+compteur = 0
+
+# Tentation objet : "incrémenter compteur dans la boucle". Ça ne marche pas comme ça.
+Enum.each(1..3, fn _ -> compteur = compteur + 1 end)
+
+# compteur vaut toujours 0 ! La réaffectation est locale à la fonction anonyme.
+compteur
+```
+
+```elixir
+# La bonne façon : renvoyer une valeur (reduce), ne pas muter une variable externe.
+Enum.reduce(1..3, 0, fn _, acc -> acc + 1 end)
+```
+
+## Piège 4 — Pas d'héritage
+
+Pas de `extends`, pas de hiérarchie de classes. On réutilise par **composition de fonctions**, et le polymorphisme passe par :
+- les **protocoles** (dispatch selon le type de la donnée) ;
+- les **behaviours** (contrat de fonctions, façon interface).
+
+C'est le sujet du notebook [Structs, protocoles & behaviours](./structs_protocoles_behaviours.livemd). Retenez pour l'instant : « préférer la composition à l'héritage » n'est pas un conseil ici, c'est la seule option.
+
+## Piège 5 — `=` n'est pas une affectation
+
+C'est l'opérateur de **correspondance** (pattern matching). Surprenant au début, ultra puissant ensuite.
+
+```elixir
+# Ça "marche" comme une affectation…
+{x, y} = {1, 2}
+{x, y}
+```
+
+```elixir
+# …mais ça fait surtout de la déstructuration et de la vérification de forme.
+%{role: role} = %{role: "admin", actif: true}
+role
+```
+
+Détaillé dans [Immutabilité & pattern matching](./immutabilite_et_pattern_matching.livemd).
+
+## Piège 6 — Les erreurs ne sont pas (forcément) des exceptions
+
+En objet, on lève/attrape des exceptions pour le flot normal. En Elixir, le **flot d'erreur attendu** se modélise par des valeurs : `{:ok, valeur}` / `{:error, raison}`. On les gère par pattern matching.
+
+```elixir
+case Map.fetch(%{a: 1}, :b) do
+  {:ok, valeur} -> "trouvé : #{valeur}"
+  :error -> "absent, mais pas de crash"
+end
+```
+
+Les exceptions existent (`raise`), mais on les réserve aux **bugs / situations vraiment exceptionnelles**, pas au contrôle de flux courant. Convention : une fonction `truc/1` renvoie un tuple, sa variante `truc!/1` lève en cas d'échec.
+
+```elixir
+{
+  Map.fetch(%{a: 1}, :a),     # {:ok, 1}
+  Map.fetch!(%{a: 1}, :a)     # 1  (lève si absent)
+}
+```
+
+## Piège 7 — `nil` existe, mais on l'évite
+
+Pas de `null` partout. `nil` existe, mais on préfère des tuples explicites. Côté booléen, **seuls `false` et `nil` sont "faux"** ; `0` et `""` sont **vrais** (contrairement à Python/JS).
+
+```elixir
+{
+  if(0, do: "0 est vrai !", else: "faux"),
+  if("", do: "chaîne vide est vraie !", else: "faux"),
+  if(nil, do: "vrai", else: "nil est faux")
+}
+```
+
+## Piège 8 — Pas de boucle `for`/`while`, pas de `return`
+
+- On ne « boucle » pas avec un compteur mutable : on utilise `Enum`/`Stream` ou la récursion (voir [Enum, Stream](./enum_stream_comprehensions.livemd) et [récursion](./pipe_with_recursion.livemd)).
+- Il n'y a **pas de `return`** : une fonction renvoie sa **dernière expression**. Pas de sortie anticipée au milieu.
+
+```elixir
+defmodule Prix do
+  # Pas de "return" : la valeur du if (qui est une expression) est renvoyée.
+  def avec_remise(montant) do
+    if montant > 100 do
+      montant * 0.9
+    else
+      montant
+    end
+  end
+end
+
+{Prix.avec_remise(50), Prix.avec_remise(200)}
+```
+
+## Piège 9 — On enchaîne avec `|>`, pas avec `obj.a().b()`
+
+Le chaînage de méthodes objet (`liste.map(...).filter(...)`) devient un **pipe** de fonctions.
+
+```elixir
+# objet : users.filter(actif).map(nom).sort()
+[%{nom: "Bea", actif: true}, %{nom: "Ada", actif: true}, %{nom: "Cyril", actif: false}]
+|> Enum.filter(& &1.actif)
+|> Enum.map(& &1.nom)
+|> Enum.sort()
+```
+
+## Piège 10 — L'état vit dans un processus, pas dans un objet
+
+Quand vous avez besoin d'un état qui évolue dans le temps (un panier, un compteur partagé, une connexion), l'équivalent de « l'objet qui garde son état » est un **processus** (GenServer), pas une variable mutable. C'est l'objet du notebook [OTP : GenServer & Supervisor](../OTP/genserver_supervisor.livemd).
+
+## Tableau récap : réflexe objet → réflexe Elixir
+
+| En objet | En Elixir |
+|---|---|
+| Classe + méthodes | Module + fonctions, données passées en argument |
+| `this.x = ...` (mutation) | Renvoyer une nouvelle valeur (immuabilité) |
+| `new Truc()` | `%Truc{}` (struct) — pas d'instanciation à comportement |
+| Héritage (`extends`) | Composition + protocoles / behaviours |
+| `=` affecte | `=` fait du pattern matching |
+| `try/catch` pour le flot | `{:ok, _}` / `{:error, _}` + `case`/`with` |
+| `null` omniprésent | `nil` évité ; tuples explicites |
+| `for` / `while` / `return` | `Enum` / récursion ; dernière expression |
+| `obj.a().b().c()` | `valeur \|> a() \|> b() \|> c()` |
+| Objet à état | Processus (GenServer) |
+
+## À retenir
+
+- Données **et** fonctions sont **séparées** : un module n'est pas une classe.
+- **Rien ne se mute** : on crée du neuf et on récupère le retour.
+- **Pas d'héritage**, pas de `return`, pas de boucle mutable, pas de `null` partout.
+- Les erreurs attendues sont des **valeurs** (`{:ok,...}` / `{:error,...}`), pas des exceptions.
+- L'**état dans le temps** = un **processus**, pas un objet.
+
+➡️ Suite logique : [Immutabilité & pattern matching](./immutabilite_et_pattern_matching.livemd)

@@ -5,6 +5,7 @@ Les fichiers `.livemd` sont des [Livebooks](https://livebook.dev/) : ils s'affic
 Vous trouverez ici quelques notes d'astuces que je conserve ici.
 
 ## Bases du langage (🟢 à commencer dans l'ordre)
+0. [Pièges quand on vient d'un langage objet](./Bases/pieges_venant_objet.livemd) *(à lire en premier)*
 1. [Immutabilité & pattern matching](./Bases/immutabilite_et_pattern_matching.livemd)
 2. [Pipe `|>`, `with` et récursion](./Bases/pipe_with_recursion.livemd)
 3. [Enum, Stream & compréhensions](./Bases/enum_stream_comprehensions.livemd)

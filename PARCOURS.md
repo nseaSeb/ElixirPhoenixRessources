@@ -19,6 +19,7 @@ Cette page ordonne **toutes les notes de ce dépôt** dans un ordre d'apprentiss
 
 Le socle. À suivre **dans l'ordre** : chaque notebook s'appuie sur le précédent.
 
+0. [Pièges quand on vient d'un langage objet](Bases/pieges_venant_objet.livemd) — **à lire en premier** : les réflexes Java / C# / Python / JS à désamorcer.
 1. [Immutabilité & pattern matching](Bases/immutabilite_et_pattern_matching.livemd) — le changement de mentalité quand on vient de Python / JS / PHP / Java.
 2. [Pipe `|>`, `with` & récursion](Bases/pipe_with_recursion.livemd) — écrire des enchaînements lisibles, « boucler » sans boucle.
 3. [Enum, Stream & compréhensions](Bases/enum_stream_comprehensions.livemd) — manipuler les collections comme un Elixirien.
@@ -91,7 +92,6 @@ Exemples concrets de Hooks : [sortable.js (drag & drop)](https://github.com/nsea
 
 Pistes pour enrichir le parcours — contributions bienvenues :
 
-- 🟢 « Pièges quand on vient d'un langage objet » (immutabilité, processus ≠ threads…)
 - 🟢 Glossaire FR ↔ EN des termes incontournables
 - 🟢 Lire et comprendre une stacktrace / les erreurs Elixir
 - 🟡 Phoenix hors LiveView : routing, contexts, contrôleurs
