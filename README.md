@@ -3,6 +3,22 @@
 L'idée ici, au fur et à mesure de mon apprentissage du langage est de regrouper des ressources à propos d'Elixir / Phoenix principalement en Français ainsi que certaines de mes notes.
 Une sorte d'awesome Elixir.
 
+## Sommaire
+
+- [Liens majeurs](#liens-majeurs-)
+- [Framework et librairies](#framework-et-librairies-)
+- [Ma modeste contribution](#ma-modeste-contribution-)
+- [Vérificateur de code](#verificateur-de-code-)
+- [Antisèche (Cheatsheet)](#antisèche-cheatsheet)
+- [Liens divers](#liens-divers-)
+- [Newsletters et consorts](#newsletters-et-consorts-)
+- [Vidéos, tutos, formations](#vidéos-tutos-formations-)
+- [Livres en Anglais](#livres-en-anglais)
+- [Extensions VSCode](#extensions-vscode)
+- [Thèmes VSCode](#thèmes-vscode)
+- [Conférences](#conférences)
+- [Autres liens utiles](#autres-liens-utiles)
+
 ## Liens majeurs :
 
 -   https://elixir-lang.org/
@@ -19,8 +35,8 @@ Une sorte d'awesome Elixir.
 ## Ma modeste contribution :
 -   [Sommaire de mes tips](TipsSommaire.md)
 -   [Mes notes à propos d'Ecto](Ecto.md)
--   [Example d'implementation Hook sortable.js](https://github.com/nseaSeb/SortableBoilerPlate)
--   [Example d'implementation Hook click droit](https://github.com/nseaSeb/right-click-elixir)
+-   [Exemple d'implémentation Hook sortable.js](https://github.com/nseaSeb/SortableBoilerPlate)
+-   [Exemple d'implémentation Hook clic droit](https://github.com/nseaSeb/right-click-elixir)
 
 ## Verificateur de code :
 - https://github.com/jeremyjh/dialyxir (probablement le plus utilisé actuellement)
@@ -69,8 +85,8 @@ Une sorte d'awesome Elixir.
 -   https://blog.sequin.io/between-the-ctrl-cs/ (articles d'un dev)
 -   https://fly.io/phoenix-files/ (articles d'un hébergeur)
 -   https://devtalk.com/elixir (Elixir DevTalk)
--   http://blog.songsaboutsnow.com/ (Bloge d'un dev)
--   https://blog.miguelcoba.com/preparing-a-phoenix-16-app-for-deployment-with-elixir-releases (Aricle sur le déploiement)
+-   http://blog.songsaboutsnow.com/ (Blog d'un dev)
+-   https://blog.miguelcoba.com/preparing-a-phoenix-16-app-for-deployment-with-elixir-releases (Article sur le déploiement)
 -   https://underjord.io/blog.html
 -   https://danschultzer.com/posts/prefixed-base62-uuidv7-object-ids-with-ecto?utm_medium=email&utm_source=elixir-radar (article sur UUID)
 - https://hashrocket.com/blog
@@ -104,7 +120,7 @@ Pour le moment rien à proposer
 -   https://online.pragmaticstudio.com/ (Formation qualitative)
 -   https://www.youtube.com/watch?v=IiIgm_yaoOA (formation de 5h vraiment bien en Anglais)
 -   https://www.youtube.com/@backendstuff (Excellente chaine réalisé par Jacob Luetzow)
--   https://www.youtube.com/watch?v=g3oyh3g1AtQ (José Valim himself présent bumblebee ML implémentation)
+-   https://www.youtube.com/watch?v=g3oyh3g1AtQ (José Valim himself présente l'implémentation ML Bumblebee)
 -   https://pjullrich.gumroad.com/l/bmvp (Formation Phoenix autour d'un projet)
 -   https://discover.gumroad.com/?query=elixir+phoenix (Tuto formation de Gumroad)
 
@@ -130,11 +146,11 @@ Pour le moment rien à proposer
 
 ### Extensions VSCode annexes
 
--   https://marketplace.visualstudio.com/items?itemName=SimonSiefke.svg-preview (Prévisualiser les SVG
--   https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-mysql-client2) (DB client dans VSCode)
+-   https://marketplace.visualstudio.com/items?itemName=SimonSiefke.svg-preview (Prévisualiser les SVG)
+-   https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-mysql-client2 (DB client dans VSCode)
 -   https://marketplace.visualstudio.com/items?itemName=arturock.gitstash (git stash)
 -   https://marketplace.visualstudio.com/items?itemName=alefragnani.project-manager (manager de projets, pratique pour basuler vers ses projets)
--   https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv (coloratiion syntaxique dédié aux CSV)
+-   https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv (coloration syntaxique dédiée aux CSV)
 -   https://marketplace.visualstudio.com/items?itemName=Monish.regexsnippets (snippets regex)
 -   https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh (SSH manipuler vos projets distants)
 -   https://marketplace.visualstudio.com/items?itemName=ms-vscode.remote-explorer (SSH se connecter à une machine distante)

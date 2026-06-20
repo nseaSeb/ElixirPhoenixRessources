@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Livebook
+.livebook/
+*.livemd~
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp
+*~

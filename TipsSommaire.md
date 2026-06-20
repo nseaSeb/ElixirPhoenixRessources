@@ -1,6 +1,6 @@
 # Quelques "Tips"
 [Accueil](README.md)
-Les fichiers .livemd.md sont en faite des livebooks.
+Les fichiers `.livemd` sont des [Livebooks](https://livebook.dev/) : ils s'affichent comme du Markdown sur GitHub et peuvent être ouverts directement dans Livebook pour être exécutés.
 
 Vous trouverez ici quelques notes d'astuces que je conserve ici.
 
@@ -10,15 +10,15 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 - [Automatiser la liste du cast d'un schema Ecto](./Tips/schemaEctoAutoCast.md)
 
 ## Librairies utilitaires
-- [Manipulation de date avec Timex](./Tips/TimexDate.livemd.md)
+- [Manipulation de date avec Timex](./Tips/TimexDate.livemd)
 
 ## Divers
-- [Stemming reduction de mot](./Tips/stemming.livemd.md)
-- [Exemple Tablex table de décision](./Tips/tablexExemple.livemd.md)
+- [Stemming reduction de mot](./Tips/stemming.livemd)
+- [Exemple Tablex table de décision](./Tips/tablexExemple.livemd)
 
 ## Test unitaire
 - [Test unitaire dans les commentaires](./Test_unitaire/testUnitaireDansLeCommentaire.md)
 
 
 ## Algo
-- [Binary Search](./Algorithme/binary_search.livemd.md)
+- [Binary Search](./Algorithme/binary_search.livemd)
