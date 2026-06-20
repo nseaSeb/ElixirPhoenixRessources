@@ -1,5 +1,8 @@
 # Ecto notebook
 [Accueil](README.md)
+
+> Pour aller plus loin que les migrations : [Ecto avancé (changesets, associations, Multi, requêtes)](EctoAvance.md)
+
 ## Migration
 
 Pour la création d'une table, nous allons créér un fichier de migration

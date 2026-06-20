@@ -34,7 +34,10 @@ Une sorte d'awesome Elixir.
 
 ## Ma modeste contribution :
 -   [Sommaire de mes tips](TipsSommaire.md)
--   [Mes notes à propos d'Ecto](Ecto.md)
+-   [Mes notes à propos d'Ecto](Ecto.md) ([Ecto avancé](EctoAvance.md))
+-   [LiveView : l'essentiel](LiveView/liveview.md)
+-   [OTP : GenServer & Supervisor (Livebook)](OTP/genserver_supervisor.livemd)
+-   [Tests avec ExUnit](Test_unitaire/exunit_bases.md)
 -   [Exemple d'implémentation Hook sortable.js](https://github.com/nseaSeb/SortableBoilerPlate)
 -   [Exemple d'implémentation Hook clic droit](https://github.com/nseaSeb/right-click-elixir)
 

@@ -9,6 +9,14 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 
 - [Automatiser la liste du cast d'un schema Ecto](./Tips/schemaEctoAutoCast.md)
 
+- [Ecto avancé : changesets, associations, Multi, requêtes composables](./EctoAvance.md)
+
+## Phoenix LiveView
+- [LiveView : l'essentiel (cycle de vie, assigns, events, streams)](./LiveView/liveview.md)
+
+## OTP / Concurrence
+- [GenServer & Supervisor (Livebook exécutable)](./OTP/genserver_supervisor.livemd)
+
 ## Librairies utilitaires
 - [Manipulation de date avec Timex](./Tips/TimexDate.livemd)
 
@@ -18,6 +26,7 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 
 ## Test unitaire
 - [Test unitaire dans les commentaires](./Test_unitaire/testUnitaireDansLeCommentaire.md)
+- [Tests avec ExUnit : bases, fixtures, Mox, ExMachina](./Test_unitaire/exunit_bases.md)
 
 
 ## Algo

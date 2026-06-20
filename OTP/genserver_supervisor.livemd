@@ -1,0 +1,128 @@
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
+
+# OTP : GenServer & Supervisor
+
+> Ce Livebook est exécutable directement dans [Livebook](https://livebook.dev/).
+> Aucune dépendance n'est nécessaire, `GenServer` et `Supervisor` font partie de la bibliothèque standard.
+
+## L'idée en deux mots
+
+Un **GenServer** (Generic Server) est un processus qui détient un état et répond à des messages.
+C'est la brique de base de la concurrence en Elixir : au lieu de partager de la mémoire entre threads,
+on isole l'état dans un processus et on communique par messages.
+
+Un **Supervisor** surveille des processus et les redémarre s'ils tombent : c'est la philosophie
+« let it crash » d'Erlang/OTP. On ne défend pas contre toutes les erreurs, on laisse le superviseur remettre le système dans un état sain.
+
+## Un GenServer compteur commenté
+
+```elixir
+defmodule Compteur do
+  use GenServer
+
+  # --- API cliente (fonctions appelées par le reste du code) ---
+
+  # Démarre le processus. `opts` permet de passer un :name pour le retrouver facilement.
+  def start_link(valeur_initiale \\ 0, opts \\ []) do
+    GenServer.start_link(__MODULE__, valeur_initiale, opts)
+  end
+
+  # Appel SYNCHRONE : on attend une réponse (call).
+  def valeur(pid), do: GenServer.call(pid, :valeur)
+
+  # Appel ASYNCHRONE : on n'attend pas de réponse (cast).
+  def incremente(pid, n \\ 1), do: GenServer.cast(pid, {:incremente, n})
+
+  # --- Callbacks serveur (exécutés DANS le processus) ---
+
+  # init/1 définit l'état initial. Le tuple {:ok, state} valide le démarrage.
+  @impl true
+  def init(valeur_initiale), do: {:ok, valeur_initiale}
+
+  # handle_call répond à un :call. {:reply, reponse, nouvel_etat}
+  @impl true
+  def handle_call(:valeur, _from, etat) do
+    {:reply, etat, etat}
+  end
+
+  # handle_cast traite un :cast. {:noreply, nouvel_etat}
+  @impl true
+  def handle_cast({:incremente, n}, etat) do
+    {:noreply, etat + n}
+  end
+end
+```
+
+On l'utilise :
+
+```elixir
+{:ok, pid} = Compteur.start_link(10)
+
+Compteur.incremente(pid)
+Compteur.incremente(pid, 5)
+
+Compteur.valeur(pid)
+# => 16
+```
+
+## Pourquoi call vs cast ?
+
+- `call` (synchrone) : utilisez-le quand vous avez besoin de la réponse, ou pour appliquer une contre-pression (le client attend, ce qui évite de noyer le serveur).
+- `cast` (asynchrone) : « tire et oublie ». Plus rapide côté client, mais aucune garantie de traitement immédiat ni de retour d'erreur.
+
+En cas de doute, commencez par `call` : c'est plus facile à raisonner.
+
+## Superviser le GenServer
+
+Plutôt que de démarrer le processus à la main, on le confie à un Supervisor.
+Si `Compteur` plante, le superviseur le redémarre automatiquement (ici avec sa valeur initiale).
+
+```elixir
+children = [
+  # On nomme le processus pour pouvoir l'appeler sans connaître son pid.
+  %{
+    id: Compteur,
+    start: {Compteur, :start_link, [0, [name: MonCompteur]]}
+  }
+]
+
+# :one_for_one => si un enfant meurt, seul celui-là est redémarré.
+{:ok, _sup} = Supervisor.start_link(children, strategy: :one_for_one)
+
+Compteur.incremente(MonCompteur, 3)
+Compteur.valeur(MonCompteur)
+# => 3
+```
+
+## Démontrer « let it crash »
+
+```elixir
+# On récupère le pid actuel supervisé
+pid_avant = Process.whereis(MonCompteur)
+
+# On le tue brutalement
+Process.exit(pid_avant, :kill)
+
+# Laissons le superviseur faire son travail
+Process.sleep(50)
+
+pid_apres = Process.whereis(MonCompteur)
+
+# Le pid a changé : le processus a bien été redémarré (état réinitialisé à 0).
+{pid_avant != pid_apres, Compteur.valeur(MonCompteur)}
+# => {true, 0}
+```
+
+## Stratégies de supervision
+
+- `:one_for_one` : redémarre seulement l'enfant fautif (le plus courant).
+- `:one_for_all` : redémarre tous les enfants si l'un tombe (utile quand ils dépendent les uns des autres).
+- `:rest_for_one` : redémarre l'enfant fautif et ceux démarrés après lui.
+
+## À retenir
+
+- Un GenServer = état isolé + messages (`call`/`cast`).
+- Les callbacks (`init`, `handle_call`, `handle_cast`) s'exécutent **dans** le processus, l'API cliente **en dehors**.
+- On ne sur-protège pas le code : le **Supervisor** ramène le système dans un état connu.
+- Pour aller plus loin : `Agent` (état simple sans logique), `Task` (calcul ponctuel asynchrone), `Registry` (nommage dynamique), `DynamicSupervisor` (enfants créés à la volée).
