@@ -3,8 +3,11 @@
 L'idée ici, au fur et à mesure de mon apprentissage du langage est de regrouper des ressources à propos d'Elixir / Phoenix principalement en Français ainsi que certaines de mes notes.
 Une sorte d'awesome Elixir.
 
+> 🧭 **Nouveau ou perdu ?** Suivez le [**Parcours d'apprentissage**](PARCOURS.md) : toutes mes notes ordonnées du débutant à l'avancé.
+
 ## Sommaire
 
+- [🧭 Parcours d'apprentissage](PARCOURS.md)
 - [Liens majeurs](#liens-majeurs-)
 - [Framework et librairies](#framework-et-librairies-)
 - [Ma modeste contribution](#ma-modeste-contribution-)
@@ -18,6 +21,7 @@ Une sorte d'awesome Elixir.
 - [Thèmes VSCode](#thèmes-vscode)
 - [Conférences](#conférences)
 - [Autres liens utiles](#autres-liens-utiles)
+- [Licence](#licence)
 
 ## Liens majeurs :
 
@@ -34,6 +38,7 @@ Une sorte d'awesome Elixir.
 
 ## Ma modeste contribution :
 -   [Sommaire de mes tips](TipsSommaire.md)
+-   [Les bases du langage (parcours de 4 Livebooks)](Bases/immutabilite_et_pattern_matching.livemd)
 -   [Mes notes à propos d'Ecto](Ecto.md) ([Ecto avancé](EctoAvance.md))
 -   [LiveView : l'essentiel](LiveView/liveview.md)
 -   [OTP : GenServer & Supervisor (Livebook)](OTP/genserver_supervisor.livemd)
@@ -179,5 +184,9 @@ Pour le moment rien à proposer
 -   https://kapeli.com/cheat_sheets/Oh-My-Zsh_Git.docset/Contents/Resources/Documents/index (ZSH raccourcis cheatSheet)
 - https://github.com/AppFlowy-IO/AppFlowy (Prise de note à la Notion open source installable en local / serveur / docker, écrit en Rust, bloc de code avec coloration syntaxique incluant Elixir et langue Française )
 - https://github.com/toeverything/AFFiNE (Alternative sérieuse à Notion, incluant un panel de dessin à la figma.)
+
+## Licence
+
+Ce dépôt est publié sous licence [MIT](LICENSE) : libre à vous de le réutiliser, le partager et l'adapter.
 
 *La connaissance grandit quand on la partage.*

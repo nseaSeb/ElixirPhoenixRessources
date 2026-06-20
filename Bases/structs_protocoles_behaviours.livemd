@@ -1,0 +1,156 @@
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
+
+# Bases 4/4 — Structs, protocoles & behaviours
+
+> 🟡 Niveau intermédiaire · Livebook exécutable (aucune dépendance).
+> **Objectif** : structurer ses données et comprendre les deux mécanismes de polymorphisme d'Elixir.
+> **Prérequis** : [Enum, Stream et compréhensions](./enum_stream_comprehensions.livemd).
+
+## Les structs : des maps avec un contrat
+
+Un **struct** est une map dont les clés sont connues à l'avance et associée à un module. On l'utilise pour modéliser un concept métier (un `User`, une `Commande`…).
+
+```elixir
+defmodule User do
+  # @enforce_keys impose certains champs à la création
+  @enforce_keys [:nom]
+  defstruct nom: nil, age: 0, admin: false
+end
+
+# On crée un struct avec %Module{...}
+ada = %User{nom: "Ada", age: 36}
+```
+
+Avantages par rapport à une map nue :
+
+```elixir
+# 1. Une "forme" connue et un type (%User{})
+ada.__struct__
+```
+
+```elixir
+# 2. On met à jour avec la syntaxe | (rappel : ça crée une COPIE)
+ada_admin = %{ada | admin: true}
+{ada, ada_admin}
+```
+
+```elixir
+# 3. Accès à une clé inexistante = erreur de compilation/exécution,
+#    contrairement à une map où ça renverrait nil silencieusement.
+# Décommentez pour voir : %User{nom: "X", inexistant: 1}
+:ok
+```
+
+Le pattern matching marche aussi sur les structs :
+
+```elixir
+defmodule Bienvenue do
+  def message(%User{admin: true, nom: nom}), do: "👑 Bonjour admin #{nom}"
+  def message(%User{nom: nom}), do: "Bonjour #{nom}"
+end
+
+{Bienvenue.message(ada), Bienvenue.message(ada_admin)}
+```
+
+## Les protocoles : du polymorphisme « par type de donnée »
+
+Un **protocole** définit un comportement qu'on peut implémenter pour **différents types**, y compris des types qu'on ne possède pas. C'est ainsi que `Enum` fonctionne sur les listes, maps, ranges… via le protocole `Enumerable`.
+
+Exemple : un protocole `Surface` implémenté pour plusieurs formes.
+
+```elixir
+defprotocol Surface do
+  @doc "Calcule l'aire d'une forme"
+  def aire(forme)
+end
+
+defmodule Rectangle do
+  defstruct [:largeur, :hauteur]
+end
+
+defmodule Cercle do
+  defstruct [:rayon]
+end
+
+defimpl Surface, for: Rectangle do
+  def aire(%Rectangle{largeur: l, hauteur: h}), do: l * h
+end
+
+defimpl Surface, for: Cercle do
+  def aire(%Cercle{rayon: r}), do: 3.14159 * r * r
+end
+
+{
+  Surface.aire(%Rectangle{largeur: 3, hauteur: 4}),
+  Surface.aire(%Cercle{rayon: 2})
+}
+```
+
+Le bon appel est choisi **selon le type de la donnée** passée. On peut ajouter une nouvelle forme plus tard sans toucher au code existant : il suffit d'un nouveau `defimpl`.
+
+Un protocole très utile à connaître : **`String.Chars`** (utilisé par `to_string/1` et l'interpolation `#{}`) et **`Inspect`** (affichage en console).
+
+```elixir
+defimpl String.Chars, for: User do
+  def to_string(%User{nom: nom}), do: "User(#{nom})"
+end
+
+"Voici #{ada}"
+```
+
+## Les behaviours : un contrat de fonctions à implémenter
+
+Un **behaviour** définit une liste de fonctions (`@callback`) qu'un module doit fournir. C'est l'équivalent d'une *interface*. C'est le mécanisme derrière `GenServer`, `Plug`, les LiveView…
+
+```elixir
+defmodule Notifieur do
+  # Le contrat : tout notifieur doit savoir envoyer un message
+  @callback envoyer(destinataire :: String.t(), message :: String.t()) ::
+              :ok | {:error, term()}
+end
+
+defmodule NotifieurEmail do
+  @behaviour Notifieur
+
+  @impl true
+  def envoyer(destinataire, message) do
+    IO.puts("📧 Email à #{destinataire} : #{message}")
+    :ok
+  end
+end
+
+defmodule NotifieurSms do
+  @behaviour Notifieur
+
+  @impl true
+  def envoyer(destinataire, message) do
+    IO.puts("📱 SMS à #{destinataire} : #{message}")
+    :ok
+  end
+end
+
+# On peut traiter n'importe quel module respectant le contrat de façon interchangeable
+for module <- [NotifieurEmail, NotifieurSms] do
+  module.envoyer("Ada", "Coucou")
+end
+```
+
+`@impl true` indique qu'on implémente un callback du behaviour : le compilateur vous prévient si vous vous trompez de nom ou de signature. C'est aussi ce qui rend les **mocks Mox** propres (voir [Tests ExUnit](../Test_unitaire/exunit_bases.md)) : on mocke un behaviour, pas une fonction au hasard.
+
+## Protocole vs Behaviour : ne pas confondre
+
+| | **Protocole** | **Behaviour** |
+|---|---|---|
+| Polymorphisme… | …par **type de donnée** | …par **module** |
+| On dispatch sur | le 1er argument (la donnée) | le module choisi explicitement |
+| Exemples | `Enumerable`, `String.Chars`, `Inspect` | `GenServer`, `Plug`, `Notifieur` |
+| Étendre | `defimpl ... for: Type` | `@behaviour` dans un nouveau module |
+
+## À retenir
+
+- Un **struct** = map à forme connue + contrat (`@enforce_keys`), idéal pour le métier ; mise à jour par copie `%{s | ...}`.
+- Un **protocole** dispatch selon **le type de la donnée** (extensible sans toucher l'existant).
+- Un **behaviour** est un **contrat de fonctions** (interface) implémenté par des modules ; socle de GenServer, Plug, LiveView et des mocks Mox.
+
+➡️ Pour mettre tout ça en mouvement : [OTP — GenServer & Supervisor](../OTP/genserver_supervisor.livemd)

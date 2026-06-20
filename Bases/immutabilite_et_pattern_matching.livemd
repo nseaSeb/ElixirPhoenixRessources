@@ -1,0 +1,141 @@
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
+
+# Bases 1/4 — Immutabilité & pattern matching
+
+> 🟢 Niveau débutant · Livebook exécutable (aucune dépendance).
+> **Objectif** : comprendre les deux idées qui déroutent le plus quand on vient de Python, JS, PHP ou Java.
+> **Prérequis** : savoir lire un peu de code.
+
+## Idée n°1 : les données sont immuables
+
+En Elixir, **on ne modifie jamais une donnée existante**. On en crée une nouvelle à partir de l'ancienne.
+
+```elixir
+liste = [1, 2, 3]
+autre = [0 | liste]
+
+# `liste` n'a pas changé : on a fabriqué une nouvelle liste.
+{liste, autre}
+```
+
+Même chose pour les maps : les fonctions renvoient une **copie modifiée**, l'original reste intact.
+
+```elixir
+user = %{nom: "Ada", age: 36}
+plus_vieille = Map.put(user, :age, 37)
+
+{user, plus_vieille}
+```
+
+Pourquoi c'est une bonne nouvelle :
+- aucun « effet de bord à distance » (une fonction ne peut pas saboter vos données dans votre dos) ;
+- la concurrence devient sûre : deux processus ne peuvent pas corrompre une donnée partagée.
+
+> ⚠️ Conséquence : `Map.put(user, ...)` **ne suffit pas**, il faut récupérer le résultat. Oublier d'affecter le retour est l'erreur n°1 du débutant.
+
+## Idée n°2 : pas de boucle `for` classique
+
+Il n'y a pas de `i++` ni de variable de boucle qu'on incrémente (puisque rien n'est mutable). On parcourt les collections avec des fonctions (`Enum.map`, etc.) ou avec la récursion. On verra ça en détail dans les notebooks suivants.
+
+```elixir
+# Au lieu d'une boucle qui modifie un accumulateur :
+Enum.map([1, 2, 3], fn x -> x * 10 end)
+```
+
+## Idée n°3 : `=` n'est PAS une affectation
+
+`=` est l'**opérateur de correspondance** (match). À gauche un *motif*, à droite une *valeur*. Elixir essaie de faire correspondre les deux.
+
+```elixir
+x = 1
+# Ici Elixir lie x à 1 car c'est la seule façon de faire correspondre les deux côtés.
+x
+```
+
+La preuve que ce n'est pas une simple affectation :
+
+```elixir
+# 1 = x fonctionne car x vaut déjà 1 : les deux côtés correspondent.
+1 = x
+```
+
+```elixir
+# Mais ceci échoue (MatchError) car 2 ne correspond pas à la valeur de x (1).
+# Décommentez pour voir l'erreur :
+# 2 = x
+```
+
+## Déstructurer avec le pattern matching
+
+Le vrai pouvoir : extraire des valeurs en décrivant la *forme* attendue.
+
+```elixir
+# Tuple
+{:ok, valeur} = {:ok, 42}
+valeur
+```
+
+```elixir
+# Liste : tête | reste
+[premier | reste] = [10, 20, 30]
+{premier, reste}
+```
+
+```elixir
+# Map : on n'extrait que les clés qui nous intéressent
+%{nom: nom} = %{nom: "Ada", age: 36}
+nom
+```
+
+C'est LE pattern qu'on retrouve partout en Elixir, notamment pour gérer les retours `{:ok, ...}` / `{:error, ...}` :
+
+```elixir
+resultat = {:error, :introuvable}
+
+case resultat do
+  {:ok, valeur} -> "Trouvé : #{inspect(valeur)}"
+  {:error, raison} -> "Échec : #{inspect(raison)}"
+end
+```
+
+## Le pin operator `^`
+
+Par défaut, une variable à gauche du `=` est (re)liée. Pour dire « utilise la **valeur actuelle** de la variable comme motif » plutôt que de la réaffecter, on l'épingle avec `^`.
+
+```elixir
+attendu = 1
+
+# Sans ^, ceci réaffecterait `attendu`. Avec ^, on EXIGE que la droite vaille 1.
+^attendu = 1
+"ok, la valeur correspond bien"
+```
+
+C'est ce même `^` qu'on utilise dans les requêtes Ecto (`where: u.id == ^id`).
+
+## Pattern matching dans les fonctions
+
+On peut écrire **plusieurs clauses** d'une fonction, chacune avec un motif différent. Elixir choisit la première qui correspond — souvent plus lisible qu'une cascade de `if`.
+
+```elixir
+defmodule Salutation do
+  def bonjour(:fr), do: "Bonjour !"
+  def bonjour(:en), do: "Hello!"
+  def bonjour(:es), do: "¡Hola!"
+  # clause « attrape-tout »
+  def bonjour(_autre), do: "👋"
+end
+
+Enum.map([:fr, :en, :es, :it], &Salutation.bonjour/1)
+```
+
+## À retenir
+
+- Les données sont **immuables** : on crée du neuf, on n'altère jamais l'ancien → **récupérez toujours le retour**.
+- Pas de boucle mutable : on utilise des fonctions de collection ou la récursion.
+- `=` fait du **pattern matching**, pas de l'affectation.
+- La **déstructuration** extrait des valeurs en décrivant la forme attendue.
+- `^` épingle la valeur courante au lieu de réaffecter.
+- Les **clauses de fonction** remplacent élégamment beaucoup de `if/else`.
+
+➡️ Suite : [Pipe, `with` et récursion](./pipe_with_recursion.livemd)

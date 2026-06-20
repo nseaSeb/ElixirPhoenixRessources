@@ -1,0 +1,150 @@
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
+
+# Bases 3/4 — Enum, Stream & compréhensions
+
+> 🟢 Niveau débutant · Livebook exécutable (aucune dépendance).
+> **Objectif** : manipuler des collections comme un Elixirien, et savoir quand préférer un traitement paresseux.
+> **Prérequis** : [Pipe, `with` et récursion](./pipe_with_recursion.livemd).
+
+## Enum : la boîte à outils des collections
+
+`Enum` regroupe les fonctions qui parcourent une collection **immédiatement** (eager) et renvoient un résultat.
+
+```elixir
+nombres = 1..10 |> Enum.to_list()
+
+%{
+  map: Enum.map(nombres, &(&1 * 2)),
+  filter: Enum.filter(nombres, &(rem(&1, 2) == 0)),
+  reduce: Enum.reduce(nombres, 0, &+/2),
+  sum: Enum.sum(nombres),
+  sort: Enum.sort([3, 1, 2], :desc)
+}
+```
+
+### La notation `&` (fonctions anonymes courtes)
+
+`&(&1 * 2)` est un raccourci pour `fn x -> x * 2 end`. `&1` est le premier argument, `&2` le second…
+
+```elixir
+# Ces deux écritures sont équivalentes :
+double_long = Enum.map(1..3, fn x -> x * 2 end)
+double_court = Enum.map(1..3, &(&1 * 2))
+
+double_long == double_court
+```
+
+### `reduce` : le couteau suisse
+
+Presque toutes les fonctions d'`Enum` peuvent se réécrire avec `reduce`. C'est l'équivalent fonctionnel d'une boucle avec accumulateur.
+
+```elixir
+# Compter les occurrences de chaque lettre
+"mississippi"
+|> String.graphemes()
+|> Enum.reduce(%{}, fn lettre, acc ->
+  Map.update(acc, lettre, 1, &(&1 + 1))
+end)
+```
+
+### Quelques fonctions à connaître
+
+```elixir
+gens = [
+  %{nom: "Ada", ville: "Londres"},
+  %{nom: "Alan", ville: "Londres"},
+  %{nom: "Grace", ville: "New York"}
+]
+
+%{
+  group_by: Enum.group_by(gens, & &1.ville, & &1.nom),
+  find: Enum.find(gens, &(&1.nom == "Grace")),
+  any?: Enum.any?(gens, &(&1.ville == "Paris")),
+  count: Enum.count(gens),
+  uniq: Enum.uniq([1, 1, 2, 3, 3])
+}
+```
+
+## Stream : le traitement paresseux (lazy)
+
+`Stream` a la même API qu'`Enum`, mais **ne calcule rien tant qu'on ne le force pas**. Les transformations sont juste « enregistrées », puis exécutées en un seul passage quand un `Enum.*` final déclenche le calcul.
+
+```elixir
+# Rien n'est calculé ici : on décrit juste un pipeline.
+stream =
+  1..1_000_000
+  |> Stream.map(&(&1 * 3))
+  |> Stream.filter(&(rem(&1, 2) == 0))
+
+stream
+```
+
+```elixir
+# Le calcul ne se déclenche qu'ici, et s'arrête dès qu'on a 5 éléments.
+stream |> Enum.take(5)
+```
+
+### Eager vs Lazy : la différence qui compte
+
+```elixir
+# Avec Enum : DEUX listes intermédiaires d'un million d'éléments sont créées.
+eager =
+  1..1_000_000
+  |> Enum.map(&(&1 + 1))
+  |> Enum.filter(&(rem(&1, 5) == 0))
+  |> Enum.take(3)
+
+# Avec Stream : un seul passage, on s'arrête après avoir trouvé 3 éléments.
+lazy =
+  1..1_000_000
+  |> Stream.map(&(&1 + 1))
+  |> Stream.filter(&(rem(&1, 5) == 0))
+  |> Enum.take(3)
+
+{eager, lazy}
+```
+
+**Quand choisir Stream ?**
+- grandes collections où l'on ne veut pas matérialiser les étapes intermédiaires ;
+- early-exit (`take`, `find`) sur une grosse source ;
+- données potentiellement infinies (`Stream.iterate`, `Stream.cycle`) ou flux de fichier ligne à ligne (`File.stream!`).
+
+Pour de petites listes, **`Enum` est parfait** (et souvent plus rapide, car `Stream` a un léger surcoût). Ne « streamez » pas par réflexe.
+
+```elixir
+# Exemple de flux infini, rendu fini par Enum.take
+Stream.iterate(1, &(&1 * 2)) |> Enum.take(10)
+```
+
+## Les compréhensions `for`
+
+`for` est une autre façon de parcourir/filtrer/transformer, pratique surtout pour les filtres et les combinaisons.
+
+```elixir
+# map + filtre en une expression : le `when`-like se fait avec un filtre booléen
+for x <- 1..20, rem(x, 3) == 0, do: x * x
+```
+
+```elixir
+# Plusieurs générateurs = produit cartésien
+for couleur <- ["rouge", "noir"], taille <- ["S", "M", "L"] do
+  "#{couleur}/#{taille}"
+end
+```
+
+```elixir
+# `into:` pour construire autre chose qu'une liste (ici une map)
+for {cle, val} <- [a: 1, b: 2, c: 3], into: %{} do
+  {cle, val * 10}
+end
+```
+
+## À retenir
+
+- `Enum` = traitement **immédiat** ; couvre l'immense majorité des besoins.
+- `&(&1 ...)` = fonction anonyme courte ; `reduce` = la brique universelle.
+- `Stream` = traitement **paresseux** : utile pour grandes/infinies sources et early-exit, pas pour les petites listes.
+- `for` (compréhension) brille pour filtrer et combiner, avec `into:` pour choisir le conteneur de sortie.
+
+➡️ Suite : [Structs, protocoles & behaviours](./structs_protocoles_behaviours.livemd)

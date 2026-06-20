@@ -1,0 +1,126 @@
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
+
+# Bases 2/4 — Pipe `|>`, `with` et récursion
+
+> 🟢 Niveau débutant · Livebook exécutable (aucune dépendance).
+> **Objectif** : écrire des enchaînements lisibles et savoir « boucler » sans boucle.
+> **Prérequis** : [Immutabilité & pattern matching](./immutabilite_et_pattern_matching.livemd).
+
+## Le pipe `|>` : lire de gauche à droite
+
+Le pipe passe le résultat de gauche **comme premier argument** de la fonction de droite. On lit le traitement dans l'ordre où il se déroule, au lieu de l'imbriquer à l'envers.
+
+```elixir
+# Sans pipe : à lire de l'intérieur vers l'extérieur 😵
+Enum.sum(Enum.filter(Enum.map(1..10, fn x -> x * x end), fn x -> rem(x, 2) == 0 end))
+```
+
+```elixir
+# Avec pipe : ça se lit comme une recette 👨‍🍳
+1..10
+|> Enum.map(fn x -> x * x end)
+|> Enum.filter(fn x -> rem(x, 2) == 0 end)
+|> Enum.sum()
+```
+
+Règle d'or : **la valeur qui circule doit être le premier argument**. Beaucoup de fonctions de la stdlib sont conçues ainsi exprès (la donnée d'abord).
+
+```elixir
+"  Bonjour le monde  "
+|> String.trim()
+|> String.downcase()
+|> String.split(" ")
+```
+
+## `with` : enchaîner des étapes qui peuvent échouer
+
+Quand plusieurs opérations renvoient `{:ok, _}` / `{:error, _}` et dépendent les unes des autres, `with` évite la « pyramide de `case` ». Il continue tant que chaque motif correspond, et **court-circuite** dès qu'un motif échoue.
+
+```elixir
+defmodule Inscription do
+  def valider(params) do
+    with {:ok, email} <- extraire(params, :email),
+         {:ok, age} <- extraire(params, :age),
+         :ok <- verifier_majeur(age) do
+      {:ok, "Bienvenue #{email}"}
+    end
+  end
+
+  defp extraire(map, cle) do
+    case Map.fetch(map, cle) do
+      {:ok, v} -> {:ok, v}
+      :error -> {:error, "champ manquant : #{cle}"}
+    end
+  end
+
+  defp verifier_majeur(age) when age >= 18, do: :ok
+  defp verifier_majeur(_), do: {:error, "mineur"}
+end
+
+{
+  Inscription.valider(%{email: "a@b.com", age: 20}),
+  Inscription.valider(%{email: "a@b.com", age: 15}),
+  Inscription.valider(%{email: "a@b.com"})
+}
+```
+
+Le premier motif qui ne correspond pas est renvoyé tel quel : on récupère directement l'`{:error, raison}` fautif, sans imbrication.
+
+## « Boucler » avec la récursion
+
+Sans variable mutable, on répète en s'appelant soi-même. La clé : une **clause d'arrêt** (cas de base) + une clause qui se rapproche de cet arrêt.
+
+```elixir
+defmodule MaListe do
+  # Cas de base : la liste vide a une longueur de 0
+  def longueur([]), do: 0
+  # Cas récursif : 1 + longueur du reste
+  def longueur([_tete | reste]), do: 1 + longueur(reste)
+end
+
+MaListe.longueur([:a, :b, :c, :d])
+```
+
+### Accumulateur & récursion terminale
+
+Pour de grandes données, on passe un **accumulateur** afin que l'appel récursif soit la toute dernière opération (récursion *terminale*) : la VM réutilise alors la même pile, sans risque de débordement.
+
+```elixir
+defmodule Somme do
+  def total(liste), do: total(liste, 0)
+
+  defp total([], acc), do: acc
+  defp total([tete | reste], acc), do: total(reste, acc + tete)
+end
+
+Somme.total(Enum.to_list(1..1_000_000))
+```
+
+> En pratique, on écrit rarement ces récursions à la main : `Enum`/`Stream` (notebook suivant) couvrent 95 % des cas. Mais comprendre le mécanisme est essentiel pour lire du code Elixir.
+
+## `case`, `cond`, `if` : lequel choisir ?
+
+```elixir
+note = 14
+
+cond do
+  note >= 16 -> "Très bien"
+  note >= 14 -> "Bien"
+  note >= 10 -> "Passable"
+  true -> "Insuffisant"   # `true` = branche par défaut
+end
+```
+
+- `case` : pattern matching sur **une** valeur (le plus idiomatique).
+- `cond` : plusieurs conditions booléennes sans rapport entre elles.
+- `if`/`unless` : un simple oui/non. Rappel : en Elixir, seuls `false` et `nil` sont « faux ».
+
+## À retenir
+
+- `|>` rend les transformations lisibles **à condition** que la donnée soit le 1er argument.
+- `with` enchaîne des étapes faillibles et court-circuite proprement sur la 1re erreur.
+- On « boucle » par **récursion** (cas de base + cas récursif) ; l'**accumulateur** donne la récursion terminale.
+- `case` (motifs) / `cond` (conditions) / `if` (binaire) selon le besoin.
+
+➡️ Suite : [Enum, Stream et compréhensions](./enum_stream_comprehensions.livemd)

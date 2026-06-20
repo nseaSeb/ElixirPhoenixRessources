@@ -1,8 +1,14 @@
 # Quelques "Tips"
-[Accueil](README.md)
+[Accueil](README.md) · [🧭 Parcours d'apprentissage](PARCOURS.md)
 Les fichiers `.livemd` sont des [Livebooks](https://livebook.dev/) : ils s'affichent comme du Markdown sur GitHub et peuvent être ouverts directement dans Livebook pour être exécutés.
 
 Vous trouverez ici quelques notes d'astuces que je conserve ici.
+
+## Bases du langage (🟢 à commencer dans l'ordre)
+1. [Immutabilité & pattern matching](./Bases/immutabilite_et_pattern_matching.livemd)
+2. [Pipe `|>`, `with` et récursion](./Bases/pipe_with_recursion.livemd)
+3. [Enum, Stream & compréhensions](./Bases/enum_stream_comprehensions.livemd)
+4. [Structs, protocoles & behaviours](./Bases/structs_protocoles_behaviours.livemd)
 
 ## Ecto
 - [--binary-id, vous avez oubliez de passer l'option, pas de panique !](./Tips/binaryId.md)
