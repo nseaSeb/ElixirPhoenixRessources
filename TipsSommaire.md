@@ -36,5 +36,8 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 - [Tests avec ExUnit : bases, fixtures, Mox, ExMachina](./Test_unitaire/exunit_bases.md)
 
 
+## Projet fil rouge
+- [🗂️ Kanban collaboratif temps réel (guidé, étape par étape)](./Projet/kanban_collaboratif.md)
+
 ## Algo
 - [Binary Search](./Algorithme/binary_search.livemd)

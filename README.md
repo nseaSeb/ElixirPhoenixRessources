@@ -43,6 +43,7 @@ Une sorte d'awesome Elixir.
 -   [LiveView : l'essentiel](LiveView/liveview.md)
 -   [OTP : GenServer & Supervisor (Livebook)](OTP/genserver_supervisor.livemd)
 -   [Tests avec ExUnit](Test_unitaire/exunit_bases.md)
+-   [🗂️ Projet fil rouge : Kanban collaboratif temps réel](Projet/kanban_collaboratif.md)
 -   [Exemple d'implémentation Hook sortable.js](https://github.com/nseaSeb/SortableBoilerPlate)
 -   [Exemple d'implémentation Hook clic droit](https://github.com/nseaSeb/right-click-elixir)
 

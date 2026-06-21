@@ -67,6 +67,16 @@ Exemples concrets de Hooks : [sortable.js (drag & drop)](https://github.com/nsea
 
 ---
 
+## 🏁 Étape 6 — Le projet fil rouge
+
+Quand tu as parcouru les étapes ci-dessus, mets tout en pratique :
+
+- [🗂️ Kanban collaboratif temps réel](Projet/kanban_collaboratif.md) — un Trello-like multi-utilisateur en drag & drop, construit pas à pas. Chaque étape du projet réutilise une notion du parcours (logique pure → Ecto → tests → LiveView → PubSub → bonus OTP).
+
+**Objectif atteint :** assembler tout le parcours dans une vraie application temps réel.
+
+---
+
 ## 🎯 Parcours par objectif
 
 | Je veux… | Lire en priorité |
@@ -97,7 +107,6 @@ Pistes pour enrichir le parcours — contributions bienvenues :
 - 🟡 Phoenix hors LiveView : routing, contexts, contrôleurs
 - 🟡 Jobs en arrière-plan avec Oban
 - 🔴 Déploiement (Fly.io, releases, `runtime.exs`)
-- 🔴 Un mini-projet fil rouge réutilisant l'ensemble du parcours
 
 ---
 
