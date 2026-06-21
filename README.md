@@ -39,6 +39,7 @@ Une sorte d'awesome Elixir.
 ## Ma modeste contribution :
 -   [Sommaire de mes tips](TipsSommaire.md)
 -   [Les bases du langage (parcours de 4 Livebooks)](Bases/immutabilite_et_pattern_matching.livemd)
+-   [📖 Glossaire FR ↔ EN des termes Elixir / Phoenix](Glossaire.md)
 -   [Mes notes à propos d'Ecto](Ecto.md) ([Ecto avancé](EctoAvance.md))
 -   [LiveView : l'essentiel](LiveView/liveview.md)
 -   [OTP : GenServer & Supervisor (Livebook)](OTP/genserver_supervisor.livemd)

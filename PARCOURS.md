@@ -91,6 +91,7 @@ Quand tu as parcouru les étapes ci-dessus, mets tout en pratique :
 
 ## 🧰 Boîte à outils (à consulter au besoin)
 
+- [📖 Glossaire FR ↔ EN des termes Elixir / Phoenix](Glossaire.md)
 - [Liste de librairies utiles](Librairie.md)
 - Tips divers : [manipulation de dates (Timex)](Tips/TimexDate.livemd) · [stemming](Tips/stemming.livemd) · [table de décision (Tablex)](Tips/tablexExemple.livemd)
 - Algorithmes : [recherche dichotomique](Algorithme/binary_search.livemd)
@@ -102,7 +103,6 @@ Quand tu as parcouru les étapes ci-dessus, mets tout en pratique :
 
 Pistes pour enrichir le parcours — contributions bienvenues :
 
-- 🟢 Glossaire FR ↔ EN des termes incontournables
 - 🟢 Lire et comprendre une stacktrace / les erreurs Elixir
 - 🟡 Phoenix hors LiveView : routing, contexts, contrôleurs
 - 🟡 Jobs en arrière-plan avec Oban
