@@ -25,5 +25,19 @@ https://hexdocs.pm/ (HEXDOCS heberge la documentation des packages HEX.)
 ## Email
 - https://github.com/swoosh/swoosh (email)
 
+## Jobs en arrière-plan
+-   https://github.com/oban-bg/oban (jobs persistants basés sur PostgreSQL, le standard de facto)
+
+## Machine Learning / Data
+-   https://github.com/elixir-nx/nx (tenseurs et calcul numérique, la base de l'écosystème ML)
+-   https://github.com/elixir-nx/axon (réseaux de neurones construits sur Nx)
+-   https://github.com/elixir-nx/explorer (dataframes à la pandas / polars)
+-   https://github.com/elixir-nx/bumblebee (modèles pré-entraînés Hugging Face en quelques lignes)
+
+## Outils de dev
+-   https://github.com/ash-project/igniter (générateurs intelligents : installer et configurer des libs en patchant le code)
+-   https://github.com/tidewave-ai/tidewave_phoenix (connecter un assistant IA au runtime de votre app Phoenix via MCP)
+-   https://github.com/wojtekmach/phoenix_playground (Phoenix en un seul fichier, idéal pour prototyper ou reproduire un bug)
+
 ## Tests
 -   https://hexdocs.pm/faker/readme.html (lib générer des données de tests)
