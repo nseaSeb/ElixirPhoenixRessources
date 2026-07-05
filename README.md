@@ -13,6 +13,7 @@ Une sorte d'awesome Elixir.
 - [🧭 Parcours d'apprentissage](PARCOURS.md)
 - [Liens majeurs](#liens-majeurs)
 - [Framework et librairies](#framework-et-librairies)
+- [Projets open source à explorer](#projets-open-source-à-explorer)
 - [Ma modeste contribution](#ma-modeste-contribution)
 - [Vérificateurs de code](#vérificateurs-de-code)
 - [Antisèches (Cheatsheets)](#antisèches-cheatsheets)
@@ -46,6 +47,19 @@ Une sorte d'awesome Elixir.
 - [design-patterns-in-elixir](https://github.com/joshnuss/design-patterns-in-elixir) — les design patterns classiques du GoF implémentés en Elixir
 - [awesome-elixir](https://github.com/h4cc/awesome-elixir) — la méta-liste de référence (en anglais)
 - [Elixir Toolbox](https://elixir-toolbox.dev/) — annuaire de librairies et d'outils classés par catégorie
+
+## Projets open source à explorer
+
+De vraies applications à lire pour voir Elixir « en conditions réelles ».
+
+- [Plausible Analytics](https://github.com/plausible/analytics) — l'alternative open source à Google Analytics, un projet phare Elixir / Phoenix
+- [Mobilizon](https://framagit.org/framasoft/mobilizon) — plateforme d'événements décentralisée de Framasoft (français), en Elixir / Phoenix
+- [Changelog.com](https://github.com/thechangelog/changelog.com) — le site du podcast The Changelog, codebase Phoenix idéale pour apprendre
+- [Firezone](https://github.com/firezone/firezone) — gestion d'accès réseau sécurisé (VPN), interface d'admin en Elixir / Phoenix
+- [Livebook](https://github.com/livebook-dev/livebook) — les blocs-notes interactifs eux-mêmes : un superbe exemple de LiveView à grande échelle
+- [Supabase Realtime](https://github.com/supabase/realtime) — serveur WebSocket (broadcast, presence, écoute des changements Postgres) écrit en Elixir / Phoenix
+- [Anoma](https://github.com/anoma/anoma) — implémentation de référence du protocole Anoma (systèmes distribués, consensus, P2P), quasi 100 % Elixir
+- [Xberg](https://github.com/xberg-io/xberg) — framework d'extraction de contenu de documents (96+ formats) ; cœur en Rust avec un binding Elixir
 
 ## Ma modeste contribution
 
@@ -112,8 +126,8 @@ Pour le moment rien à proposer.
 
 ### En anglais
 
-- [Elixir Radar](https://elixir-radar.com/) — **la** newsletter hebdomadaire de l'écosystème
-- [Elixir LibHunt](https://elixir.libhunt.com/newsletter?f=es-top-d) — excellente newsletter !
+- [Elixir LibHunt (Awesome Elixir Weekly)](https://elixir.libhunt.com/newsletter) — **incontournable** : le récap hebdomadaire des projets et articles de l'écosystème
+- [Elixir Radar](https://elixir-radar.com/) — **la** newsletter hebdomadaire de référence
 - [ElixirStatus](https://elixirstatus.com/) — annoncez votre nouveau projet, article de blog ou release
 
 ## Podcasts
@@ -148,6 +162,8 @@ En anglais :
 - [Exercism — piste Elixir](https://exercism.org/tracks/elixir) — exercices progressifs corrigés, avec mentorat gratuit
 - [Advent of Code](https://adventofcode.com/) — se prête très bien à une résolution en Livebook
 - [Codewars](https://www.codewars.com/?language=elixir) — katas avec classement communautaire
+- [30 Days of Elixir](https://github.com/seven1m/30-days-of-elixir) — une traversée du langage en 30 exercices progressifs (bases → OTP → macros)
+- [Elixir Koans](https://github.com/elixirkoans/elixir-koans) — apprendre le langage en réparant des tests qui échouent (`mix meditate`)
 
 ## Déploiement
 
