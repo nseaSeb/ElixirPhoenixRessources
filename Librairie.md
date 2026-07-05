@@ -18,6 +18,12 @@ https://hexdocs.pm/ (HEXDOCS heberge la documentation des packages HEX.)
 -   https://hexdocs.pm/query_builder/readme.html (Composer des query avec des datas)
 -   https://hexdocs.pm/triplex/Triplex.html (Multi-tenant postgres / ecto)
 
+## Outils base de données (GUI)
+-   https://www.pgadmin.org/ (pgAdmin, le client graphique officiel de PostgreSQL)
+-   https://dbeaver.io/ (DBeaver, client universel gratuit et open source)
+-   https://tableplus.com/ (TablePlus, interface soignée, freemium)
+-   https://www.beekeeperstudio.io/ (Beekeeper Studio, open source et moderne)
+
 ## Localisation
 - https://github.com/elixir-gettext/gettext
 

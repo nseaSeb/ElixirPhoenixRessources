@@ -18,6 +18,9 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 
 - [Ecto avancé : changesets, associations, Multi, requêtes composables](./EctoAvance.md)
 
+## Phoenix
+- [Phoenix « classique » : routing, contexts & contrôleurs](./Phoenix/phoenix_sans_liveview.md)
+
 ## Phoenix LiveView
 - [LiveView : l'essentiel (cycle de vie, assigns, events, streams)](./LiveView/liveview.md)
 
@@ -26,6 +29,9 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 
 ## Librairies utilitaires
 - [Manipulation de date avec Timex](./Tips/TimexDate.livemd)
+
+## Débogage
+- [Lire une stacktrace / comprendre les erreurs](./Tips/lire_une_stacktrace.md)
 
 ## Divers
 - [Stemming reduction de mot](./Tips/stemming.livemd)

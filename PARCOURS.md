@@ -35,6 +35,8 @@ Le socle. À suivre **dans l'ordre** : chaque notebook s'appuie sur le précéde
 
 **Objectif atteint :** organiser son code et comprendre le modèle de concurrence d'Elixir.
 
+Tip transverse (🟢 à garder sous la main) : [lire une stacktrace / comprendre les erreurs](Tips/lire_une_stacktrace.md) — le réflexe qui débloque quand ça plante.
+
 ---
 
 ## 🟡 Étape 3 — Persister des données avec Ecto
@@ -57,9 +59,17 @@ Tips associés : [oubli de `--binary-id`](Tips/binaryId.md) · [automatiser le c
 
 ---
 
-## 🔴 Étape 5 — Construire une interface temps réel
+## 🟡 Étape 5 — Phoenix « classique »
 
-10. [Phoenix LiveView — l'essentiel](LiveView/liveview.md) — cycle de vie, assigns, events, PubSub, streams, Hooks JS.
+10. [Phoenix hors LiveView : routing, contexts & contrôleurs](Phoenix/phoenix_sans_liveview.md) — le socle requête / réponse, les contexts comme frontière métier, les routes vérifiées `~p`.
+
+**Objectif atteint :** servir des pages et des API JSON avec Phoenix, comprendre le trajet d'une requête.
+
+---
+
+## 🔴 Étape 6 — Construire une interface temps réel
+
+11. [Phoenix LiveView — l'essentiel](LiveView/liveview.md) — cycle de vie, assigns, events, PubSub, streams, Hooks JS.
 
 Exemples concrets de Hooks : [sortable.js (drag & drop)](https://github.com/nseaSeb/SortableBoilerPlate) · [clic droit](https://github.com/nseaSeb/right-click-elixir)
 
@@ -67,7 +77,7 @@ Exemples concrets de Hooks : [sortable.js (drag & drop)](https://github.com/nsea
 
 ---
 
-## 🏁 Étape 6 — Le projet fil rouge
+## 🏁 Étape 7 — Le projet fil rouge
 
 Quand tu as parcouru les étapes ci-dessus, mets tout en pratique :
 
@@ -85,7 +95,9 @@ Quand tu as parcouru les étapes ci-dessus, mets tout en pratique :
 | **Faire de la concurrence / du temps réel** | [OTP](OTP/genserver_supervisor.livemd) puis [LiveView](LiveView/liveview.md) |
 | **Manipuler une base de données** | [Ecto](Ecto.md) → [Ecto avancé](EctoAvance.md) |
 | **Sécuriser mon code par des tests** | [ExUnit](Test_unitaire/exunit_bases.md) |
+| **Servir des pages / une API avec Phoenix** | [Phoenix hors LiveView](Phoenix/phoenix_sans_liveview.md) |
 | **Construire une UI réactive** | [LiveView](LiveView/liveview.md) |
+| **Débloquer une erreur / un crash** | [Lire une stacktrace](Tips/lire_une_stacktrace.md) |
 
 ---
 
@@ -103,8 +115,7 @@ Quand tu as parcouru les étapes ci-dessus, mets tout en pratique :
 
 Pistes pour enrichir le parcours — contributions bienvenues :
 
-- 🟢 Lire et comprendre une stacktrace / les erreurs Elixir
-- 🟡 Phoenix hors LiveView : routing, contexts, contrôleurs
+- 🟢 Débogage & outillage IEx (`dbg`, `IEx.pry`, `:observer`, `recompile`)
 - 🟡 Jobs en arrière-plan avec Oban
 - 🔴 Déploiement (Fly.io, releases, `runtime.exs`)
 

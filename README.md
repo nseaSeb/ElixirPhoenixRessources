@@ -44,6 +44,7 @@ Une sorte d'awesome Elixir.
 - [Liste de librairies](Librairie.md) — ma sélection commentée (dates, JSON, Ecto, email, jobs, ML…)
 - [Petal](https://petal.build/) — composants basés sur Tailwind CSS, boilerplate pro intéressant
 - [Ash Framework](https://ash-hq.org/) — modélisation de domaine déclarative
+- [Hologram](https://github.com/bartblast/hologram) — framework full-stack qui tourne **par-dessus Phoenix** : on écrit le frontend interactif en Elixir (compilé en JavaScript), une alternative à LiveView / au JS
 - [design-patterns-in-elixir](https://github.com/joshnuss/design-patterns-in-elixir) — les design patterns classiques du GoF implémentés en Elixir
 - [awesome-elixir](https://github.com/h4cc/awesome-elixir) — la méta-liste de référence (en anglais)
 - [Elixir Toolbox](https://elixir-toolbox.dev/) — annuaire de librairies et d'outils classés par catégorie
@@ -67,7 +68,9 @@ De vraies applications à lire pour voir Elixir « en conditions réelles ».
 - [Les bases du langage (parcours de 4 Livebooks)](Bases/immutabilite_et_pattern_matching.livemd)
 - [📖 Glossaire FR ↔ EN des termes Elixir / Phoenix](Glossaire.md)
 - [Mes notes à propos d'Ecto](Ecto.md) ([Ecto avancé](EctoAvance.md))
+- [Phoenix « classique » : routing, contexts & contrôleurs](Phoenix/phoenix_sans_liveview.md)
 - [LiveView : l'essentiel](LiveView/liveview.md)
+- [Lire une stacktrace / comprendre les erreurs](Tips/lire_une_stacktrace.md)
 - [OTP : GenServer & Supervisor (Livebook)](OTP/genserver_supervisor.livemd)
 - [Tests avec ExUnit](Test_unitaire/exunit_bases.md)
 - [🗂️ Projet fil rouge : Kanban collaboratif temps réel](Projet/kanban_collaboratif.md)
@@ -186,7 +189,8 @@ En anglais :
 
 ### En français
 
-- [Elixir (Eyrolles)](https://www.eyrolles.com/Informatique/Livre/elixir-9782416011757/) — le premier et le seul en français pour le moment
+- [Elixir (Eyrolles)](https://www.eyrolles.com/Informatique/Livre/elixir-9782416011757/) — le premier et le seul en français sur le langage pour le moment
+- [SQL : Au cœur des performances](https://sql-au-coeur-des-performances.fr/) (Markus Winand) — **incontournable** sur l'indexation et les performances SQL ; transversal, très utile derrière Ecto
 
 ## Extensions VSCode
 
