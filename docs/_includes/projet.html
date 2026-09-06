@@ -1,0 +1,38 @@
+{%- comment -%}
+  Une carte de projet. Les liens sont dérivés de `hex`, `site` et `depot`
+  dans _data/projets.yml. `hex` est optionnel — le dépôt de ce site n'est pas
+  un paquet. `branche` compte : coelho et cfonb-elixir sont sur `master`, et
+  un lien qui suppose `main` renvoie 404.
+{%- endcomment -%}
+{%- assign p = include.projet -%}
+{%- comment -%}
+  Trois cas distincts, pas une chaîne de filtres : `p.site | default: p.depot |
+  prepend: "https://github.com/"` produirait « https://github.com/https://… »,
+  Liquid appliquant `prepend` au résultat de `default`, site compris.
+{%- endcomment -%}
+{%- if p.hex -%}
+  {%- assign lien_principal = p.hex | prepend: "https://hexdocs.pm/" -%}
+{%- elsif p.site -%}
+  {%- assign lien_principal = p.site -%}
+{%- else -%}
+  {%- assign lien_principal = p.depot | prepend: "https://github.com/" -%}
+{%- endif -%}
+<article class="projet">
+  <header class="projet__entete">
+    <h2 class="projet__nom"><a href="{{ lien_principal }}">{{ p.nom }}</a></h2>
+    {%- if p.version -%}<span class="projet__version">v{{ p.version }}</span>{%- endif -%}
+  </header>
+
+  <p class="projet__resume">{{ p.resume | markdownify | remove: "<p>" | remove: "</p>" }}</p>
+  {%- if p.pour -%}<p class="projet__pour"><span class="projet__pour-etiquette">Pour</span> {{ p.pour | markdownify | remove: "<p>" | remove: "</p>" }}</p>{%- endif -%}
+
+  <p class="projet__liens">
+    {%- if p.hex -%}
+      <a href="https://hex.pm/packages/{{ p.hex }}">Hex</a>
+      <a href="https://hexdocs.pm/{{ p.hex }}">Documentation</a>
+    {%- endif -%}
+    {%- if p.site -%}<a href="{{ p.site }}">Le site</a>{%- endif -%}
+    <a href="https://github.com/{{ p.depot }}/tree/{{ p.branche }}">Code source</a>
+    {%- if p.article -%}<a class="projet__article" href="{{ p.article | relative_url }}">L'article</a>{%- endif -%}
+  </p>
+</article>

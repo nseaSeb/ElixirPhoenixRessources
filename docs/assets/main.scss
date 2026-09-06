@@ -325,6 +325,73 @@ img { max-width: 100%; height: auto; }
 .rss-subscribe { margin-top: 2.5rem; }
 
 /* ------------------------------------------------------------------ *
+ *  Projets
+ * ------------------------------------------------------------------ */
+
+.projet {
+  border: 1px solid var(--bord);
+  border-radius: 12px;
+  background: var(--fond-eleve);
+  padding: 1.4rem 1.5rem;
+  margin: 0 0 1rem;
+}
+
+.projet__entete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .6rem;
+  margin-bottom: .6rem;
+}
+
+.projet__nom {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: var(--mono);
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+.projet__nom a { text-decoration: none; }
+.projet__nom a:hover { text-decoration: underline; }
+
+.projet__version {
+  font-family: var(--mono);
+  font-size: .76rem;
+  color: var(--texte-doux);
+  border: 1px solid var(--bord);
+  border-radius: 999px;
+  padding: .1rem .5rem;
+}
+
+.projet__resume { margin: 0 0 .6rem; font-size: .95rem; }
+
+.projet__pour { margin: 0; font-size: .9rem; color: var(--texte-doux); }
+.projet__pour-etiquette {
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--accent);
+  font-weight: 600;
+  margin-right: .3rem;
+}
+
+.projet__liens {
+  margin: 1rem 0 0;
+  padding-top: .85rem;
+  border-top: 1px solid var(--bord);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: .87rem;
+}
+.projet__liens a { text-decoration: none; }
+.projet__liens a:hover { text-decoration: underline; }
+.projet__article { font-weight: 600; }
+
+@media (max-width: 620px) { .projet { padding: 1.1rem; } }
+
+/* ------------------------------------------------------------------ *
  *  Parcours d'apprentissage
  * ------------------------------------------------------------------ */
 
@@ -728,4 +795,59 @@ code, pre, .highlight { font-family: var(--mono); }
   .page-content { padding: 2rem 0 3.5rem; }
   .post-card { padding: 1.2rem; }
   .highlighter-rouge pre { font-size: .8rem; padding: 1rem; }
+}
+
+/* ------------------------------------------------------------------ *
+ *  Composants dans une page de prose
+ *
+ *  Le gabarit `page` enveloppe son contenu dans `.post-content`, dont les
+ *  règles de prose (`.post-content h2`, `.post-content p`, `li`…) sont à la
+ *  fois PLUS SPÉCIFIQUES que nos classes de composants — (0,1,1) contre
+ *  (0,1,0) — et déclarées plus loin dans ce fichier. Elles gagnent donc deux
+ *  fois, et imposaient aux cartes du parcours, des projets et des tags les
+ *  marges, le filet et la taille d'un titre d'article.
+ *
+ *  Ce bloc doit rester EN FIN DE FICHIER : il ne réaffirme que les propriétés
+ *  réellement en conflit.
+ * ------------------------------------------------------------------ */
+
+.post-content {
+  .etape__titre {
+    font-size: 1.35rem;
+    margin: 0 0 .5rem;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .projet__nom {
+    font-size: 1.15rem;
+    margin: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .tag-section h2 {
+    font-size: 1rem;
+    margin: 0 0 .75rem;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .etape__niveau { margin: 0 0 .5rem; }
+  .etape__intro { margin: 0 0 1.25rem; }
+  .etape__tips-titre { margin: 1.5rem 0 .25rem; }
+  .etape__objectif { margin: 1.5rem 0 0; }
+  .item__note { margin: .15rem 0 0; }
+
+  .projet__resume { margin: 0 0 .6rem; }
+  .projet__pour { margin: 0; }
+  .projet__liens { margin: 1rem 0 0; }
+
+  .encadre p { margin: 0 0 .75rem; }
+  .encadre__titre { margin: 0 0 .75rem; }
+  .encadre__note { margin: 1rem 0 0; }
+  .encadre li { margin-bottom: .4rem; }
+
+  .items li,
+  .tag-liste li { margin-bottom: 0; }
 }

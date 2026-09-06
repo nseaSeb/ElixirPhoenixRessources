@@ -1,0 +1,87 @@
+# Les projets open source de l'auteur.
+#
+# La première entrée est le dépôt qui porte ce site : ce n'est pas un paquet,
+# elle n'a donc ni `hex` ni `version`, et `site` remplace le lien HexDocs.
+# Les suivantes sont des paquets publiés sur Hex.
+#
+# Les liens sont dérivés de `hex`, `site` et `depot` : rien n'est saisi deux fois. `branche` est indispensable — coelho et
+# cfonb-elixir sont sur `master`, pas sur `main`, et un lien qui suppose
+# `main` renvoie 404.
+#
+# NB : text_stemmer, dont dépend search_core, n'est PAS de l'auteur
+# (kipcole9/text_stemmer) et n'a donc rien à faire ici.
+
+projets:
+  # Le dépôt qui porte ce site lui-même. Pas de paquet Hex : `hex` est
+  # optionnel dans _includes/projet.html, et `site` remplace alors le lien
+  # HexDocs.
+  - nom: ElixirPhoenixRessources
+    depot: nseaSeb/ElixirPhoenixRessources
+    branche: main
+    site: https://nseaseb.github.io/ElixirPhoenixRessources/
+    resume: "Ce site, et le dépôt qui le porte : une liste de ressources Elixir / Phoenix en français, un parcours d'apprentissage avec ses Livebooks exécutables, un glossaire FR ↔ EN, et le blog que vous lisez."
+    pour: "Apprendre Elixir en français, ou trouver la ressource qui manque — le contenu francophone étant à peu près inexistant."
+
+  - nom: coelho
+    hex: coelho
+    depot: nseaSeb/coelho
+    branche: master
+    version: "0.14.0"
+    resume: "Du texte riche pour Phoenix, stocké comme un arbre validé plutôt que comme du HTML. La validation tient lieu d'assainissement, le document reste interrogeable, et le rendu redevient une décision au lieu d'un souvenir figé."
+    pour: "Un champ de texte riche dont on veut pouvoir migrer le contenu, y attacher des URL signées, ou changer le rendu après coup."
+
+  - nom: rover
+    hex: rover
+    depot: nseaSeb/rover
+    branche: main
+    version: "0.6.0"
+    resume: "Des cartes interactives pour LiveView, adossées à OpenLayers. On assigne une liste de marqueurs, on obtient une carte vivante — sans traverser les dix concepts qu'OpenLayers impose avant de poser trois épingles."
+    pour: "Afficher des positions sur une carte depuis un LiveView, sans écrire de JavaScript."
+
+  - nom: search_ash
+    hex: search_ash
+    depot: nseaSeb/search_ash
+    branche: main
+    version: "0.7.0"
+    resume: "Une extension Ash pour la recherche plein texte multilingue : un bloc `search do … end` par ressource, et une recherche globale transverse. Les index tsvector sont générés, sans migration ni SQL écrits à la main."
+    pour: "Rendre des ressources Ash cherchables, dans plusieurs langues, sans écrire le SQL."
+
+  - nom: search_core
+    hex: search_core
+    depot: nseaSeb/search_core
+    branche: main
+    version: "0.4.0"
+    resume: "Les briques de la recherche plein texte pour Elixir et Ecto seuls, sans Ash : une chaîne de normalisation et de racinisation, et les helpers tsvector / tsquery construits depuis cette même chaîne — pour que l'index et la requête ne divergent jamais."
+    pour: "Ajouter une recherche multilingue à un projet Ecto, sans dépendre d'Ash."
+
+  - nom: green_ash
+    hex: green_ash
+    depot: nseaSeb/green_ash
+    branche: main
+    version: "0.3.1"
+    resume: "Une console LiveView pilotée au clavier pour inspecter ses ressources Ash. Aucune interface à écrire : les ressources sont introspectées."
+    pour: "Explorer ses données Ash en développement, sans construire d'admin."
+
+  - nom: green_cal
+    hex: green_cal
+    depot: nseaSeb/green_cal
+    branche: main
+    version: "0.2.0"
+    resume: "Éphémérides solaires et lunaires pour calendriers agricoles : levers, couchers, crépuscules, phases, et les trois cycles lunaires indépendants sur lesquels reposent les calendriers de semis biodynamiques. Algorithmes de Meeus, Elixir pur, zéro dépendance."
+    pour: "Calculer des éphémérides sans base de fuseaux horaires ni dépendance externe."
+
+  - nom: cfonb
+    hex: cfonb
+    depot: nseaSeb/cfonb-elixir
+    branche: master
+    version: "0.2.0"
+    resume: "Lecture et écriture des fichiers bancaires CFONB, le standard français : relevés de compte à 120 caractères, enregistrements typés."
+    pour: "Intégrer des relevés bancaires français sans écrire son propre découpage de lignes à position fixe."
+
+  - nom: stemmers
+    hex: stemmers
+    depot: nseaSeb/stemmers
+    branche: main
+    version: "0.1.0"
+    resume: "Racinisation Snowball pour Elixir via un NIF Rust, multilingue et français compris, livré précompilé."
+    pour: "Réduire des mots à leur racine avant de les indexer."
