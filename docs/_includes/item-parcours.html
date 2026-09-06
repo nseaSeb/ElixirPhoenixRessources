@@ -16,8 +16,9 @@
     {%- if it.note -%}<p class="item__note">{{ it.note | markdownify | remove: "<p>" | remove: "</p>" }}</p>{%- endif -%}
     {%- if it.chemin contains ".livemd" -%}
       <a class="bouton-livebook"
+         title="Ouvre livebook.dev, qui transmet le notebook à votre Livebook. Au premier usage, il vous demandera son adresse."
          href="https://livebook.dev/run/?url=https://raw.githubusercontent.com/{{ site.repository }}/main/{{ it.chemin }}">
-        <span aria-hidden="true">▶</span> Ouvrir dans Livebook
+        <span aria-hidden="true">▶</span> Exécuter dans Livebook
       </a>
     {%- endif -%}
   </div>

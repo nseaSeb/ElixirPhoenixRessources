@@ -328,6 +328,62 @@ img { max-width: 100%; height: auto; }
  *  Parcours d'apprentissage
  * ------------------------------------------------------------------ */
 
+.encadre {
+  border: 1px solid var(--bord);
+  border-left: 3px solid var(--accent);
+  border-radius: 12px;
+  background: var(--fond-eleve);
+  padding: 1.25rem 1.5rem;
+  margin: 2rem 0 3rem;
+  font-size: .95rem;
+}
+.encadre__titre {
+  margin: 0 0 .75rem;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--accent);
+  font-weight: 600;
+}
+.encadre p { margin: 0 0 .75rem; }
+.encadre ol { margin: 0 0 .75rem; padding-left: 1.2rem; }
+.encadre li { margin-bottom: .4rem; }
+.cas { margin: 0 0 .75rem; }
+.cas dt { font-weight: 600; margin-top: .75rem; }
+.cas dd { margin: .15rem 0 0 1rem; color: var(--texte-doux); }
+
+.capture { margin: 1.25rem 0; }
+.capture img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--bord);
+  border-radius: 8px;
+  background: #fff; /* la capture est claire : fond blanc explicite en thème sombre */
+}
+.capture figcaption {
+  margin-top: .5rem;
+  font-size: .84rem;
+  color: var(--texte-doux);
+  font-style: italic;
+}
+
+.encadre__note {
+  margin: 1rem 0 0;
+  padding-top: .75rem;
+  border-top: 1px solid var(--bord);
+  color: var(--texte-doux);
+  font-size: .9rem;
+}
+.encadre code {
+  background: var(--fond-code);
+  border: 1px solid var(--bord);
+  border-radius: 4px;
+  padding: .05rem .3rem;
+  font-family: var(--mono);
+  font-size: .85em;
+}
+
 .prealables { padding-left: 1.2rem; margin: 0 0 3rem; }
 .prealables li { margin-bottom: .4rem; }
 
