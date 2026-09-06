@@ -4,13 +4,8 @@ title: Page introuvable
 permalink: /404.html
 ---
 
-<style>
-  .page-404 { text-align: center; padding: 3rem 0; }
-  .page-404 h1 { font-size: 4rem; margin-bottom: 0; line-height: 1; }
-</style>
-
-<div class="page-404">
+<div class="wrapper page-404">
   <h1>404</h1>
   <p>Cette page n'existe pas, ou n'existe plus.</p>
-  <p><a href="{{ '/' | relative_url }}">{{ site.data.fr.ui.retour }}</a></p>
+  <p><a class="button" href="{{ '/' | relative_url }}">{{ site.data.fr.ui.retour }}</a></p>
 </div>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "fr" }}">
+
+  {%- include head.html -%}
+
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+    {%- include header.html -%}
+
+    <main class="page-content" id="contenu">
+      {{ content }}
+    </main>
+
+    {%- include footer.html -%}
+
+    <script src="{{ "/assets/theme.js" | relative_url }}" defer></script>
+  </body>
+
+</html>

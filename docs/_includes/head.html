@@ -1,0 +1,27 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#4b275f" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#14121a" media="(prefers-color-scheme: dark)">
+
+  {%- seo -%}
+  {%- feed_meta -%}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
+
+  {%- comment -%}
+    Applique le thème avant le premier rendu pour éviter le flash de couleurs.
+    Doit rester inline et en fin de <head>.
+  {%- endcomment -%}
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "dark" || t === "light") document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    })();
+  </script>
+</head>
