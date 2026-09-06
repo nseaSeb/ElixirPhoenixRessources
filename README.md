@@ -8,9 +8,12 @@ Une sorte d'awesome Elixir.
 
 > 🧭 **Nouveau ou perdu ?** Suivez le [**Parcours d'apprentissage**](PARCOURS.md) : toutes mes notes ordonnées du débutant à l'avancé.
 
+> ✍️ **Le blog** : [articles Elixir / Phoenix en français](https://nseaseb.github.io/ElixirPhoenixRessources/) — le contenu francophone qui manque à l'écosystème. ([flux RSS](https://nseaseb.github.io/ElixirPhoenixRessources/feed.xml))
+
 ## Sommaire
 
 - [🧭 Parcours d'apprentissage](PARCOURS.md)
+- [✍️ Le blog](https://nseaseb.github.io/ElixirPhoenixRessources/)
 - [Liens majeurs](#liens-majeurs)
 - [Communauté](#communauté)
 - [Framework et librairies](#framework-et-librairies)
@@ -117,6 +120,7 @@ De vraies applications à lire pour voir Elixir « en conditions réelles ».
 
 ### En français
 
+- [**Elixir & Phoenix en français**](https://nseaseb.github.io/ElixirPhoenixRessources/) — le blog de ce dépôt : des articles en français, sur des problèmes concrets ([RSS](https://nseaseb.github.io/ElixirPhoenixRessources/feed.xml))
 - [Synbioz](https://web.archive.org/web/20240117050225/https://www.synbioz.com/blog/tech) — articles techniques d'une société de dev française ; **le site n'existe plus**, lien vers l'archive Wayback
 - [Introduction à LiveView](https://www.cryptr.co/fr/blog/a-simple-introduction-to-phoenix-liveview) (Cryptr)
 - [Découvrir la librairie Ecto](https://www.cryptr.co/fr/blog/introducing-the-ecto-library-for-elixir) (Cryptr)
