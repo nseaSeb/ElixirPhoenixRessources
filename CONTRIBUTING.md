@@ -91,8 +91,6 @@ L'option `--drafts` affiche aussi les fichiers de `docs/_drafts/`, qui ne sont j
 
 Par le dépôt, et uniquement par là : les [issues](https://github.com/nseaSeb/ElixirPhoenixRessources/issues) pour proposer un sujet, signaler une erreur ou lancer une discussion, les [pull requests](https://github.com/nseaSeb/ElixirPhoenixRessources/pulls) pour le reste.
 
-Le [README](README.md#communauté) liste par ailleurs les lieux de rendez-vous de la communauté Elixir, francophone et internationale — je n'y suis pas particulièrement actif, c'est une liste de ressources, pas un point de contact.
-
 ## Licence
 
 Tout le contenu est publié sous licence [MIT](LICENSE). En contribuant, vous acceptez que votre contribution le soit aussi.

@@ -65,8 +65,6 @@ Pas besoin d'être expert : un article écrit par quelqu'un qui vient de compren
 ## Communauté
 
 - [Elixir Forum](https://elixirforum.com/) — le forum de référence, en anglais
-- [Discord Elixir FR](https://discord.gg/jtZMMxZR96) — le serveur francophone, avec un canal `#paris-ex`
-- [paris.ex](https://www.meetup.com/elixir/) — le meetup Elixir parisien, toujours actif (édition #26 en mai 2026)
 - [Discord Elixir officiel](https://discord.gg/elixir) — le serveur international
 - [Liste des meetups Elixir](https://github.com/elixir-lang/elixir/wiki/Meetups) — recensés dans le wiki officiel
 - [genserver.social](https://genserver.social/) — l'instance Mastodon de la communauté BEAM
