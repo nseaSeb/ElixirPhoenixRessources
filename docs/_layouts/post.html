@@ -15,7 +15,7 @@ layout: default
         {%- if page.author -%}
           <span class="dot" aria-hidden="true">·</span>
           <span itemprop="author" itemscope itemtype="http://schema.org/Person">
-            par <span class="p-author h-card" itemprop="name">{{ page.author | escape }}</span>{% if page.author_url %} (<a href="{{ page.author_url }}">{{ page.author_github | default: "profil" }}</a>){% endif %}
+            par <span class="p-author h-card" itemprop="name">{{ page.author | escape }}</span>{% if page.author_url %} (<a href="{{ page.author_url | escape }}" rel="nofollow noopener">{{ page.author_github | default: "profil" | escape }}</a>){% endif %}
           </span>
         {%- endif -%}
       </p>

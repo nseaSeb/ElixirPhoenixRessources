@@ -65,16 +65,25 @@ Le `for` itère sur des tuples `{dom_id, article}`, pas sur les structs directem
 
 ## La contrepartie, et elle est réelle
 
-Le serveur a oublié la liste. Donc **vous ne pouvez pas la relire.**
+Le serveur a oublié la liste. Donc **vous ne pouvez pas la relire** — et c'est là que ça devient sournois, parce que le code qui essaie ne plante pas.
+
+`Phoenix.LiveView.LiveStream` implémente bien `Enumerable`, mais **sur les seuls éléments en attente d'insertion pour le rendu en cours**, jamais sur la collection affichée :
 
 {% raw %}
 ```elixir
-# Tout ceci est impossible avec un stream
+# Ne lève aucune erreur, et ne répond pas à la question posée :
+# c'est le nombre d'insertions en attente, pas le nombre d'articles.
 Enum.count(@streams.articles)
+
+# Filtre les mêmes insertions en attente, pas la liste affichée.
 Enum.filter(@streams.articles, & &1.publie)
+
+# Toujours faux : @streams.articles est une struct, jamais une liste.
 if @streams.articles == [], do: "Aucun article"
 ```
 {% endraw %}
+
+Une seule de ces opérations vous préviendra : `Enum.member?/2` lève explicitement une erreur `not implemented`. Les autres renvoient une réponse plausible et fausse — le pire des deux mondes, parce que rien dans les journaux ne la signale.
 
 Ce n'est pas une limitation à contourner, c'est la contrepartie du gain. Si vous avez besoin d'un compteur, gardez-le à part — un entier coûte infiniment moins cher qu'une liste de structs :
 
@@ -86,7 +95,7 @@ socket
 ```
 {% endraw %}
 
-Et pensez à le mettre à jour dans chaque `stream_insert` et `stream_delete`, sinon il dérive silencieusement.
+Et pensez à le mettre à jour dans chaque `stream_delete` et dans chaque `stream_insert` **qui ajoute vraiment** — un `stream_insert` sur un élément déjà présent le remplace au lieu de l'ajouter (voir plus bas), donc l'incrémenter systématiquement fait dériver le compteur à chaque mise à jour de ligne.
 
 ## L'état vide, le piège classique
 

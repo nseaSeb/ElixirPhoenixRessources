@@ -4,7 +4,7 @@
 # Pour chaque item, un seul champ de destination :
 #   chemin: "Dossier/fichier.md"   -> lien vers le dépôt, et bouton Livebook si .livemd
 #   url:    "https://..."          -> lien externe
-# Le bouton « Ouvrir dans Livebook » est déduit de l'extension : rien à cocher.
+# Le bouton « Exécuter dans Livebook » est déduit de l'extension : rien à cocher.
 
 avant_de_commencer:
   - texte: "Installer Elixir"

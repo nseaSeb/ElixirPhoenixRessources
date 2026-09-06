@@ -15,7 +15,7 @@ Ces articles partent donc de problèmes concrets, avec du code qui tourne, et en
 Le blog vit dans le dossier `docs/` du dépôt [nseaSeb/ElixirPhoenixRessources](https://github.com/nseaSeb/ElixirPhoenixRessources), qui contient par ailleurs :
 
 - une [liste de ressources et de librairies](https://github.com/nseaSeb/ElixirPhoenixRessources#readme) commentée ;
-- un [parcours d'apprentissage](https://github.com/nseaSeb/ElixirPhoenixRessources/blob/main/PARCOURS.md) du débutant à l'avancé ;
+- un [parcours d'apprentissage]({{ "/parcours/" | relative_url }}) du débutant à l'avancé, avec les Livebooks exécutables ;
 - un [glossaire FR ↔ EN](https://github.com/nseaSeb/ElixirPhoenixRessources/blob/main/Glossaire.md) des termes de l'écosystème ;
 - des notes et des Livebooks exécutables sur Ecto, LiveView, OTP et les tests.
 

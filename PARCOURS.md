@@ -4,7 +4,7 @@
 
 **Le parcours a déménagé : [nseaseb.github.io/ElixirPhoenixRessources/parcours/](https://nseaseb.github.io/ElixirPhoenixRessources/parcours/)**
 
-Il ordonne toutes les notes de ce dépôt du débutant à l'avancé — sept étapes, chacune avec son objectif — et chaque Livebook y porte un bouton **« Ouvrir dans Livebook »** qui le lance directement, sans cloner le dépôt.
+Il ordonne toutes les notes de ce dépôt du débutant à l'avancé — sept étapes, chacune avec son objectif — et chaque Livebook y porte un bouton **« Exécuter dans Livebook »** qui le lance directement, sans cloner le dépôt.
 
 ## Pourquoi une seule version
 
