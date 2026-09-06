@@ -325,6 +325,127 @@ img { max-width: 100%; height: auto; }
 .rss-subscribe { margin-top: 2.5rem; }
 
 /* ------------------------------------------------------------------ *
+ *  Parcours d'apprentissage
+ * ------------------------------------------------------------------ */
+
+.prealables { padding-left: 1.2rem; margin: 0 0 3rem; }
+.prealables li { margin-bottom: .4rem; }
+
+.pastille--livemd {
+  display: inline-block;
+  font-size: .7em;
+  padding: .05rem .4rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--fond);
+  vertical-align: middle;
+}
+
+.etape {
+  border: 1px solid var(--bord);
+  border-left: 3px solid var(--niveau, var(--accent));
+  border-radius: 12px;
+  background: var(--fond-eleve);
+  padding: 1.5rem;
+  margin: 0 0 1.25rem;
+}
+
+.etape--debutant      { --niveau: #16a34a; }
+.etape--intermediaire { --niveau: #d97706; }
+.etape--avance        { --niveau: #dc2626; }
+.etape--projet        { --niveau: var(--accent); }
+
+.etape__niveau {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--texte-doux);
+  margin: 0 0 .5rem;
+}
+
+.etape__compteur { font-family: var(--mono); letter-spacing: 0; text-transform: none; }
+
+.etape__titre {
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+  margin: 0 0 .5rem;
+  padding: 0;
+  border: 0;
+}
+
+.etape__intro { color: var(--texte-doux); margin: 0 0 1.25rem; font-size: .97rem; }
+
+.items { list-style: none; margin: 0; padding: 0; }
+
+.item { display: flex; gap: .85rem; padding: .7rem 0; align-items: baseline; }
+.item + .item { border-top: 1px dashed var(--bord); }
+
+.item__num {
+  flex: 0 0 1.6rem;
+  font-family: var(--mono);
+  font-size: .82rem;
+  color: var(--texte-doux);
+  text-align: right;
+}
+
+.item__corps { flex: 1 1 auto; min-width: 0; }
+
+.item__titre { font-weight: 600; text-decoration: none; }
+.item__titre:hover { text-decoration: underline; }
+
+.item__note { margin: .15rem 0 0; font-size: .88rem; color: var(--texte-doux); }
+
+.bouton-livebook {
+  display: inline-block;
+  margin-top: .5rem;
+  padding: .25rem .7rem;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+}
+.bouton-livebook:hover { background: var(--accent); color: var(--fond); }
+
+.etape__tips-titre {
+  margin: 1.5rem 0 .25rem;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--texte-doux);
+}
+
+.items--tips .item__titre,
+.items--outils .item__titre { font-weight: 500; }
+
+.etape__objectif {
+  margin: 1.5rem 0 0;
+  padding-top: .9rem;
+  border-top: 1px solid var(--bord);
+  font-size: .92rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.objectifs { margin: 0 0 1rem; }
+.objectifs dt { font-weight: 600; margin-top: .9rem; }
+.objectifs dd { margin: .15rem 0 0; color: var(--texte-doux); font-size: .93rem; }
+
+.a-venir { padding-left: 1.2rem; }
+.a-venir li { margin-bottom: .4rem; color: var(--texte-doux); }
+
+@media (max-width: 620px) {
+  .etape { padding: 1.1rem; }
+  .item__num { flex-basis: 1.2rem; }
+}
+
+/* ------------------------------------------------------------------ *
  *  Article
  * ------------------------------------------------------------------ */
 

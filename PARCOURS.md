@@ -1,124 +1,20 @@
 [Accueil](README.md)
 
-# 🧭 Parcours d'apprentissage Elixir / Phoenix
+# 🧭 Parcours d'apprentissage
 
-Cette page ordonne **toutes les notes de ce dépôt** dans un ordre d'apprentissage, du débutant à l'avancé. L'objectif : savoir *par où commencer* et *quoi lire ensuite*, plutôt que de piocher au hasard.
+**Le parcours a déménagé : [nseaseb.github.io/ElixirPhoenixRessources/parcours/](https://nseaseb.github.io/ElixirPhoenixRessources/parcours/)**
 
-> Légende : 🟢 débutant · 🟡 intermédiaire · 🔴 avancé
-> Les fichiers `.livemd` sont des [Livebooks](https://livebook.dev/) **exécutables** : ouvrez-les dans Livebook pour modifier et lancer le code en direct.
+Il ordonne toutes les notes de ce dépôt du débutant à l'avancé — sept étapes, chacune avec son objectif — et chaque Livebook y porte un bouton **« Ouvrir dans Livebook »** qui le lance directement, sans cloner le dépôt.
 
-## Avant de commencer
+## Pourquoi une seule version
 
-1. Installer Elixir : https://elixir-lang.org/install.html
-2. Installer [Livebook](https://livebook.dev/) (bureau ou `mix escript`) pour exécuter les notebooks.
-3. Garder sous la main la doc officielle : https://hexdocs.pm/elixir et https://hexdocs.pm/phoenix
+Le parcours a longtemps existé ici, en Markdown. Le maintenir à deux endroits sans étape de compilation pour les synchroniser aurait fait diverger les deux versions : une note ajoutée d'un côté, oubliée de l'autre.
 
----
+La page du site est donc la source unique. Sa structure vit dans [`docs/_data/parcours.yml`](docs/_data/parcours.yml) — c'est ce fichier qu'il faut modifier pour ajouter une étape ou une note, et la page se régénère toute seule.
 
-## 🟢 Étape 1 — Les bases du langage
+## Les raccourcis habituels
 
-Le socle. À suivre **dans l'ordre** : chaque notebook s'appuie sur le précédent.
-
-0. [Pièges quand on vient d'un langage objet](Bases/pieges_venant_objet.livemd) — **à lire en premier** : les réflexes Java / C# / Python / JS à désamorcer.
-1. [Immutabilité & pattern matching](Bases/immutabilite_et_pattern_matching.livemd) — le changement de mentalité quand on vient de Python / JS / PHP / Java.
-2. [Pipe `|>`, `with` & récursion](Bases/pipe_with_recursion.livemd) — écrire des enchaînements lisibles, « boucler » sans boucle.
-3. [Enum, Stream & compréhensions](Bases/enum_stream_comprehensions.livemd) — manipuler les collections comme un Elixirien.
-
-**Objectif atteint :** lire et écrire du code Elixir idiomatique simple.
-
----
-
-## 🟡 Étape 2 — Structurer & faire tourner des processus
-
-4. [Structs, protocoles & behaviours](Bases/structs_protocoles_behaviours.livemd) — modéliser ses données, les deux formes de polymorphisme.
-5. [OTP : GenServer & Supervisor](OTP/genserver_supervisor.livemd) — l'état dans un processus, le « let it crash », la supervision (le cœur d'Elixir).
-
-**Objectif atteint :** organiser son code et comprendre le modèle de concurrence d'Elixir.
-
-Tip transverse (🟢 à garder sous la main) : [lire une stacktrace / comprendre les erreurs](Tips/lire_une_stacktrace.md) — le réflexe qui débloque quand ça plante.
-
----
-
-## 🟡 Étape 3 — Persister des données avec Ecto
-
-6. [Ecto — les bases](Ecto.md) — migrations, schémas, seeds.
-7. [Ecto avancé](EctoAvance.md) — changesets & validations, associations / preload, transactions (`Ecto.Multi`), requêtes composables.
-
-Tips associés : [oubli de `--binary-id`](Tips/binaryId.md) · [automatiser le cast d'un schéma](Tips/schemaEctoAutoCast.md)
-
-**Objectif atteint :** modéliser une base, valider les entrées, écrire des requêtes propres.
-
----
-
-## 🟡 Étape 4 — Tester son code
-
-8. [Test unitaire dans les commentaires (doctests)](Test_unitaire/testUnitaireDansLeCommentaire.md) — la porte d'entrée.
-9. [Tests avec ExUnit](Test_unitaire/exunit_bases.md) — `describe`/`test`, fixtures, mocks (Mox), données de test (ExMachina + Faker), sandbox Ecto.
-
-**Objectif atteint :** écrire des tests fiables et isolés.
-
----
-
-## 🟡 Étape 5 — Phoenix « classique »
-
-10. [Phoenix hors LiveView : routing, contexts & contrôleurs](Phoenix/phoenix_sans_liveview.md) — le socle requête / réponse, les contexts comme frontière métier, les routes vérifiées `~p`.
-
-**Objectif atteint :** servir des pages et des API JSON avec Phoenix, comprendre le trajet d'une requête.
-
----
-
-## 🔴 Étape 6 — Construire une interface temps réel
-
-11. [Phoenix LiveView — l'essentiel](LiveView/liveview.md) — cycle de vie, assigns, events, PubSub, streams, Hooks JS.
-
-Exemples concrets de Hooks : [sortable.js (drag & drop)](https://github.com/nseaSeb/SortableBoilerPlate) · [clic droit](https://github.com/nseaSeb/right-click-elixir)
-
-**Objectif atteint :** des pages interactives sans (presque) écrire de JavaScript.
-
----
-
-## 🏁 Étape 7 — Le projet fil rouge
-
-Quand tu as parcouru les étapes ci-dessus, mets tout en pratique :
-
-- [🗂️ Kanban collaboratif temps réel](Projet/kanban_collaboratif.md) — un Trello-like multi-utilisateur en drag & drop, construit pas à pas. Chaque étape du projet réutilise une notion du parcours (logique pure → Ecto → tests → LiveView → PubSub → bonus OTP).
-
-**Objectif atteint :** assembler tout le parcours dans une vraie application temps réel.
-
----
-
-## 🎯 Parcours par objectif
-
-| Je veux… | Lire en priorité |
-|---|---|
-| **Comprendre la mentalité fonctionnelle** | Étape 1 (bases 1→3) |
-| **Faire de la concurrence / du temps réel** | [OTP](OTP/genserver_supervisor.livemd) puis [LiveView](LiveView/liveview.md) |
-| **Manipuler une base de données** | [Ecto](Ecto.md) → [Ecto avancé](EctoAvance.md) |
-| **Sécuriser mon code par des tests** | [ExUnit](Test_unitaire/exunit_bases.md) |
-| **Servir des pages / une API avec Phoenix** | [Phoenix hors LiveView](Phoenix/phoenix_sans_liveview.md) |
-| **Construire une UI réactive** | [LiveView](LiveView/liveview.md) |
-| **Débloquer une erreur / un crash** | [Lire une stacktrace](Tips/lire_une_stacktrace.md) |
-
----
-
-## 🧰 Boîte à outils (à consulter au besoin)
-
-- [📖 Glossaire FR ↔ EN des termes Elixir / Phoenix](Glossaire.md)
-- [Liste de librairies utiles](Librairie.md)
-- Tips divers : [manipulation de dates (Timex)](Tips/TimexDate.livemd) · [stemming](Tips/stemming.livemd) · [table de décision (Tablex)](Tips/tablexExemple.livemd)
-- Algorithmes : [recherche dichotomique](Algorithme/binary_search.livemd)
-- [Ressources externes, blogs, vidéos, livres](README.md) (le README principal)
-
----
-
-## 🚧 À venir (idées de contenus)
-
-Pistes pour enrichir le parcours — contributions bienvenues :
-
-- 🟢 Débogage & outillage IEx (`dbg`, `IEx.pry`, `:observer`, `recompile`)
-- 🟡 Jobs en arrière-plan avec Oban
-- 🔴 Déploiement (Fly.io, releases, `runtime.exs`)
-
----
-
-*La connaissance grandit quand on la partage.*
+- [Sommaire des tips](TipsSommaire.md)
+- [Glossaire FR ↔ EN](Glossaire.md)
+- [Liste de librairies](Librairie.md)
+- [Le blog](https://nseaseb.github.io/ElixirPhoenixRessources/)

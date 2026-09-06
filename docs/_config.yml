@@ -49,6 +49,7 @@ kramdown:
 
 # ---------- Navigation ----------
 header_pages:
+  - parcours.md
   - a-propos.md
   - tags.md
   - contribuer.md

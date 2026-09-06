@@ -1,0 +1,24 @@
+{%- comment -%}
+  Une ligne du parcours. Un seul champ de destination dans _data/parcours.yml :
+  `chemin` (dans le dépôt) ou `url` (externe). Le bouton Livebook est déduit de
+  l'extension du chemin — rien à cocher, donc rien à oublier.
+{%- endcomment -%}
+{%- assign it = include.item -%}
+{%- if it.chemin -%}
+  {%- assign lien = it.chemin | prepend: "/blob/main/" | prepend: site.repository | prepend: "https://github.com/" -%}
+{%- else -%}
+  {%- assign lien = it.url -%}
+{%- endif -%}
+<li class="item">
+  {%- if it.num or it.num == 0 -%}<span class="item__num">{{ it.num }}</span>{%- endif -%}
+  <div class="item__corps">
+    <a class="item__titre" href="{{ lien }}">{{ it.titre | markdownify | remove: "<p>" | remove: "</p>" }}</a>
+    {%- if it.note -%}<p class="item__note">{{ it.note | markdownify | remove: "<p>" | remove: "</p>" }}</p>{%- endif -%}
+    {%- if it.chemin contains ".livemd" -%}
+      <a class="bouton-livebook"
+         href="https://livebook.dev/run/?url=https://raw.githubusercontent.com/{{ site.repository }}/main/{{ it.chemin }}">
+        <span aria-hidden="true">▶</span> Ouvrir dans Livebook
+      </a>
+    {%- endif -%}
+  </div>
+</li>

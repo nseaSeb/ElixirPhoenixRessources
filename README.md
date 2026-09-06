@@ -6,13 +6,13 @@
 L'idée ici, au fur et à mesure de mon apprentissage du langage est de regrouper des ressources à propos d'Elixir / Phoenix principalement en Français ainsi que certaines de mes notes.
 Une sorte d'awesome Elixir.
 
-> 🧭 **Nouveau ou perdu ?** Suivez le [**Parcours d'apprentissage**](PARCOURS.md) : toutes mes notes ordonnées du débutant à l'avancé.
+> 🧭 **Nouveau ou perdu ?** Suivez le [**Parcours d'apprentissage**](https://nseaseb.github.io/ElixirPhoenixRessources/parcours/) : toutes mes notes ordonnées du débutant à l'avancé, avec les Livebooks exécutables en un clic.
 
 > ✍️ **Le blog** : [articles Elixir / Phoenix en français](https://nseaseb.github.io/ElixirPhoenixRessources/) — le contenu francophone qui manque à l'écosystème. ([flux RSS](https://nseaseb.github.io/ElixirPhoenixRessources/feed.xml))
 
 ## Sommaire
 
-- [🧭 Parcours d'apprentissage](PARCOURS.md)
+- [🧭 Parcours d'apprentissage](https://nseaseb.github.io/ElixirPhoenixRessources/parcours/)
 - [✍️ Le blog](https://nseaseb.github.io/ElixirPhoenixRessources/)
 - [Liens majeurs](#liens-majeurs)
 - [Communauté](#communauté)

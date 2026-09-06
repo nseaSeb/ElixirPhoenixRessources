@@ -1,4 +1,4 @@
-[Accueil](README.md) · [🧭 Parcours d'apprentissage](PARCOURS.md)
+[Accueil](README.md) · [🧭 Parcours d'apprentissage](https://nseaseb.github.io/ElixirPhoenixRessources/parcours/)
 
 # 📖 Glossaire Elixir / Phoenix — FR ↔ EN
 

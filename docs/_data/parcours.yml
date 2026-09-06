@@ -1,0 +1,158 @@
+# Structure du parcours d'apprentissage.
+# Source unique : la page /parcours/ est entièrement générée depuis ce fichier.
+#
+# Pour chaque item, un seul champ de destination :
+#   chemin: "Dossier/fichier.md"   -> lien vers le dépôt, et bouton Livebook si .livemd
+#   url:    "https://..."          -> lien externe
+# Le bouton « Ouvrir dans Livebook » est déduit de l'extension : rien à cocher.
+
+avant_de_commencer:
+  - texte: "Installer Elixir"
+    url: "https://elixir-lang.org/install.html"
+  - texte: "Installer Livebook, pour exécuter les notebooks du parcours"
+    url: "https://livebook.dev/"
+  - texte: "Garder la documentation officielle sous la main"
+    url: "https://hexdocs.pm/elixir"
+
+etapes:
+  - titre: "Les bases du langage"
+    niveau: debutant
+    intro: "Le socle. À suivre dans l'ordre : chaque notebook s'appuie sur le précédent."
+    objectif: "lire et écrire du code Elixir idiomatique simple"
+    items:
+      - num: 0
+        titre: "Pièges quand on vient d'un langage objet"
+        note: "à lire en premier — les réflexes Java, C#, Python ou JS à désamorcer"
+        chemin: "Bases/pieges_venant_objet.livemd"
+      - num: 1
+        titre: "Immutabilité & pattern matching"
+        note: "le changement de mentalité"
+        chemin: "Bases/immutabilite_et_pattern_matching.livemd"
+      - num: 2
+        titre: "Pipe `|>`, `with` & récursion"
+        note: "des enchaînements lisibles, « boucler » sans boucle"
+        chemin: "Bases/pipe_with_recursion.livemd"
+      - num: 3
+        titre: "Enum, Stream & compréhensions"
+        note: "manipuler les collections comme un Elixirien"
+        chemin: "Bases/enum_stream_comprehensions.livemd"
+
+  - titre: "Structurer & faire tourner des processus"
+    niveau: intermediaire
+    intro: "Organiser ses données, puis entrer dans le modèle de concurrence qui fait la réputation d'Elixir."
+    objectif: "organiser son code et comprendre le modèle de concurrence d'Elixir"
+    items:
+      - num: 4
+        titre: "Structs, protocoles & behaviours"
+        note: "modéliser ses données, les deux formes de polymorphisme"
+        chemin: "Bases/structs_protocoles_behaviours.livemd"
+      - num: 5
+        titre: "OTP : GenServer & Supervisor"
+        note: "l'état dans un processus, le « let it crash », la supervision — le cœur d'Elixir"
+        chemin: "OTP/genserver_supervisor.livemd"
+    tips:
+      - titre: "Lire une stacktrace / comprendre les erreurs"
+        note: "le réflexe qui débloque quand ça plante — à garder sous la main dès maintenant"
+        chemin: "Tips/lire_une_stacktrace.md"
+
+  - titre: "Persister des données avec Ecto"
+    niveau: intermediaire
+    intro: "La couche base de données d'Elixir, des migrations aux requêtes composables."
+    objectif: "modéliser une base, valider les entrées, écrire des requêtes propres"
+    items:
+      - num: 6
+        titre: "Ecto — les bases"
+        note: "migrations, schémas, seeds"
+        chemin: "Ecto.md"
+      - num: 7
+        titre: "Ecto avancé"
+        note: "changesets & validations, associations, transactions, requêtes composables"
+        chemin: "EctoAvance.md"
+    tips:
+      - titre: "Oubli de `--binary-id` : rattraper le coup"
+        chemin: "Tips/binaryId.md"
+      - titre: "Automatiser le cast d'un schéma Ecto"
+        chemin: "Tips/schemaEctoAutoCast.md"
+
+  - titre: "Tester son code"
+    niveau: intermediaire
+    intro: "Deux marches : les doctests pour commencer, ExUnit pour de bon."
+    objectif: "écrire des tests fiables et isolés"
+    items:
+      - num: 8
+        titre: "Tests unitaires dans les commentaires (doctests)"
+        note: "la porte d'entrée"
+        chemin: "Test_unitaire/testUnitaireDansLeCommentaire.md"
+      - num: 9
+        titre: "Tests avec ExUnit"
+        note: "describe/test, fixtures, mocks (Mox), données de test, sandbox Ecto"
+        chemin: "Test_unitaire/exunit_bases.md"
+
+  - titre: "Phoenix « classique »"
+    niveau: intermediaire
+    intro: "Le socle requête / réponse, avant d'aborder le temps réel."
+    objectif: "servir des pages et des API JSON, comprendre le trajet d'une requête"
+    items:
+      - num: 10
+        titre: "Phoenix hors LiveView : routing, contexts & contrôleurs"
+        note: "les contexts comme frontière métier, les routes vérifiées `~p`"
+        chemin: "Phoenix/phoenix_sans_liveview.md"
+
+  - titre: "Construire une interface temps réel"
+    niveau: avance
+    intro: "LiveView : de l'interactivité sans écrire de JavaScript, ou presque."
+    objectif: "des pages interactives sans (presque) écrire de JavaScript"
+    items:
+      - num: 11
+        titre: "Phoenix LiveView — l'essentiel"
+        note: "cycle de vie, assigns, events, PubSub, streams, Hooks JS"
+        chemin: "LiveView/liveview.md"
+    tips:
+      - titre: "Exemple de Hook : sortable.js (drag & drop)"
+        url: "https://github.com/nseaSeb/SortableBoilerPlate"
+      - titre: "Exemple de Hook : clic droit"
+        url: "https://github.com/nseaSeb/right-click-elixir"
+
+  - titre: "Le projet fil rouge"
+    niveau: projet
+    intro: "Quand les étapes précédentes sont passées, tout assembler dans une vraie application."
+    objectif: "assembler tout le parcours dans une application temps réel"
+    items:
+      - titre: "Kanban collaboratif temps réel"
+        note: "un Trello-like multi-utilisateur en drag & drop, construit pas à pas — chaque étape réutilise une notion du parcours"
+        chemin: "Projet/kanban_collaboratif.md"
+
+par_objectif:
+  - but: "Comprendre la mentalité fonctionnelle"
+    reponse: "Étape 1, les bases dans l'ordre"
+  - but: "Faire de la concurrence, du temps réel"
+    reponse: "OTP, puis LiveView"
+  - but: "Manipuler une base de données"
+    reponse: "Ecto, puis Ecto avancé"
+  - but: "Sécuriser mon code par des tests"
+    reponse: "ExUnit"
+  - but: "Servir des pages ou une API avec Phoenix"
+    reponse: "Phoenix hors LiveView"
+  - but: "Construire une interface réactive"
+    reponse: "LiveView"
+  - but: "Débloquer une erreur, un crash"
+    reponse: "Lire une stacktrace"
+
+outils:
+  - titre: "Glossaire FR ↔ EN des termes Elixir / Phoenix"
+    chemin: "Glossaire.md"
+  - titre: "Liste de librairies utiles"
+    chemin: "Librairie.md"
+  - titre: "Manipulation de dates avec Timex"
+    chemin: "Tips/TimexDate.livemd"
+  - titre: "Stemming : réduction de mots"
+    chemin: "Tips/stemming.livemd"
+  - titre: "Tablex : table de décision"
+    chemin: "Tips/tablexExemple.livemd"
+  - titre: "Recherche dichotomique"
+    chemin: "Algorithme/binary_search.livemd"
+
+a_venir:
+  - "Débogage & outillage IEx (`dbg`, `IEx.pry`, `:observer`, `recompile`)"
+  - "Jobs en arrière-plan avec Oban"
+  - "Déploiement : releases, `runtime.exs`, hébergeurs"
