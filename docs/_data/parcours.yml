@@ -143,6 +143,8 @@ outils:
     chemin: "Glossaire.md"
   - titre: "Liste de librairies utiles"
     chemin: "Librairie.md"
+  - titre: "Un outil interne en trente lignes (Livebook + Kino)"
+    chemin: "Tips/outil_interne_livebook.livemd"
   - titre: "Manipulation de dates avec Timex"
     chemin: "Tips/TimexDate.livemd"
   - titre: "Stemming : réduction de mots"

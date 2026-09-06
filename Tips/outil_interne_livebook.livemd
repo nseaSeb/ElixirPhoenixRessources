@@ -1,0 +1,112 @@
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
+
+# Un outil interne en trente lignes
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.19"},
+  {:req, "~> 0.5"}
+])
+```
+
+## Le problème
+
+On écrit tous, un jour, un petit script pour interroger une API ou une base : dix lignes dans `iex`, un `IO.inspect`, on lit la réponse, on ferme le terminal. Le lendemain, il faut le réécrire. Le collègue à qui on voudrait le passer, lui, n'a rien.
+
+Ce notebook fait la même chose, mais il se garde, se partage et s'utilise sans lire une ligne de code.
+
+## Étape 1 — Voir quelque chose de lisible
+
+Interrogeons l'API publique de Hex. Sans mise en forme, la réponse est un mur de données :
+
+```elixir
+"https://hex.pm/api/packages"
+|> Req.get!(params: [search: "liveview"])
+|> Map.fetch!(:body)
+|> length()
+```
+
+Cent paquets. `IO.inspect` serait illisible. `Kino.DataTable` en fait un tableau triable :
+
+```elixir
+paquets = Req.get!("https://hex.pm/api/packages", params: [search: "liveview"]).body
+
+paquets
+|> Enum.map(fn p ->
+  %{
+    nom: p["name"],
+    version: p["latest_version"],
+    telechargements: get_in(p, ["downloads", "all"]) || 0,
+    description: p["meta"]["description"]
+  }
+end)
+|> Enum.sort_by(& &1.telechargements, :desc)
+|> Enum.take(20)
+|> Kino.DataTable.new(name: "Paquets Hex")
+```
+
+## Étape 2 — Le rendre interactif
+
+Un tableau figé sur `"liveview"` n'est pas un outil. Ajoutons un formulaire, et une zone de rendu qu'on redessinera à chaque recherche.
+
+`Kino.Control.form/2` construit le formulaire, `Kino.Frame` réserve la zone, et `Kino.listen/2` réagit aux soumissions — sans jamais réexécuter la cellule.
+
+```elixir
+defmodule OutilHex do
+  def chercher(terme) do
+    "https://hex.pm/api/packages"
+    |> Req.get!(params: [search: terme])
+    |> Map.fetch!(:body)
+    |> Enum.map(fn p ->
+      %{
+        nom: p["name"],
+        version: p["latest_version"],
+        telechargements: get_in(p, ["downloads", "all"]) || 0,
+        description: p["meta"]["description"]
+      }
+    end)
+    |> Enum.sort_by(& &1.telechargements, :desc)
+    |> Enum.take(20)
+  end
+end
+```
+
+```elixir
+formulaire = Kino.Control.form([terme: Kino.Input.text("Rechercher")], submit: "Chercher")
+zone = Kino.Frame.new()
+
+Kino.listen(formulaire, fn %{data: %{terme: terme}} ->
+  cond do
+    String.trim(terme) == "" ->
+      Kino.Frame.render(zone, Kino.Markdown.new("_Saisissez un terme._"))
+
+    true ->
+      case OutilHex.chercher(terme) do
+        [] ->
+          Kino.Frame.render(zone, Kino.Markdown.new("Aucun paquet pour **#{terme}**."))
+
+        lignes ->
+          Kino.Frame.render(zone, Kino.DataTable.new(lignes, name: "Résultats"))
+      end
+  end
+end)
+
+Kino.Layout.grid([formulaire, zone], boxed: true)
+```
+
+Tapez un terme et validez : le tableau se remplace. Aucune cellule n'est réexécutée — c'est le processus derrière `Kino.listen` qui redessine la zone.
+
+## Ce que ça ne remplace pas
+
+Ce n'est **pas une application**. L'état vit dans un processus attaché au notebook : fermez-le, tout disparaît. Ce n'est pas non plus un tableau de bord partagé — chaque personne qui ouvre le notebook exécute le sien.
+
+C'est un outil personnel qu'on peut envoyer par courriel, versionner à côté du code, et relancer dans six mois avec les mêmes dépendances grâce à `Mix.install`.
+
+## Pour aller plus loin
+
+Le même formulaire branché non plus sur une API publique mais sur **une application Elixir en cours d'exécution** — voilà où Livebook devient vraiment intéressant. C'est le sujet du prochain article.
+
+---
+
+[Retour vers le sommaire des tips](../TipsSommaire.md) · [Accueil](../README.md)

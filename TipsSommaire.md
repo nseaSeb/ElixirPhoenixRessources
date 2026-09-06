@@ -27,6 +27,9 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 ## OTP / Concurrence
 - [GenServer & Supervisor (Livebook exécutable)](./OTP/genserver_supervisor.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/OTP/genserver_supervisor.livemd)
 
+## Outillage
+- [Un outil interne en trente lignes (Kino)](./Tips/outil_interne_livebook.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/Tips/outil_interne_livebook.livemd)
+
 ## Librairies utilitaires
 - [Manipulation de date avec Timex](./Tips/TimexDate.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/Tips/TimexDate.livemd)
 
