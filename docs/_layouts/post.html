@@ -31,6 +31,26 @@ layout: default
       {{ content }}
     </div>
 
+    {%- comment -%}
+      Bloc de sources, rendu seulement si `sources:` est présent en en-tête.
+      Placé HORS de .post-content : ses paragraphes échappent donc aux règles
+      de prose, contrairement aux composants du parcours et des projets.
+    {%- endcomment -%}
+    {%- if page.sources -%}
+      <aside class="sources">
+        <h2 class="sources__titre">Sources et lectures</h2>
+        <ul class="sources__liste">
+          {%- for s in page.sources -%}
+            <li>
+              <a href="{{ s.url | escape }}" rel="noopener">{{ s.titre | escape }}</a>
+              {%- if s.auteur -%}<span class="sources__auteur">{{ s.auteur | escape }}</span>{%- endif -%}
+              {%- if s.note -%}<span class="sources__note">{{ s.note | escape }}</span>{%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </aside>
+    {%- endif -%}
+
     <footer class="post-footer">
       <p>
         Une coquille, une erreur, un désaccord ?

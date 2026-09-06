@@ -82,6 +82,26 @@ Le port `4321` n'est pas un caprice : **4000** est celui de Phoenix et **8080** 
 
 L'option `--drafts` affiche aussi les fichiers de `docs/_drafts/`, qui ne sont jamais publiés. C'est l'endroit idéal pour un article en cours : vous pouvez le pousser sans risque, il restera invisible jusqu'à son déplacement dans `_posts/`.
 
+#### Citer ses sources
+
+Un bon article s'appuie souvent sur ce qu'on a lu ailleurs, souvent en anglais. La règle ici tient en une phrase : **on s'inspire et on cite, on ne traduit pas.**
+
+- **S'inspirer d'un billet et écrire son propre texte** — avec ses propres exemples, son propre plan, son propre angle — ne demande aucune autorisation. Les idées ne s'approprient pas, et un article en français sur un sujet couvert seulement en anglais a sa valeur propre.
+- **Traduire un article** est autre chose : c'est une œuvre dérivée, qui suppose l'accord de son auteur. Sur dev.to, Medium ou un blog personnel, l'auteur conserve ses droits sauf licence explicite contraire. Si un texte vous semble mériter d'exister tel quel en français, écrivez à son auteur — beaucoup acceptent, et c'est souvent le début d'un échange.
+- **Citer des extraits courts**, attribués, ne pose pas de difficulté.
+
+Dans tous les cas, renseignez le champ `sources:` de l'en-tête : il produit un bloc « Sources et lectures » en fin d'article.
+
+```yaml
+sources:
+  - titre: "Learning Elixir: Project Structure"
+    url: https://dev.to/abreujp/learning-elixir-project-structure-832
+    auteur: "João Paulo Abreu"
+    note: "le point de départ de cet article"
+```
+
+On cite parce que c'est honnête et que ça envoie le lecteur vers ce qui l'aidera — pas parce qu'un texte de loi l'exige.
+
 #### Ce qui fait un bon article ici
 
 - **Partir d'un problème, pas d'une technologie.** « Ecto.Multi » est un sujet de documentation ; « composer une transaction sans se noyer dans les `with` » est un sujet d'article.

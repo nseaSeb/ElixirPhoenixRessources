@@ -623,6 +623,35 @@ img { max-width: 100%; height: auto; }
 }
 .post-content th { background: var(--fond-code); font-weight: 600; }
 
+.sources {
+  margin: 3.5rem 0 0;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--bord);
+  border-left: 3px solid var(--accent);
+  border-radius: 12px;
+  background: var(--fond-eleve);
+}
+
+.sources__titre {
+  margin: 0 0 .85rem;
+  padding: 0;
+  border: 0;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.sources__liste { list-style: none; margin: 0; padding: 0; font-size: .92rem; }
+.sources__liste li { margin-bottom: .65rem; }
+.sources__liste li:last-child { margin-bottom: 0; }
+
+.sources__auteur,
+.sources__note { color: var(--texte-doux); }
+.sources__auteur::before { content: " — "; }
+.sources__note { display: block; font-size: .86rem; font-style: italic; }
+
 .post-footer {
   margin-top: 4rem;
   padding-top: 1.5rem;
