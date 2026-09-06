@@ -1,0 +1,41 @@
+---
+layout: default
+---
+{%- comment -%}
+  Override de minima 2.5.1 (_layouts/home.html).
+  Deux changements par rapport à l'original :
+    - le titre de liste et le libellé RSS viennent de _data/fr.yml ;
+    - la date passe par _includes/date-fr.html au lieu de `date: date_format`,
+      strftime étant anglophone.
+  En cas de montée de version de minima, comparer avec l'original.
+{%- endcomment -%}
+
+<div class="home">
+  {%- if page.title -%}
+    <h1 class="page-heading">{{ page.title }}</h1>
+  {%- endif -%}
+
+  {{ content }}
+
+  {%- if site.posts.size > 0 -%}
+    <h2 class="post-list-heading">{{ page.list_title | default: site.data.fr.ui.articles }}</h2>
+    <ul class="post-list">
+      {%- for post in site.posts -%}
+      <li>
+        <span class="post-meta">{% include date-fr.html date=post.date %}</span>
+        <h3>
+          <a class="post-link" href="{{ post.url | relative_url }}">
+            {{ post.title | escape }}
+          </a>
+        </h3>
+        {%- if site.show_excerpts -%}
+          {{ post.excerpt }}
+        {%- endif -%}
+      </li>
+      {%- endfor -%}
+    </ul>
+
+    <p class="rss-subscribe"><a href="{{ "/feed.xml" | relative_url }}">{{ site.data.fr.ui.rss }}</a></p>
+  {%- endif -%}
+
+</div>

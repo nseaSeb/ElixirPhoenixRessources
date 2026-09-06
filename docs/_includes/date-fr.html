@@ -1,0 +1,11 @@
+{%- comment -%}
+  Rend une date en français : « 6 septembre 2026 », « 1er janvier 2027 ».
+  Usage : {% include date-fr.html date=page.date %}
+  `| minus: 1` force la coercition numérique de la chaîne renvoyée par `date:`,
+  pour pouvoir indexer site.data.fr.mois.
+{%- endcomment -%}
+{%- assign _d = include.date -%}
+{%- assign _m = _d | date: "%-m" | minus: 1 -%}
+{%- assign _j = _d | date: "%-d" -%}
+{%- if _j == "1" -%}{%- assign _j = "1er" -%}{%- endif -%}
+{{- _j }} {{ site.data.fr.mois[_m] }} {{ _d | date: "%Y" -}}

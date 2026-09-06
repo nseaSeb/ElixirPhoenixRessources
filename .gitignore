@@ -10,3 +10,13 @@
 .idea/
 *.swp
 *~
+
+# Jekyll (blog dans docs/)
+docs/_site/
+docs/.jekyll-metadata
+docs/.sass-cache/
+docs/vendor/
+docs/.bundle/
+
+# Outils locaux
+.token-optimizer/

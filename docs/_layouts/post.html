@@ -1,0 +1,29 @@
+---
+layout: default
+---
+{%- comment -%}
+  Override de minima 2.5.1 (_layouts/post.html).
+  Seul changement : la date lisible passe par _includes/date-fr.html.
+  L'attribut datetime reste en ISO 8601 (date machine, lue par les agrégateurs),
+  et la microdata schema.org est reprise à l'identique.
+{%- endcomment -%}
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
+    <p class="post-meta">
+      {{ site.data.fr.ui.publie_le }}
+      <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+        {% include date-fr.html date=page.date %}
+      </time>
+      {%- if page.author -%}
+        • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ page.author }}</span></span>
+      {%- endif -%}</p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    {{ content }}
+  </div>
+
+  <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
+</article>

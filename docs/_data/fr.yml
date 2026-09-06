@@ -1,0 +1,24 @@
+# Localisation française.
+# Le filtre Liquid `date:` s'appuie sur strftime, qui est anglophone, et aucun
+# plugin de localisation n'existe dans la liste blanche GitHub Pages.
+# On rend donc les dates à la main via _includes/date-fr.html, qui indexe ce
+# tableau (attention : l'ordre des mois est significatif).
+mois:
+  - janvier
+  - février
+  - mars
+  - avril
+  - mai
+  - juin
+  - juillet
+  - août
+  - septembre
+  - octobre
+  - novembre
+  - décembre
+
+ui:
+  articles: "Articles"
+  rss: "S'abonner au flux RSS"
+  publie_le: "Publié le"
+  retour: "Retour à l'accueil"

@@ -1,0 +1,8 @@
+# Développement local uniquement.
+# GitHub Pages ignore totalement ce fichier : il construit le site avec sa
+# propre version verrouillée de la gem github-pages.
+# On épingle la même gem ici pour garantir la parité locale/distante
+# (jekyll 3.10.0, minima 2.5.1, rouge 3.30.0, kramdown-parser-gfm...).
+source "https://rubygems.org"
+
+gem "github-pages", "~> 232", group: :jekyll_plugins

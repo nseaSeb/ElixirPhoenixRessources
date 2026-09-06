@@ -1,0 +1,56 @@
+# ---------------------------------------------------------------------------
+# Configuration Jekyll — blog Elixir / Phoenix en français
+#
+# Ce site est construit par le Jekyll natif de GitHub Pages
+# (Settings > Pages > Deploy from a branch > main + /docs).
+# Aucun workflow GitHub Actions n'est utilisé, donc seuls les plugins de la
+# liste blanche GitHub Pages sont disponibles.
+# ---------------------------------------------------------------------------
+
+# ---------- Identité ----------
+title: "Elixir & Phoenix en français"
+description: >-
+  Des articles en français sur Elixir, Phoenix, LiveView, Ecto et OTP.
+  Le contenu francophone qui manque à l'écosystème.
+author: "nseaSeb" # doit rester une chaîne : le footer de minima fait `site.author | escape`
+
+# ---------- Localisation ----------
+lang: fr # -> <html lang="fr">, og:locale, xml:lang du flux
+timezone: Europe/Paris # sans ça GitHub construit en UTC et les dates glissent
+
+# ---------- URLs ----------
+# Project site : le `baseurl` est le nom du dépôt. S'il est faux, le CSS ne
+# charge pas et tous les liens internes tombent en 404.
+url: "https://nseaseb.github.io"
+baseurl: "/ElixirPhoenixRessources"
+
+# ---------- Métadonnées GitHub ----------
+repository: nseaSeb/ElixirPhoenixRessources
+github_username: nseaSeb
+
+# ---------- Thème & plugins ----------
+# minima 2.5.1 est la version exacte embarquée par GitHub Pages : les overrides
+# de _layouts/ sont écrits pour celle-ci.
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# ---------- Rendu ----------
+permalink: /articles/:title/
+show_excerpts: true
+excerpt_separator: "<!--more-->"
+future: false # un article daté dans le futur n'est pas publié
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+# ---------- Navigation ----------
+header_pages:
+  - a-propos.md
+
+# Pas de clé `exclude:` ici : en Jekyll 3.x elle REMPLACE les valeurs par
+# défaut au lieu de s'y ajouter (la fusion date de Jekyll 4). En ajouter une
+# republierait docs/Gemfile et docs/vendor/bundle/ dans le site.

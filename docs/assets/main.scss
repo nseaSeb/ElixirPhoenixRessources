@@ -1,0 +1,20 @@
+---
+# Le front-matter vide (obligatoire) déclenche le traitement Sass par Jekyll.
+# `@import "minima"` récupère la feuille de style du thème, y compris la
+# coloration syntaxique. Les surcharges se placent APRÈS l'import.
+---
+
+@import "minima";
+
+// Un peu d'air dans les blocs de code, qui sont nombreux ici.
+pre.highlight,
+div.highlighter-rouge {
+  font-size: 0.85em;
+}
+
+// Les tableaux de comparaison ne doivent pas déborder sur mobile.
+table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
