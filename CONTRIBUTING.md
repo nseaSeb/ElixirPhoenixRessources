@@ -87,10 +87,11 @@ L'option `--drafts` affiche aussi les fichiers de `docs/_drafts/`, qui ne sont j
 - **Dire aussi les limites.** Quand ne pas utiliser l'outil, ce qu'il coûte, ce qu'il ne fait pas. C'est ce qui distingue un article d'une plaquette commerciale.
 - **Écrire pour quelqu'un qui vient de buter dessus.** Vous n'avez pas besoin d'être expert — vous avez besoin de vous souvenir de ce qui coinçait. C'est souvent un meilleur point de départ.
 
-## Communauté
+## Où me joindre
 
-- **[Discord Elixir FR](https://discord.gg/jtZMMxZR96)** — le serveur francophone, canal `#paris-ex`
-- **[paris.ex](https://www.meetup.com/elixir/)** — le meetup parisien, toujours actif
+Par le dépôt, et uniquement par là : les [issues](https://github.com/nseaSeb/ElixirPhoenixRessources/issues) pour proposer un sujet, signaler une erreur ou lancer une discussion, les [pull requests](https://github.com/nseaSeb/ElixirPhoenixRessources/pulls) pour le reste.
+
+Le [README](README.md#communauté) liste par ailleurs les lieux de rendez-vous de la communauté Elixir, francophone et internationale — je n'y suis pas particulièrement actif, c'est une liste de ressources, pas un point de contact.
 
 ## Licence
 

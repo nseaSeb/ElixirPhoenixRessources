@@ -30,8 +30,8 @@ Et si l'anglais vous freine — beaucoup de développeurs lisent l'anglais techn
 
 ## Où se parler
 
-- **[Discord Elixir FR](https://discord.gg/jtZMMxZR96)** — le serveur francophone, avec un canal `#paris-ex`
-- **[paris.ex](https://www.meetup.com/elixir/)** — le meetup parisien, toujours actif
-- **[Les issues du dépôt]({{ site.repository | prepend: "https://github.com/" }}/issues)** — pour tout ce qui concerne le blog et la liste
+Tout passe par le dépôt : les [issues]({{ site.repository | prepend: "https://github.com/" }}/issues) pour proposer un sujet, signaler une erreur ou discuter d'une idée, les [pull requests]({{ site.repository | prepend: "https://github.com/" }}/pulls) pour le reste. C'est là que je réponds.
+
+Le [README]({{ site.repository | prepend: "https://github.com/" }}#readme) recense par ailleurs les lieux où se retrouve la communauté Elixir, francophone et internationale.
 
 Le contenu est publié sous licence MIT : réutilisable, partageable, adaptable.
