@@ -78,7 +78,7 @@ bundle exec jekyll serve --drafts --port 4321
 
 Puis ouvrez `http://127.0.0.1:4321/ElixirPhoenixRessources/` — l'adresse contient le nom du dépôt, la racine seule renvoie 404.
 
-Le port `4321` n'est pas un caprice : **4000** est celui de Phoenix, et **8080** celui de Livebook. Occuper l'un des deux pousse l'application concernée à se rabattre ailleurs, et les boutons « Ouvrir dans Livebook » du parcours cessent alors de fonctionner sans que rien ne l'explique.
+Le port `4321` n'est pas un caprice : **4000** est celui de Phoenix et **8080** celui de Livebook. Occuper l'un des deux force l'application concernée à démarrer ailleurs, et il faut ensuite chercher où — autant les lui laisser.
 
 L'option `--drafts` affiche aussi les fichiers de `docs/_drafts/`, qui ne sont jamais publiés. C'est l'endroit idéal pour un article en cours : vous pouvez le pousser sans risque, il restera invisible jusqu'à son déplacement dans `_posts/`.
 
