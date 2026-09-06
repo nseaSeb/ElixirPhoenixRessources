@@ -51,7 +51,7 @@ https://hexdocs.pm/ (HEXDOCS heberge la documentation des packages HEX.)
 ## Outils de dev
 -   https://github.com/ash-project/igniter (générateurs intelligents : installer et configurer des libs en patchant le code)
 -   https://github.com/tidewave-ai/tidewave_phoenix (connecter un assistant IA au runtime de votre app Phoenix via MCP)
--   https://github.com/wojtekmach/phoenix_playground (Phoenix en un seul fichier, idéal pour prototyper ou reproduire un bug)
+-   https://github.com/phoenix-playground/phoenix_playground (Phoenix en un seul fichier, idéal pour prototyper ou reproduire un bug)
 
 ## Tests
 -   https://hexdocs.pm/faker/readme.html (lib générer des données de tests)

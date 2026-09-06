@@ -12,10 +12,12 @@ Une sorte d'awesome Elixir.
 
 - [🧭 Parcours d'apprentissage](PARCOURS.md)
 - [Liens majeurs](#liens-majeurs)
+- [Communauté](#communauté)
 - [Framework et librairies](#framework-et-librairies)
 - [Projets open source à explorer](#projets-open-source-à-explorer)
 - [Ma modeste contribution](#ma-modeste-contribution)
 - [Vérificateurs de code](#vérificateurs-de-code)
+- [Style et bonnes pratiques](#style-et-bonnes-pratiques)
 - [Antisèches (Cheatsheets)](#antisèches-cheatsheets)
 - [Blogs et articles](#blogs-et-articles)
 - [Newsletters](#newsletters)
@@ -36,8 +38,19 @@ Une sorte d'awesome Elixir.
 - [phoenixframework.org](https://www.phoenixframework.org/) — le framework web de référence
 - [Hex](https://hex.pm/) — le gestionnaire de paquets de l'écosystème Erlang / Elixir
 - [HexDocs](https://hexdocs.pm/) — la documentation de tous les paquets Hex
-- [Elixir Forum](https://elixirforum.com/) — le forum de la communauté
 - [Livebook](https://livebook.dev/) — blocs-notes interactifs et exécutables
+- [Guide officiel « Getting Started »](https://hexdocs.pm/elixir/introduction.html) — le tutoriel de référence du langage
+- [Blog Elixir](https://elixir-lang.org/blog/) — annonces de versions et articles de l'équipe cœur
+- [Blog Phoenix](https://www.phoenixframework.org/blog) — annonces et nouveautés du framework
+
+## Communauté
+
+- [Elixir Forum](https://elixirforum.com/) — le forum de référence, en anglais
+- [Discord Elixir FR](https://discord.gg/jtZMMxZR96) — le serveur francophone, avec un canal `#paris-ex`
+- [paris.ex](https://www.meetup.com/elixir/) — le meetup Elixir parisien, toujours actif (édition #26 en mai 2026)
+- [Discord Elixir officiel](https://discord.gg/elixir) — le serveur international
+- [Liste des meetups Elixir](https://github.com/elixir-lang/elixir/wiki/Meetups) — recensés dans le wiki officiel
+- [genserver.social](https://genserver.social/) — l'instance Mastodon de la communauté BEAM
 
 ## Framework et librairies
 
@@ -54,7 +67,7 @@ Une sorte d'awesome Elixir.
 De vraies applications à lire pour voir Elixir « en conditions réelles ».
 
 - [Plausible Analytics](https://github.com/plausible/analytics) — l'alternative open source à Google Analytics, un projet phare Elixir / Phoenix
-- [Mobilizon](https://framagit.org/framasoft/mobilizon) — plateforme d'événements décentralisée de Framasoft (français), en Elixir / Phoenix
+- [Mobilizon](https://framagit.org/kaihuri/mobilizon) — plateforme d'événements décentralisée (français), en Elixir / Phoenix ; le dépôt a quitté le namespace Framasoft
 - [Changelog.com](https://github.com/thechangelog/changelog.com) — le site du podcast The Changelog, codebase Phoenix idéale pour apprendre
 - [Firezone](https://github.com/firezone/firezone) — gestion d'accès réseau sécurisé (VPN), interface d'admin en Elixir / Phoenix
 - [Livebook](https://github.com/livebook-dev/livebook) — les blocs-notes interactifs eux-mêmes : un superbe exemple de LiveView à grande échelle
@@ -87,19 +100,27 @@ De vraies applications à lire pour voir Elixir « en conditions réelles ».
 - [eqWAlizer](https://github.com/WhatsApp/eqwalizer) — le vérificateur de types de WhatsApp
 - [Gradualizer](https://github.com/josefs/Gradualizer) — typage graduel pour la BEAM
 
+## Style et bonnes pratiques
+
+- [elixir_style_guide](https://github.com/christopheradams/elixir_style_guide) — le guide de style communautaire de référence
+- [Elixir Code Smells](https://github.com/lucasvegi/Elixir-Code-Smells) — catalogue des « odeurs de code » propres à Elixir, avec exemples et refactorings
+- [Elixir Refactorings](https://github.com/lucasvegi/Elixir-Refactorings) — catalogue de refactorings du même auteur, complémentaire du précédent
+
 ## Antisèches (Cheatsheets)
 
-- [Phoenix cheatsheet](https://lib.marinovic.dev/phoenix)
+- [Enum cheatsheet officielle](https://hexdocs.pm/elixir/enum-cheat.html) — toutes les fonctions d'`Enum` sur une page, dans HexDocs
+- [devhints.io — Elixir](https://devhints.io/elixir) — antisèche générale de la syntaxe du langage
+- [Phoenix cheatsheet](https://lib.marinovic.dev/phoenix) — surtout les générateurs `mix phx.gen.*` (travail en cours, sans version indiquée)
 - [Tailwind cheatsheet](https://tailwindcomponents.com/cheatsheet/)
 
 ## Blogs et articles
 
 ### En français
 
-- [Synbioz](https://www.synbioz.com/blog/tech) — articles techniques d'une société de dev française
+- [Synbioz](https://web.archive.org/web/20240117050225/https://www.synbioz.com/blog/tech) — articles techniques d'une société de dev française ; **le site n'existe plus**, lien vers l'archive Wayback
 - [Introduction à LiveView](https://www.cryptr.co/fr/blog/a-simple-introduction-to-phoenix-liveview) (Cryptr)
 - [Découvrir la librairie Ecto](https://www.cryptr.co/fr/blog/introducing-the-ecto-library-for-elixir) (Cryptr)
-- [Introduction à Phoenix, épisode 3 : Ecto](https://www.synbioz.com/blog/tech/introduction-a-phoenix-episode-3) (Synbioz)
+- [Introduction à Phoenix, épisode 3 : Ecto](https://web.archive.org/web/20230922090958/https://www.synbioz.com/blog/tech/introduction-a-phoenix-episode-3) (Synbioz — archive Wayback, le site est hors ligne)
 
 ### En anglais — blogs à suivre
 
@@ -112,8 +133,10 @@ De vraies applications à lire pour voir Elixir « en conditions réelles ».
 - [Sequin — Between the Ctrl-Cs](https://blog.sequin.io/between-the-ctrl-cs/) — articles d'un dev
 - [Hashrocket](https://hashrocket.com/blog) — blog d'une agence
 - [Underjord](https://underjord.io/blog.html) — le blog de Lars Wikman
-- [Songs About Snow](http://blog.songsaboutsnow.com/) — blog d'un dev
 - [DevTalk Elixir](https://devtalk.com/elixir) — forum / communauté
+- [AppSignal — catégorie Elixir](https://blog.appsignal.com/category/elixir.html) — articles techniques réguliers et fouillés
+- [Curiosum](https://curiosum.com/blog) — blog d'une agence, beaucoup de contenu Phoenix / LiveView (moins actif depuis 2024)
+- [Peter Ullrich](https://peterullrich.com/) — articles Phoenix, Ecto et LiveView, toujours actif (2026) ; c'est aussi l'auteur de la formation « Build a MVP with Elixir » citée plus bas
 
 ### En anglais — articles choisis
 
@@ -131,6 +154,8 @@ Pour le moment rien à proposer.
 
 - [Elixir LibHunt (Awesome Elixir Weekly)](https://elixir.libhunt.com/newsletter) — **incontournable** : le récap hebdomadaire des projets et articles de l'écosystème
 - [Elixir Radar](https://elixir-radar.com/) — **la** newsletter hebdomadaire de référence
+- [ElixirWeekly](https://elixirweekly.net/) — le récap hebdomadaire de ce qui passe sur ElixirStatus et le web
+- [Elixir Merge](https://elixirmerge.com/) — éditions très courtes, deux liens commentés à chaque fois, rythme quotidien annoncé
 - [ElixirStatus](https://elixirstatus.com/) — annoncez votre nouveau projet, article de blog ou release
 
 ## Podcasts
@@ -139,7 +164,7 @@ En anglais :
 
 - [Thinking Elixir](https://podcast.thinkingelixir.com/) — actualité de l'écosystème et interviews, hebdomadaire
 - [Elixir Wizards](https://smartlogic.io/podcast/elixir-wizards/) — interviews thématiques organisées par saisons
-- [Elixir Outlaws](https://elixiroutlaws.com/) — discussions informelles entre devs
+- [Elixir Outlaws](https://elixiroutlaws.com/) — discussions informelles entre devs ; **arrêté**, dernier épisode en décembre 2023, les archives restent excellentes
 - [BEAM Radio](https://www.beamrad.io/) — autour de la BEAM au sens large (Elixir, Erlang, Gleam…)
 
 ## Vidéos, tutos, formations
@@ -158,6 +183,9 @@ En anglais :
 - [Backend Stuff](https://www.youtube.com/@backendstuff) — excellente chaine réalisée par Jacob Luetzow
 - [José Valim présente Bumblebee (ML)](https://www.youtube.com/watch?v=g3oyh3g1AtQ)
 - [Build a MVP with Elixir](https://pjullrich.gumroad.com/l/bmvp) — formation Phoenix autour d'un projet
+- [Elixir Streams](https://www.elixirstreams.com/) — les tips vidéo très courts de German Velasco, mis à jour régulièrement
+- [ElixirCasts](https://elixircasts.io/) — 200+ screencasts Elixir / Phoenix, une partie gratuite
+- [Alchemist Camp](https://alchemist.camp/) — gros catalogue de screencasts orientés projet, une bonne partie en accès libre
 - [Tutos et formations sur Gumroad](https://discover.gumroad.com/?query=elixir+phoenix)
 
 ## S'entraîner
@@ -172,7 +200,7 @@ En anglais :
 
 - [Guide officiel des releases (`mix release`)](https://hexdocs.pm/mix/Mix.Tasks.Release.html) — construire une release auto-portante, la base de tout déploiement moderne
 - [Déploiement dans le guide Phoenix](https://hexdocs.pm/phoenix/deployment.html) — la référence pour mettre une app Phoenix en production
-- [Configuration à l'exécution avec `runtime.exs`](https://hexdocs.pm/elixir/config-and-releases.html) — lire les variables d'environnement au démarrage de la release
+- [Configuration à l'exécution avec `runtime.exs`](https://hexdocs.pm/phoenix/releases.html) — lire les variables d'environnement au démarrage de la release
 - [Fly.io — déployer Phoenix](https://fly.io/docs/elixir/getting-started/) — hébergeur très utilisé dans la communauté, support clustering natif
 - [Gigalixir](https://www.gigalixir.com/) — PaaS spécialisé Elixir (hot upgrades, clustering, sans limite de sommeil)
 - [Préparer une app Phoenix au déploiement avec les releases](https://blog.miguelcoba.com/preparing-a-phoenix-16-app-for-deployment-with-elixir-releases) (Miguel Cobá) — tutoriel pas à pas
@@ -181,9 +209,20 @@ En anglais :
 
 ### En anglais
 
-- **Elixir in Action** — le livre le plus apprécié (3e édition, déc. 2023)
-- **Programming Phoenix** — un des plus appréciés à propos de Phoenix
-- **Phoenix in Action** — attention, ancienne version de Phoenix
+- [**Elixir in Action**](https://www.manning.com/books/elixir-in-action-third-edition) — le livre le plus apprécié (3e édition, déc. 2023)
+- [**Programming Phoenix 1.4**](https://pragprog.com/titles/phoenix14/programming-phoenix-1-4/) — un des plus appréciés à propos de Phoenix
+- [**Phoenix in Action**](https://www.manning.com/books/phoenix-in-action) — attention, ancienne version de Phoenix
+- [Programming Phoenix LiveView](https://pragprog.com/titles/liveview/programming-phoenix-liveview/) — LE livre sur LiveView (édition finale 2026)
+- [Elixir Patterns](https://pragprog.com/titles/d-akelixir/elixir-patterns/) — les patterns idiomatiques du langage (2025)
+- [Ash Framework](https://pragprog.com/titles/ldash/ash-framework/) — le livre sur Ash, co-écrit par Zach Daniel, créateur du framework (2025)
+- [Designing Elixir Systems with OTP](https://pragprog.com/titles/jgotp/designing-elixir-systems-with-otp/) — comment structurer une vraie application OTP
+- [Programming Ecto](https://pragprog.com/titles/wmecto/programming-ecto/) — la référence sur Ecto
+- [Testing Elixir](https://pragprog.com/titles/lmelixir/testing-elixir/) — ExUnit, mocks, property-based testing, tests d'intégration
+- [Real-Time Phoenix](https://pragprog.com/titles/sbsockets/real-time-phoenix/) — Channels, PubSub et temps réel à l'échelle
+- [Machine Learning in Elixir](https://pragprog.com/titles/smelixir/machine-learning-in-elixir/) — Nx, Axon et Bumblebee en pratique
+- [Network Programming in Elixir and Erlang](https://pragprog.com/titles/alnpee/network-programming-in-elixir-and-erlang/) — TCP/UDP et protocoles réseau (2025)
+- [The Beam Book](https://happi.github.io/theBeamBook/) — **gratuit**, le fonctionnement interne de la machine virtuelle BEAM
+- [Joy of Elixir](https://joyofelixir.com/) — **gratuit**, une introduction très douce au langage pour débutants
 - [Ebook 100 Elixir tips](https://miguelcoba.gumroad.com/l/100elixirtips) (Miguel Cobá)
 - [ElixirBooks](https://github.com/sger/ElixirBooks) — liste de livres Elixir maintenue par la communauté
 
@@ -194,7 +233,8 @@ En anglais :
 
 ## Extensions VSCode
 
-- [ElixirLS](https://marketplace.visualstudio.com/items?itemName=JakeBecker.elixir-ls) — support Elixir et débogueur
+- [ElixirLS](https://marketplace.visualstudio.com/items?itemName=JakeBecker.elixir-ls) — support Elixir et débogueur ; toujours le choix par défaut aujourd'hui
+- [Expert](https://expert-lsp.org/) — le **futur serveur de langage officiel** (fusion d'ElixirLS, Lexical et Next LS) ; encore en alpha (v0.1.9, août 2026), pas encore publié sur le marketplace VSCode — à surveiller
 - [hex.pm IntelliSense](https://marketplace.visualstudio.com/items?itemName=benvp.vscode-hex-pm-intellisense) — autocomplétion des dépendances Hex
 - [gettext](https://marketplace.visualstudio.com/items?itemName=mrorz.language-gettext) — utile pour les fichiers de localisation
 - [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss) — IntelliSense dédié à Tailwind CSS
@@ -214,7 +254,6 @@ En anglais :
 ## Thèmes VSCode
 
 - [Dark+ Elixir](https://marketplace.visualstudio.com/items?itemName=kkalita.dark-plus-elixir) — thème dark dédié Elixir
-- [Elixir Theme](https://marketplace.visualstudio.com/items?itemName=maiquitome.elixir-theme)
 - [Dracula](https://draculatheme.com/visual-studio-code)
 - [Darcula for Elixir](https://marketplace.visualstudio.com/items?itemName=Arsen.darcula-theme-for-elixir)
 - [Theme Abyss](https://marketplace.visualstudio.com/items?itemName=gerane.Theme-Abyss)
