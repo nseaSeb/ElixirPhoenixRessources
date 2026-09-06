@@ -27,6 +27,7 @@ projets:
     depot: nseaSeb/coelho
     branche: master
     version: "0.14.0"
+    article: /articles/html-en-base-de-donnees/
     resume: "Du texte riche pour Phoenix, stocké comme un arbre validé plutôt que comme du HTML. La validation tient lieu d'assainissement, le document reste interrogeable, et le rendu redevient une décision au lieu d'un souvenir figé."
     pour: "Un champ de texte riche dont on veut pouvoir migrer le contenu, y attacher des URL signées, ou changer le rendu après coup."
 
