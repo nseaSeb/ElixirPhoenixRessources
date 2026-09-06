@@ -12,11 +12,17 @@ layout: default
         {%- assign mots = content | number_of_words -%}
         {%- assign minutes = mots | divided_by: 180 | plus: 1 -%}
         <span class="dot" aria-hidden="true">·</span> {{ minutes }} min de lecture
+        {%- if page.author -%}
+          <span class="dot" aria-hidden="true">·</span>
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            par <span class="p-author h-card" itemprop="name">{{ page.author | escape }}</span>{% if page.author_url %} (<a href="{{ page.author_url }}">{{ page.author_github | default: "profil" }}</a>){% endif %}
+          </span>
+        {%- endif -%}
       </p>
       <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
       {%- if page.tags.size > 0 -%}
         <p class="tags">
-          {%- for tag in page.tags -%}<span class="tag">{{ tag }}</span>{%- endfor -%}
+          {%- for tag in page.tags -%}<a class="tag tag--link" href="{{ "/tags/" | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{%- endfor -%}
         </p>
       {%- endif -%}
     </header>

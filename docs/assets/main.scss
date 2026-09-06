@@ -280,6 +280,35 @@ img { max-width: 100%; height: auto; }
   color: var(--accent);
 }
 
+.tag--link { text-decoration: none; transition: background .15s ease; }
+.tag--link:hover { background: var(--accent); color: var(--fond); }
+
+.tag__compte { opacity: .6; margin-left: .25rem; }
+
+.tag-index { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0 0 3rem; }
+
+.tag-section { margin: 0 0 2.5rem; scroll-margin-top: 5rem; }
+.tag-section h2 {
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--accent);
+  margin: 0 0 .75rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--bord);
+}
+
+.tag-liste { list-style: none; margin: 0; padding: 0; }
+.tag-liste li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .5rem;
+  padding: .35rem 0;
+}
+.tag-liste a { text-decoration: none; font-weight: 500; }
+.tag-liste a:hover { text-decoration: underline; }
+.tag-liste__date { font-size: .82rem; color: var(--texte-doux); }
+
 .button {
   display: inline-block;
   padding: .6rem 1.15rem;

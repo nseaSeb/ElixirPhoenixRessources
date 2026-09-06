@@ -50,6 +50,8 @@ kramdown:
 # ---------- Navigation ----------
 header_pages:
   - a-propos.md
+  - tags.md
+  - contribuer.md
 
 # Pas de clé `exclude:` ici : en Jekyll 3.x elle REMPLACE les valeurs par
 # défaut au lieu de s'y ajouter (la fusion date de Jekyll 4). En ajouter une

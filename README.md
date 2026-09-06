@@ -16,6 +16,7 @@ Une sorte d'awesome Elixir.
 - [✍️ Le blog](https://nseaseb.github.io/ElixirPhoenixRessources/)
 - [Liens majeurs](#liens-majeurs)
 - [Communauté](#communauté)
+- [Contribuer](#contribuer)
 - [Framework et librairies](#framework-et-librairies)
 - [Projets open source à explorer](#projets-open-source-à-explorer)
 - [Ma modeste contribution](#ma-modeste-contribution)
@@ -45,6 +46,21 @@ Une sorte d'awesome Elixir.
 - [Guide officiel « Getting Started »](https://hexdocs.pm/elixir/introduction.html) — le tutoriel de référence du langage
 - [Blog Elixir](https://elixir-lang.org/blog/) — annonces de versions et articles de l'équipe cœur
 - [Blog Phoenix](https://www.phoenixframework.org/blog) — annonces et nouveautés du framework
+
+## Contribuer
+
+**Ce dépôt est ouvert, et l'envie est d'amorcer une petite communauté Elixir francophone.** Il n'existe presque pas de contenu Elixir vivant en français : les rares articles datent d'il y a des années, certains ont disparu du web avec leur hébergeur, et la rubrique « newsletters en français » ci-dessous est vide faute de candidat. Ce n'est pas faute de développeurs francophones — c'est faute d'endroit où publier.
+
+Quatre façons d'aider, de la plus petite à la plus grande :
+
+- **corriger une coquille** — chaque article du blog a un lien « Proposer une correction » qui ouvre l'éditeur GitHub sur le bon fichier ;
+- **ajouter une ressource** à cette liste, surtout en français ;
+- **proposer un sujet d'article** dans une [issue](https://github.com/nseaSeb/ElixirPhoenixRessources/issues) — dire ce qui manque est déjà une contribution ;
+- **écrire un article** pour le blog, avec votre nom dessus.
+
+Tout est détaillé dans le [**guide de contribution**](CONTRIBUTING.md) : la marche à suivre, les deux pièges techniques à connaître, comment prévisualiser en local, et une liste de sujets recherchés.
+
+Pas besoin d'être expert : un article écrit par quelqu'un qui vient de comprendre une chose est souvent meilleur que celui d'un expert, parce qu'il se souvient encore de ce qui coinçait.
 
 ## Communauté
 
