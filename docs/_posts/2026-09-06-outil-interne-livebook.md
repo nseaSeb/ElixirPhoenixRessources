@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Un outil interne en trente lignes, dans un notebook"
+date: 2026-09-06 14:46:00 +0200
 lang: fr
 description: "Le petit script qu'on écrit dans iex, qu'on lit une fois et qu'on reperd. Livebook en fait un outil qui se garde, se partage et s'utilise sans lire le code — voici comment, et ce que ça ne remplace pas."
 tags: [livebook, kino, outillage]
