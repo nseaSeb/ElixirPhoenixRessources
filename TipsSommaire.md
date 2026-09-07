@@ -28,6 +28,7 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 - [GenServer & Supervisor (Livebook exécutable)](./OTP/genserver_supervisor.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/OTP/genserver_supervisor.livemd)
 
 ## Outillage
+- [Mesurer le partage structurel](./Tips/partage_structurel.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/Tips/partage_structurel.livemd)
 - [Un outil interne en trente lignes (Kino)](./Tips/outil_interne_livebook.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/Tips/outil_interne_livebook.livemd)
 
 ## Librairies utilitaires

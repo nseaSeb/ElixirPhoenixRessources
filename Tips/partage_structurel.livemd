@@ -1,0 +1,311 @@
+# Mesurer le partage structurel
+
+## Section
+
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.19"},
+  {:kino_vega_lite, "~> 0.1"},
+  {:aja, "~> 0.7"}
+])
+```
+
+## À quoi sert ce notebook
+
+Il accompagne l'article [« L'immutabilité ne coûte pas ce que vous croyez »](https://nseaseb.github.io/ElixirPhoenixRessources/articles/immutabilite-partage-structurel/). Toutes les mesures qui y figurent sont reproduites ici — **exécutez-les sur votre machine** : les ordres de grandeur tiendront, les chiffres exacts non.
+
+Deux fonctions de la machine virtuelle font tout le travail :
+
+* `:erts_debug.flat_size/1` compte une valeur **comme si rien n'était partagé** ;
+* `:erts_debug.size/1` la compte **en tenant compte du partage**.
+
+Pour observer le partage entre deux valeurs, il faut les mesurer **ensemble**, dans un tuple. Mesurer chacune séparément ne dit rien : c'est l'erreur que j'avais commise en écrivant l'article.
+
+```elixir
+defmodule Mesure do
+  @tuple_paire 3
+
+  @doc "Coût réel d'une valeur dérivée d'une autre, partage déduit."
+  def cout_derive(origine, derivee) do
+    :erts_debug.size({origine, derivee}) - :erts_debug.flat_size(origine) - @tuple_paire
+  end
+
+  @doc "Économie réalisée par le partage, en pourcentage."
+  def economie(a, b) do
+    paire = {a, b}
+    flat = :erts_debug.flat_size(paire)
+    Float.round(100 * (flat - :erts_debug.size(paire)) / flat, 1)
+  end
+
+  @doc "Durée moyenne d'un appel, en microsecondes."
+  def chrono(fun, iterations) do
+    fun.()
+    {t, _} = :timer.tc(fn -> Enum.each(1..iterations, fn _ -> fun.() end) end)
+    t / iterations
+  end
+
+  def ms(microsecondes, iterations), do: round(microsecondes * iterations / 1000)
+end
+```
+
+## 1. Le partage, mesuré
+
+```elixir
+grande = Enum.to_list(1..10_000)
+avec_tete = [0 | grande]
+paire = {grande, avec_tete}
+
+Kino.DataTable.new([
+  %{mesure: "flat_size — si rien n'était partagé", mots: :erts_debug.flat_size(paire)},
+  %{mesure: "size — en réalité", mots: :erts_debug.size(paire)},
+  %{mesure: "coût réel de [0 | grande]", mots: Mesure.cout_derive(grande, avec_tete)},
+  %{mesure: "économie (%)", mots: Mesure.economie(grande, avec_tete)}
+])
+```
+
+Deux mots : une valeur et un pointeur. C'est tout ce que coûte l'ajout d'une tête à une liste de dix mille éléments.
+
+## 2. Ajouter en tête ne coûte rien
+
+```elixir
+{temps, listes} = :timer.tc(fn -> Enum.map(1..100_000, fn i -> [i | grande] end) end)
+
+reel = :erts_debug.size(listes)
+sans_partage = :erts_debug.flat_size(listes)
+
+Kino.DataTable.new([
+  %{mesure: "durée (ms)", valeur: div(temps, 1000)},
+  %{mesure: "taille réelle (mots)", valeur: reel},
+  %{mesure: "si chaque liste était copiée (mots)", valeur: sans_partage},
+  %{mesure: "facteur", valeur: div(sans_partage, reel)}
+])
+```
+
+## 3. Ajouter en fin est quadratique
+
+Le point à retenir n'est pas la durée absolue, c'est **comment elle évolue avec la taille**.
+
+```elixir
+ajouts_en_fin = fn n -> Enum.reduce(1..n, [], fn i, acc -> acc ++ [i] end) end
+
+# Chauffe : sans elle, la toute première mesure inclut la compilation à la
+# volée et sort plus lente que la suivante — le tableau paraît alors faux.
+ajouts_en_fin.(1_000)
+
+mesures =
+  for n <- [1_000, 2_000, 5_000, 10_000] do
+    {t, _} = :timer.tc(fn -> ajouts_en_fin.(n) end)
+    %{elements: n, microsecondes: t}
+  end
+
+reference = List.first(mesures)
+
+mesures
+|> Enum.map(fn m ->
+  %{
+    elements: m.elements,
+    duree_ms: Float.round(m.microsecondes / 1000, 1),
+    fois_plus_d_elements: div(m.elements, reference.elements),
+    fois_plus_de_temps: Float.round(m.microsecondes / reference.microsecondes, 1)
+  }
+end)
+|> Kino.DataTable.new(name: "acc ++ [i]")
+```
+
+Comparez les deux dernières colonnes : le temps croît bien plus vite que la taille.
+
+Dix fois plus d'éléments coûtent bien plus que dix fois plus de temps. Le remède tient en deux gestes : empiler en tête, puis `Enum.reverse/1` une seule fois.
+
+```elixir
+{t_tete, _} = :timer.tc(fn ->
+  1..10_000 |> Enum.reduce([], fn i, acc -> [i | acc] end) |> Enum.reverse()
+end)
+
+Kino.Markdown.new("**10 000 éléments, empilés en tête puis inversés : #{div(t_tete, 1000)} ms.**")
+```
+
+## 4. Le coût suit la distance à la tête
+
+```elixir
+for position <- [10, 2_500, 5_000, 9_999] do
+  us = Mesure.chrono(fn -> List.replace_at(grande, position, :x) end, 5_000)
+  %{
+    position: position,
+    duree_5000_appels_ms: Mesure.ms(us, 5_000),
+    paire_mots: :erts_debug.size({grande, List.replace_at(grande, position, :x)})
+  }
+end
+|> Kino.DataTable.new(name: "List.replace_at")
+```
+
+À la dernière position, plus rien n'est partagé : la liste entière a été reconstruite.
+
+## 5. Quand rien ne peut être partagé
+
+```elixir
+doubles = Enum.map(grande, &(&1 * 2))
+
+Kino.DataTable.new([
+  %{mesure: "size({origine, doubles})", mots: :erts_debug.size({grande, doubles})},
+  %{mesure: "flat_size({origine, doubles})", mots: :erts_debug.flat_size({grande, doubles})}
+])
+```
+
+Chiffres identiques, donc aucun partage : `Enum.map/2` touche à tous les éléments, il n'y a rien à réutiliser. Ce n'est pas un défaut — le partage récompense les transformations qui laissent la majorité des données intactes.
+
+## 6. Les maps partagent aussi
+
+```elixir
+m = Map.new(1..10_000, &{&1, &1})
+m2 = Map.put(m, :nouveau, 1)
+
+cout = Mesure.cout_derive(m, m2)
+
+Kino.DataTable.new([
+  %{mesure: "flat_size({m, m2})", valeur: :erts_debug.flat_size({m, m2})},
+  %{mesure: "size({m, m2})", valeur: :erts_debug.size({m, m2})},
+  %{mesure: "coût réel du Map.put (mots)", valeur: cout},
+  %{mesure: "en % de la map", valeur: Float.round(100 * cout / :erts_debug.flat_size(m), 2)}
+])
+```
+
+## 7. Le partage ne rend pas le parcours rapide
+
+C'est la distinction centrale. Un vecteur partage **exactement** comme une liste — ce qui les sépare, c'est leur forme.
+
+```elixir
+vec = Aja.Vector.new(grande)
+plage = 1..10_000
+
+Kino.DataTable.new([
+  %{structure: "liste", economie_partage_pct: Mesure.economie(grande, [0 | grande])},
+  %{structure: "vecteur", economie_partage_pct: Mesure.economie(vec, Aja.Vector.append(vec, :x))}
+])
+```
+
+```elixir
+n = 50_000
+
+[
+  %{operation: "Enum.at(liste, 9_999)", us: Mesure.chrono(fn -> Enum.at(grande, 9_999) end, n)},
+  %{operation: "vec[9_999]", us: Mesure.chrono(fn -> vec[9_999] end, n)},
+  %{operation: "Enum.at(1..10_000, 9_999)", us: Mesure.chrono(fn -> Enum.at(plage, 9_999) end, n)},
+  %{operation: "hd(liste)", us: Mesure.chrono(fn -> hd(grande) end, n)},
+  %{operation: "List.last(liste)", us: Mesure.chrono(fn -> List.last(grande) end, n)}
+]
+|> Enum.map(fn r -> %{operation: r.operation, microsecondes_par_appel: Float.round(r.us, 3)} end)
+|> Kino.DataTable.new(name: "coût d'un accès")
+```
+
+L'intervalle et le vecteur répondent en temps quasi constant. La liste paie son parcours — sauf en tête, où `hd/1` est gratuit.
+
+### Ce que ça donne quand la collection grandit
+
+Un tableau montre un écart ; une courbe montre une **tendance**. Mesurons l'accès au dernier élément pour des tailles croissantes.
+
+```elixir
+alias VegaLite, as: Vl
+
+tailles = [1_000, 5_000, 10_000, 50_000]
+
+donnees =
+  Enum.flat_map(tailles, fn n ->
+    liste = Enum.to_list(1..n)
+    vecteur = Aja.Vector.new(liste)
+    dernier = n - 1
+    # moins d'itérations quand la collection grandit, sinon la mesure s'éternise
+    iterations = max(200, div(2_000_000, n))
+
+    [
+      %{taille: n, structure: "liste", us: Mesure.chrono(fn -> Enum.at(liste, dernier) end, iterations)},
+      %{taille: n, structure: "vecteur (Aja)", us: Mesure.chrono(fn -> vecteur[dernier] end, iterations)},
+      %{taille: n, structure: "intervalle", us: Mesure.chrono(fn -> Enum.at(1..n, dernier) end, iterations)}
+    ]
+  end)
+  |> Enum.map(fn d -> %{d | us: Float.round(d.us, 4)} end)
+
+Vl.new(width: 600, height: 320, title: "Accès au dernier élément")
+|> Vl.data_from_values(donnees)
+|> Vl.mark(:line, point: true)
+|> Vl.encode_field(:x, "taille", type: :quantitative, title: "nombre d'éléments")
+|> Vl.encode_field(:y, "us", type: :quantitative, title: "µs par accès (échelle log)", scale: [type: :log])
+|> Vl.encode_field(:color, "structure", type: :nominal, title: "structure")
+```
+
+L'échelle verticale est **logarithmique** — sans elle, les deux courbes basses seraient écrasées contre l'axe.
+
+Ce qu'on voit : la liste monte régulièrement, le vecteur et l'intervalle restent plats. Ce n'est pas une question de constante, c'est une question de forme — l'un parcourt, les autres calculent.
+
+```elixir
+donnees
+|> Enum.group_by(& &1.structure)
+|> Enum.map(fn {structure, points} ->
+  premier = List.first(points)
+  dernier = List.last(points)
+  %{
+    structure: structure,
+    "µs à #{premier.taille}": premier.us,
+    "µs à #{dernier.taille}": dernier.us,
+    facteur: Float.round(dernier.us / max(premier.us, 0.0001), 1)
+  }
+end)
+|> Kino.DataTable.new(name: "évolution du coût quand la taille est multipliée par 50")
+```
+
+La colonne `facteur` dit tout : elle suit la taille pour la liste, elle reste autour de 1 pour les deux autres.
+
+## 8. Pourquoi l'intervalle s'en sort
+
+Ce n'est pas une optimisation sur les listes : c'est que l'intervalle **n'est pas une collection en mémoire**. Le protocole `Enumerable` le laisse déclarer qu'il sait se découper sans être parcouru.
+
+```elixir
+Kino.DataTable.new([
+  %{structure: "Range", reponse_a_slice: inspect(Enumerable.Range.slice(1..10_000), limit: 2)},
+  %{structure: "List", reponse_a_slice: inspect(Enumerable.List.slice([1, 2, 3]))}
+])
+```
+
+Les deux implémentent `slice/1` — un protocole impose tous ses callbacks. Ce qui diffère, c'est la réponse.
+
+## 9. Là où la copie a bien lieu
+
+Chaque processus a son propre tas. Un message est donc **copié**.
+
+```elixir
+{envoi, _} = :timer.tc(fn ->
+  parent = self()
+  pid = spawn(fn -> receive do {:l, _} -> send(parent, :ok) end end)
+  send(pid, {:l, grande})
+  receive do :ok -> :ok end
+end)
+
+Kino.Markdown.new("Envoi d'une liste de 10 000 éléments à un autre processus : **#{envoi} µs**.")
+```
+
+Exception notable : au-delà de 64 octets, une binaire vit **hors** du tas et n'est pas recopiée.
+
+```elixir
+Kino.DataTable.new([
+  %{binaire: "60 octets", mots_sur_le_tas: :erts_debug.flat_size(:crypto.strong_rand_bytes(60))},
+  %{binaire: "1 Mo", mots_sur_le_tas: :erts_debug.flat_size(:crypto.strong_rand_bytes(1_000_000))}
+])
+```
+
+Un mégaoctet occupe moins de place sur le tas que soixante octets : le petit y est stocké en entier, le grand n'y laisse qu'une référence.
+
+## À retenir
+
+* Empilez en tête, inversez à la fin.
+
+* Ne craignez pas de « copier » pour modifier : `Map.put`, `%{struct | champ: v}` ne dupliquent rien.
+
+* Méfiez-vous de la **distance à la tête**, pas de la modification.
+
+* Mesurez ce qui traverse les frontières de processus — c'est le seul endroit où le runtime copie même quand rien n'a changé.
+
+---
+
+[Retour vers le sommaire des tips](../TipsSommaire.md) · [L'article complet](https://nseaseb.github.io/ElixirPhoenixRessources/articles/immutabilite-partage-structurel/)
