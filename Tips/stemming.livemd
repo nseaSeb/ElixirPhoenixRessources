@@ -1,6 +1,7 @@
+# Stemming (réduction de mots) exemple
+
 [Retour vers le sommaire des tips](../TipsSommaire.md)
 [Accueil](../README.md)
-# Stemming (reduction de mot) exemple
 
 ```elixir
 Mix.install([{:stemmer, "~> 1.0"}])
@@ -15,8 +16,10 @@ defmodule Recode do
 
     val
     |> String.normalize(:nfd)
-    # Remplace tous les caractères non alphanumériques par ""
-    |> String.replace(~r/[^A-z\s]/u, "")
+    # Ne conserve que les lettres et les espaces.
+    # Attention : `A-z` serait un intervalle de codes ASCII qui englobe
+    # aussi [ \ ] ^ _ et l'accent grave — il faut bien écrire `A-Za-z`.
+    |> String.replace(~r/[^A-Za-z\s]/u, "")
     |> String.downcase()
     |> String.split(~r/\s+/)
     |> Enum.filter(&(String.length(&1) >= 3))
