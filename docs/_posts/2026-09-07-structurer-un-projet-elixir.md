@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Structurer un projet Elixir : ce que le compilateur ne vérifie pas"
+date: 2026-09-07 06:56:00 +0200
 lang: fr
 description: "Presque toutes les conventions d'un projet Elixir sont facultatives — rien ne casse si vous les ignorez. Sauf à un endroit, où Elixir refuse de démarrer. Voici lequel, et pourquoi les autres méritent quand même d'être suivies."
 tags: [mix, configuration, conventions, releases]
