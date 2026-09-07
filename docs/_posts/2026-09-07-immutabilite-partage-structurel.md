@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "L'immutabilité ne coûte pas ce que vous croyez"
+date: 2026-09-07 07:48:00 +0200
 lang: fr
 description: "Si toute modification crée une nouvelle valeur, comment un langage immuable peut-il être rapide ? Réponse mesurée : parce que rien n'est copié. Le partage structurel, ses limites, et là où l'immutabilité coûte vraiment."
 tags: [elixir, immutabilite, performance, beam]
