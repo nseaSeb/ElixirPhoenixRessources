@@ -51,6 +51,7 @@ kramdown:
 header_pages:
   - parcours.md
   - projets.md
+  - recherche.md
   - a-propos.md
   - tags.md
   - contribuer.md

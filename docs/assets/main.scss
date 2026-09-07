@@ -325,6 +325,76 @@ img { max-width: 100%; height: auto; }
 .rss-subscribe { margin-top: 2.5rem; }
 
 /* ------------------------------------------------------------------ *
+ *  Recherche
+ * ------------------------------------------------------------------ */
+
+.recherche { margin: 0 0 1.5rem; }
+
+.recherche__label {
+  display: block;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--texte-doux);
+  margin-bottom: .5rem;
+}
+
+.recherche__champ {
+  width: 100%;
+  padding: .8rem 1rem;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  color: var(--texte);
+  background: var(--fond-eleve);
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+}
+.recherche__champ:focus { border-color: var(--accent); outline: none; }
+.recherche__champ::placeholder { color: var(--texte-doux); opacity: .7; }
+
+.recherche__aide { margin: .5rem 0 0; font-size: .85rem; color: var(--texte-doux); }
+
+.recherche__compte {
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--texte-doux);
+  margin: 0 0 1rem;
+}
+
+.recherche__vide { color: var(--texte-doux); font-style: italic; }
+
+.recherche__resultats mark {
+  background: color-mix(in srgb, var(--accent) 25%, transparent);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 .1rem;
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0 0;
+}
+
+.pagination__position {
+  font-family: var(--mono);
+  font-size: .82rem;
+  color: var(--texte-doux);
+}
+
+.button--inactif {
+  opacity: .4;
+  cursor: default;
+  pointer-events: none;
+}
+
+button.button { font-family: var(--serif); cursor: pointer; }
+
+/* ------------------------------------------------------------------ *
  *  Projets
  * ------------------------------------------------------------------ */
 
@@ -879,4 +949,8 @@ code, pre, .highlight { font-family: var(--mono); }
 
   .items li,
   .tag-liste li { margin-bottom: 0; }
+
+  .recherche__aide,
+  .recherche__compte { margin-top: 0; }
+  .recherche__vide { margin: 0; }
 }
