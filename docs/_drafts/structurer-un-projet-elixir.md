@@ -27,7 +27,7 @@ Alors pourquoi tout le monde suit-il la convention ? Et y a-t-il un endroit où 
 
 ## Ce que `mix new` crée réellement
 
-Huit fichiers, pas un de plus :
+Sept fichiers — huit avec `--sup`, qui ajoute l'arbre de supervision :
 
 {% raw %}
 ```
@@ -50,7 +50,17 @@ Il sert à tout le reste.
 
 **À vous, dans six mois.** La règle « `MonApp.Comptes.Utilisateur` vit dans `lib/mon_app/comptes/utilisateur.ex` » transforme un nom de module aperçu dans une stacktrace en un chemin de fichier, sans réfléchir ni chercher.
 
-**À votre éditeur.** Aller à la définition, ouvrir le fichier correspondant, naviguer entre le module et son test : tout cela s'appuie sur la convention, pas sur une analyse du code.
+**À votre éditeur — en partie seulement.** Soyons précis, parce que c'est là qu'on raconte facilement n'importe quoi : « aller à la définition » ne dépend pas de la convention. Elixir enregistre le vrai chemin du fichier source dans le module compilé, et les serveurs de langage le lisent :
+
+{% raw %}
+```elixir
+# Le module vit dans lib/zzz.ex, contre toute convention.
+MonApp.Comptes.__info__(:compile)[:source]
+#=> ~c"/chemin/du/projet/lib/zzz.ex"
+```
+{% endraw %}
+
+Ce qui dépend bel et bien de la convention, c'est tout ce qui part du **nom** : ouvrir un fichier en tapant son nom de module dans le sélecteur, basculer entre un module et son test, deviner un chemin depuis une stacktrace sans rien ouvrir.
 
 **Aux tests.** `mix test` cherche `test/**/*_test.exs`. Là, c'est une vraie contrainte : un fichier de test mal nommé n'est simplement jamais exécuté, sans le moindre avertissement. C'est le premier endroit où une convention ignorée devient un bug silencieux.
 
@@ -108,9 +118,18 @@ Un projet Elixir a deux familles de fichiers de configuration, qui ne sont **pas
 
 **`config/runtime.exs`** est lu **à chaque démarrage**, sur la machine qui exécute.
 
-La documentation officielle donne l'exemple du piège :
+La documentation officielle est explicite sur le piège :
 
-> if your configuration does something like: `config :my_app, :secret_key, System.fetch_env!("MY_APP_SECRET_KEY")` The `:secret_key` key will be computed on the host machine, whenever the release is built.
+> The `:secret_key` key under `:my_app` will be computed on the host machine, whenever the release is built.
+
+…à propos de cette configuration :
+
+{% raw %}
+```elixir
+import Config
+config :my_app, :secret_key, System.fetch_env!("MY_APP_SECRET_KEY")
+```
+{% endraw %}
 
 Autrement dit : votre secret de production est celui qui existait sur la machine de compilation. Au mieux la construction échoue parce que la variable n'y est pas ; au pire elle réussit avec la mauvaise valeur, et vous déployez.
 
@@ -120,7 +139,7 @@ Autrement dit : votre secret de production est celui qui existait sur la machine
 
 Certaines valeurs doivent légitimement être lues à la compilation, quand elles déterminent le code produit. Elixir fournit pour ça `Application.compile_env/2` — une **macro**, et non une fonction, ce qui n'est pas un détail : c'est ce qui lui permet d'enregistrer la valeur vue à la compilation.
 
-Ce que vous y gagnez, c'est un garde-fou. J'ai monté le cas et voici, mot pour mot, ce qui se passe quand la valeur d'exécution diverge de celle de compilation :
+Ce que vous y gagnez, c'est un garde-fou. J'ai monté le cas — projet compilé avec une valeur, release assemblée, puis `runtime.exs` en imposant une autre — et voici ce qui se passe au démarrage (message abrégé, il propose ensuite trois façons de corriger) :
 
 {% raw %}
 ```
@@ -131,6 +150,8 @@ behavior than expected:
 
   * Compile time value was set to: :dev
   * Runtime value was set to: :prod
+
+[…]
 
 Runtime terminating during boot ({<<"aborting boot">>,...})
 ```
