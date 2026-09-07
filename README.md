@@ -30,6 +30,7 @@ Une sorte d'awesome Elixir.
 - [S'entraîner](#sentraîner)
 - [Déploiement](#déploiement)
 - [Livres](#livres)
+- [Éditeurs](#éditeurs)
 - [Extensions VSCode](#extensions-vscode)
 - [Thèmes VSCode](#thèmes-vscode)
 - [Conférences](#conférences)
@@ -249,6 +250,10 @@ En anglais :
 - [Elixir (Eyrolles)](https://www.eyrolles.com/Informatique/Livre/elixir-9782416011757/) — le premier et le seul en français sur le langage pour le moment
 - [SQL : Au cœur des performances](https://sql-au-coeur-des-performances.fr/) (Markus Winand) — **incontournable** sur l'indexation et les performances SQL ; transversal, très utile derrière Ecto
 
+## Éditeurs
+
+- [**Zed**](https://zed.dev/) — éditeur écrit en Rust, rapide, avec collaboration intégrée. Son [extension Elixir](https://github.com/zed-extensions/elixir) gère **cinq serveurs de langage** au choix — ElixirLS par défaut, mais aussi [Expert](https://expert-lsp.org/), Dexter (pensé pour les grosses bases de code), Next LS et Lexical — ainsi que les gabarits EEx et HEEx. La [documentation](https://zed.dev/docs/languages/elixir) explique aussi comment brancher le serveur Tailwind sur les fichiers HEEx pour l'autocomplétion des classes.
+
 ## Extensions VSCode
 
 - [ElixirLS](https://marketplace.visualstudio.com/items?itemName=JakeBecker.elixir-ls) — support Elixir et débogueur ; toujours le choix par défaut aujourd'hui
@@ -286,6 +291,7 @@ En anglais :
 ## Autres liens utiles
 
 - [Oh My Zsh / Git cheatsheet](https://kapeli.com/cheat_sheets/Oh-My-Zsh_Git.docset/Contents/Resources/Documents/index) — raccourcis ZSH
+- [awesome-ratatui](https://github.com/ratatui/awesome-ratatui) — la liste des applications et librairies TUI construites avec [Ratatui](https://ratatui.rs/) : beaucoup d'outils en ligne de commande utiles au quotidien d'un dev, tous domaines confondus
 - [AppFlowy](https://github.com/AppFlowy-IO/AppFlowy) — prise de note à la Notion, open source, installable en local / serveur / docker ; blocs de code avec coloration Elixir et interface en français
 - [AFFiNE](https://github.com/toeverything/AFFiNE) — alternative sérieuse à Notion, incluant un panneau de dessin à la Figma
 
