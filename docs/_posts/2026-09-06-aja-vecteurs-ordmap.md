@@ -192,3 +192,7 @@ Trois questions, dans l'ordre.
 Si les trois réponses vous mènent à Aja, c'est une bibliothèque soignée, bien documentée, et dont les macros la rendent nettement plus agréable que `:array`. Sinon, la liste chaînée reste un excellent choix par défaut — c'est précisément pour ça qu'elle est le choix par défaut.
 
 La [documentation d'Aja](https://aja.hexdocs.pm/readme.html) contient les benchmarks détaillés, et le [dépôt](https://github.com/sabiwara/aja) permet de les rejouer sur votre machine.
+
+---
+
+**Suite de cet article.** Publié sur le forum Elixir, il a valu deux réponses qui déplacent la question : `:queue` pour les files d'attente et les zippers pour la navigation. Toutes deux sont construites *avec* des listes chaînées plutôt que contre elles — c'est le sujet de [« La liste chaînée n'est pas le mauvais outil, c'est la matière première »]({{ "/articles/files-et-zippers/" | relative_url }}).
