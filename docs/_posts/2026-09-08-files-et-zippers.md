@@ -7,6 +7,9 @@ description: "Une file d'attente construite avec deux listes bat la liste native
 tags: [elixir, structures-de-donnees, performance, erlang]
 categories: [elixir]
 sources:
+  - titre: "Fil de discussion sur l'Elixir Forum"
+    url: https://elixirforum.com/t/whats-the-approach-for-handling-lists-that-allows-for-optimized-traversal/76584
+    note: "d'où viennent les deux pistes de cet article"
   - titre: "queue — Erlang stdlib"
     url: https://www.erlang.org/doc/apps/stdlib/queue.html
     note: "les trois API, et les complexités amorties"
@@ -18,7 +21,7 @@ sources:
     note: "l'implémentation Elixir de référence, sur l'AST"
 ---
 
-[Un précédent article]({{ "/articles/aja-vecteurs-ordmap/" | relative_url }}) posait le problème : une liste chaînée est lente en accès par index, et un vecteur y répond mieux. En le partageant sur le forum Elixir, j'ai reçu deux réponses qui déplacent la question — `:queue` et les zippers — et elles racontent quelque chose de plus intéressant qu'une liste d'alternatives.
+[Un précédent article]({{ "/articles/aja-vecteurs-ordmap/" | relative_url }}) posait le problème : une liste chaînée est lente en accès par index, et un vecteur y répond mieux. En le partageant sur l'[Elixir Forum](https://elixirforum.com/t/whats-the-approach-for-handling-lists-that-allows-for-optimized-traversal/76584), j'ai reçu deux réponses qui déplacent la question — `:queue` et les zippers — et elles racontent quelque chose de plus intéressant qu'une liste d'alternatives.
 
 Ces deux structures ne remplacent pas la liste chaînée. **Elles sont faites avec.**
 
@@ -195,6 +198,6 @@ La question n'est jamais « quelle est la meilleure structure ». C'est « de qu
 
 ---
 
-*Ces deux pistes m'ont été signalées sur le forum Elixir, en réponse à l'article sur les vecteurs. Merci à ceux qui ont pris le temps de répondre : c'est exactement à ça que sert de publier.*
+*Ces deux pistes viennent d'un [fil de l'Elixir Forum](https://elixirforum.com/t/whats-the-approach-for-handling-lists-that-allows-for-optimized-traversal/76584), en réponse à l'article sur les vecteurs. Merci à **dimitarvp**, qui a signalé `:queue` et l'article de Fred Hebert sur les zippers, et à **sodapopcan**, qui a pointé l'implémentation de `Sourceror`. Publier sert exactement à ça : je suis reparti avec deux structures que je ne connaissais pas.*
 
 *Toutes les mesures ont été prises sur Elixir 1.19.5 et Erlang/OTP 28. Les nombres varient d'une machine à l'autre ; les ordres de grandeur, non.*
