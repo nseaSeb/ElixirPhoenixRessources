@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "« Let it crash » ne veut pas dire ce que vous croyez"
+date: 2026-09-08 08:00:00 +0200
 lang: fr
 description: "La formule la plus citée d'Elixir est aussi la plus mal comprise. Elle ne dit pas d'ignorer les erreurs : elle dit de séparer le travail de la reprise. Avec ce que ça coûte, mesuré."
 tags: [otp, genserver, supervision, elixir]

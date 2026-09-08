@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Des tests concurrents avec une base de données : comment, et jusqu'où"
+date: 2026-09-08 08:10:00 +0200
 lang: fr
 description: "async: true est possible en Elixir là où d'autres langages y renoncent. La sandbox Ecto explique pourquoi — et connaître ses limites évite le test vert qui masque un bug de production."
 tags: [tests, exunit, ecto, phoenix]
