@@ -101,6 +101,7 @@ De vraies applications à lire pour voir Elixir « en conditions réelles ».
 - [Mes notes à propos d'Ecto](Ecto.md) ([Ecto avancé](EctoAvance.md))
 - [Phoenix « classique » : routing, contexts & contrôleurs](Phoenix/phoenix_sans_liveview.md)
 - [LiveView : l'essentiel](LiveView/liveview.md)
+- [Débogage & outillage IEx (`iex`, `IO.inspect`, `dbg`, `pry`)](Tips/debogage_iex.md)
 - [Lire une stacktrace / comprendre les erreurs](Tips/lire_une_stacktrace.md)
 - [OTP : GenServer & Supervisor (Livebook)](OTP/genserver_supervisor.livemd)
 - [Tests avec ExUnit](Test_unitaire/exunit_bases.md)

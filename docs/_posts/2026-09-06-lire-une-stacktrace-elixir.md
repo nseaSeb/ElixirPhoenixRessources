@@ -116,12 +116,12 @@ Une trace dit où ça a cassé, jamais avec quelles données. Pour ça, `dbg/1` 
 ```
 {% endraw %}
 
-`dbg` affiche le pipe étape par étape, avec le fichier et la ligne, puis laisse passer la valeur — il ne change rien au comportement. Dans un projet Phoenix, il peut même ouvrir un débogueur interactif.
+`dbg` affiche le pipe étape par étape, avec le fichier et la ligne, puis laisse passer la valeur — il ne change rien au comportement.
 
-Pour un affichage plus ciblé, `IO.inspect(valeur, label: "ici")` fait le travail sans casser le flux, puisqu'il renvoie la valeur qu'il reçoit.
+C'est un barreau d'une échelle qui monte jusqu'au point d'arrêt interactif : [`iex`, `IO.inspect`, `dbg`, `pry`]({{ "/articles/iex-dbg-debogage/" | relative_url }}) reprend chacun de ces outils, ce qu'il montre que le précédent ne montrait pas, et les pièges d'affichage qui font chercher un bug là où il n'y en a pas.
 
 ## En résumé
 
 Le type d'erreur oriente le diagnostic ; le haut de la trace donne le lieu ; le premier fichier qui vous appartient donne le point d'entrée. Un `nil` inattendu explique une grande part des crashs, et devant un `** (exit)`, la vraie erreur est toujours plus bas dans le message.
 
-Le [guide officiel de débogage](https://hexdocs.pm/elixir/debugging.html) couvre les outils plus lourds — `:observer`, `IEx.pry`, le traçage.
+Le [guide officiel de débogage](https://hexdocs.pm/elixir/debugging.html) couvre les outils plus lourds — `:observer`, le traçage.

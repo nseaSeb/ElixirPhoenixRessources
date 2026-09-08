@@ -37,6 +37,11 @@ etapes:
         note: "manipuler les collections comme un Elixirien"
         chemin: "Bases/enum_stream_comprehensions.livemd"
 
+    tips:
+      - titre: "Débogage & outillage IEx"
+        note: "le shell interactif comme terrain d'essai, puis `IO.inspect`, `dbg` et les points d'arrêt"
+        chemin: "Tips/debogage_iex.md"
+
   - titre: "Structurer & faire tourner des processus"
     niveau: intermediaire
     intro: "Organiser ses données, puis entrer dans le modèle de concurrence qui fait la réputation d'Elixir."
@@ -135,6 +140,8 @@ par_objectif:
     reponse: "Phoenix hors LiveView"
   - but: "Construire une interface réactive"
     reponse: "LiveView"
+  - but: "Essayer le langage sans monter un projet"
+    reponse: "Débogage & outillage IEx"
   - but: "Débloquer une erreur, un crash"
     reponse: "Lire une stacktrace"
 
@@ -157,6 +164,5 @@ outils:
     chemin: "Algorithme/binary_search.livemd"
 
 a_venir:
-  - "Débogage & outillage IEx (`dbg`, `IEx.pry`, `:observer`, `recompile`)"
   - "Jobs en arrière-plan avec Oban"
   - "Déploiement : releases, `runtime.exs`, hébergeurs"

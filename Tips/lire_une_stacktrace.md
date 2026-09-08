@@ -64,7 +64,7 @@ Pour inspecter des valeurs **avant** le crash, glissez `dbg()` dans un pipe : il
 |> Enum.sum()
 ```
 
-Dans un projet Phoenix, `dbg()` peut même ouvrir un débogueur interactif. Voir aussi `IO.inspect(valeur, label: "ici")` pour un affichage ciblé sans interrompre le flux.
+Toute l'échelle — `iex`, `IO.inspect`, `dbg`, les points d'arrêt — est détaillée dans [Débogage & outillage IEx](./debogage_iex.md).
 
 ## Bons réflexes
 
@@ -78,5 +78,5 @@ Dans un projet Phoenix, `dbg()` peut même ouvrir un débogueur interactif. Voir
 - Message = **`** (Type) pourquoi`** en haut, **`fichier:ligne: Module.fonction/arité`** en dessous.
 - Le haut de la stacktrace est le lieu du crash ; le premier fichier *à vous* est le point d'entrée.
 - `/n` = arité (nombre d'arguments), pas un numéro de version.
-- `dbg()` et `IO.inspect(label: ...)` pour voir les valeurs avant que ça casse.
+- `dbg()` et `IO.inspect(label: ...)` pour voir les valeurs avant que ça casse — voir [Débogage & outillage IEx](./debogage_iex.md).
 - Documentation officielle : https://hexdocs.pm/elixir/debugging.html

@@ -35,6 +35,7 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 - [Manipulation de date avec Timex](./Tips/TimexDate.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/Tips/TimexDate.livemd)
 
 ## Débogage
+- [Débogage & outillage IEx (`iex`, `IO.inspect`, `dbg`, `pry`, `break!`)](./Tips/debogage_iex.md)
 - [Lire une stacktrace / comprendre les erreurs](./Tips/lire_une_stacktrace.md)
 
 ## Divers
