@@ -18,6 +18,9 @@ https://hexdocs.pm/ (HEXDOCS heberge la documentation des packages HEX.)
 -   https://hexdocs.pm/query_builder/readme.html (Composer des query avec des datas)
 -   https://hexdocs.pm/triplex/Triplex.html (Multi-tenant postgres / ecto)
 
+## Frameworks applicatifs
+-   https://hexdocs.pm/ash/ (Ash, framework déclaratif : on décrit des ressources, le reste se déduit — API, formulaires, autorisations, migrations)
+
 ## Outils base de données (GUI)
 -   https://www.pgadmin.org/ (pgAdmin, le client graphique officiel de PostgreSQL)
 -   https://dbeaver.io/ (DBeaver, client universel gratuit et open source)

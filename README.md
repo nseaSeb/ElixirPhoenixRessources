@@ -99,6 +99,7 @@ De vraies applications à lire pour voir Elixir « en conditions réelles ».
 - [Les bases du langage (parcours de 4 Livebooks)](Bases/immutabilite_et_pattern_matching.livemd)
 - [📖 Glossaire FR ↔ EN des termes Elixir / Phoenix](Glossaire.md)
 - [Mes notes à propos d'Ecto](Ecto.md) ([Ecto avancé](EctoAvance.md))
+- [Jobs en arrière-plan avec Oban](Tips/oban.md)
 - [Phoenix « classique » : routing, contexts & contrôleurs](Phoenix/phoenix_sans_liveview.md)
 - [LiveView : l'essentiel](LiveView/liveview.md)
 - [Débogage & outillage IEx (`iex`, `IO.inspect`, `dbg`, `pry`)](Tips/debogage_iex.md)

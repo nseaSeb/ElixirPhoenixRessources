@@ -20,3 +20,6 @@ docs/.bundle/
 
 # Outils locaux
 .token-optimizer/
+
+# Vidage mémoire laissé par un nœud BEAM qui n'a pas démarré
+erl_crash.dump

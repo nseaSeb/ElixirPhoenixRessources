@@ -18,6 +18,8 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 
 - [Ecto avancé : changesets, associations, Multi, requêtes composables](./EctoAvance.md)
 
+- [Jobs en arrière-plan avec Oban](./Tips/oban.md)
+
 ## Phoenix
 - [Phoenix « classique » : routing, contexts & contrôleurs](./Phoenix/phoenix_sans_liveview.md)
 

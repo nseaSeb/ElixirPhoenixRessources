@@ -78,6 +78,9 @@ etapes:
         chemin: "Tips/binaryId.md"
       - titre: "Automatiser le cast d'un schéma Ecto"
         chemin: "Tips/schemaEctoAutoCast.md"
+      - titre: "Jobs en arrière-plan avec Oban"
+        note: "la file d'attente est une table PostgreSQL — installation, worker, états, unicité, tests"
+        chemin: "Tips/oban.md"
 
   - titre: "Tester son code"
     niveau: intermediaire
@@ -164,5 +167,4 @@ outils:
     chemin: "Algorithme/binary_search.livemd"
 
 a_venir:
-  - "Jobs en arrière-plan avec Oban"
   - "Déploiement : releases, `runtime.exs`, hébergeurs"
