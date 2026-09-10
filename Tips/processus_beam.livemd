@@ -1,0 +1,305 @@
+# Ce que coûte un processus BEAM
+
+## Section
+
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
+
+```elixir
+Mix.install([{:kino, "~> 0.19.0"}])
+```
+
+## Pourquoi ce notebook s'arrête à 100 000
+
+On lit partout qu'Elixir « lance des millions de processus ». Ce notebook mesure ce que ça veut dire, sur **votre** machine — mais il plafonne volontairement à 100 000, soit environ 250 Mo. Un million en demande 2,5 Go, ce qui n'a rien à faire dans un notebook ouvert à côté de votre travail.
+
+La version complète, jusqu'au million, est dans l'article jumeau : [Un million de processus](https://nseaseb.github.io/ElixirPhoenixRessources/articles/un-million-de-processus/).
+
+## 1. Le décor
+
+```elixir
+%{
+  otp: :erlang.system_info(:otp_release) |> List.to_string(),
+  elixir: System.version(),
+  schedulers_en_ligne: :erlang.system_info(:schedulers_online),
+  processeurs_logiques: :erlang.system_info(:logical_processors),
+  mot_machine_octets: :erlang.system_info(:wordsize),
+  process_limit: :erlang.system_info(:process_limit),
+  process_count: :erlang.system_info(:process_count)
+}
+|> Kino.Tree.new()
+```
+
+Deux nombres à retenir de cette sortie. `schedulers_en_ligne` est le nombre de fils d'exécution système que la VM utilise pour faire tourner vos processus — un par cœur, par défaut. `process_limit` est le plafond dur : au-delà, plus rien ne se lance.
+
+## 2. Ce que pèse un processus au repos
+
+```elixir
+defmodule Demo do
+  # un processus qui ne fait rien d'autre qu'attendre
+  def dormeur do
+    receive do
+      :stop -> :ok
+    end
+  end
+end
+
+pid = spawn(&Demo.dormeur/0)
+Process.sleep(10)
+
+info = Process.info(pid, [:memory, :heap_size, :stack_size, :total_heap_size, :message_queue_len])
+send(pid, :stop)
+
+mot = :erlang.system_info(:wordsize)
+
+Kino.DataTable.new([
+  %{mesure: "mémoire totale", valeur: "#{info[:memory]} octets"},
+  %{mesure: "tas (heap)", valeur: "#{info[:heap_size]} mots, soit #{info[:heap_size] * mot} octets"},
+  %{mesure: "pile (stack)", valeur: "#{info[:stack_size]} mot(s)"},
+  %{mesure: "file de messages", valeur: "#{info[:message_queue_len]} message(s)"}
+])
+```
+
+Un processus au repos pèse environ **2,6 Ko** : son tas initial de 233 mots, plus la structure de contrôle que la VM tient pour lui. À comparer à un fil d'exécution système, dont la pile réservée se compte en mégaoctets — c'est tout l'écart entre « quelques milliers » et « un million ».
+
+## 3. Les paliers, en direct
+
+La cellule suivante monte par paliers et redessine un tableau après chacun. Elle tient en **une seule cellule** : la zone `Kino.Frame` est un processus attaché à sa cellule, et la séparer de la boucle qui l'alimente donnerait un `(EXIT) no process` à la première réexécution.
+
+```elixir
+# Kino.render place la zone dans la sortie MAINTENANT : sans cela, elle n'apparaîtrait
+# qu'au retour de la cellule et tous les rendus intermédiaires seraient invisibles
+zone = Kino.Frame.new() |> Kino.render()
+
+paliers = [1_000, 10_000, 50_000, 100_000]
+
+lignes =
+  Enum.map(paliers, fn n ->
+    :erlang.garbage_collect()
+    avant = :erlang.memory(:processes)
+
+    {micro, pids} = :timer.tc(fn -> for _ <- 1..n, do: spawn(&Demo.dormeur/0) end)
+
+    octets = :erlang.memory(:processes) - avant
+
+    ligne = %{
+      processus: n,
+      temps_ms: Float.round(micro / 1000, 1),
+      memoire_mo: Float.round(octets / (1024 * 1024), 1),
+      octets_par_processus: round(octets / n),
+      ns_par_spawn: round(micro * 1000 / n)
+    }
+
+    # on relâche avant le palier suivant
+    for p <- pids, do: send(p, :stop)
+    Process.sleep(200)
+
+    Kino.Frame.render(zone, Kino.DataTable.new([ligne]))
+    ligne
+  end)
+
+Kino.Frame.render(zone, Kino.DataTable.new(lignes, name: "Paliers"))
+# la zone est déjà affichée : la rendre à nouveau ici la ferait apparaître deux fois
+:ok
+```
+
+La colonne qui compte est `octets_par_processus` : elle ne bouge pas d'un palier à l'autre. Le coût d'un processus est **constant**, il ne se dégrade pas avec leur nombre. C'est ce qui autorise à en lancer un par connexion, par utilisateur, par ligne à traiter — sans arbitrage.
+
+## 4. La limite, et comment la déplacer
+
+```elixir
+limite = :erlang.system_info(:process_limit)
+Kino.Markdown.new("Sur cette machine : **#{limite}** processus simultanés au maximum.")
+```
+
+La valeur par défaut est **1 048 576** — le million passe donc, tout juste. Elle se règle au démarrage de la VM, jamais à chaud :
+
+```
+elixir --erl "+P 2000000" mon_script.exs
+```
+
+Au-delà du plafond, `spawn` ne renvoie pas d'erreur souple : il lève.
+
+```
+11:25:36.227 [error] Too many processes
+
+** (SystemLimitError) a system limit has been reached
+```
+
+## 5. Leur parler : diffusion et anneau
+
+```elixir
+n = 100_000
+
+# diffusion : un message à chacun
+pids = for _ <- 1..n, do: spawn(&Demo.dormeur/0)
+{micro_diff, :ok} = :timer.tc(fn -> for p <- pids, do: send(p, :stop); :ok end)
+
+# send/2 est asynchrone : sans cette pause, les dormeurs sont encore vivants quand
+# l'anneau se construit, et les deux jeux cohabitent — soit le double de mémoire
+Process.sleep(300)
+
+# anneau : un jeton qui traverse la chaîne et revient
+defmodule Anneau do
+  def maillon(suivant) do
+    receive do
+      msg -> send(suivant, msg)
+    end
+  end
+end
+
+moi = self()
+dernier = Enum.reduce(1..n, moi, fn _, suivant -> spawn(fn -> Anneau.maillon(suivant) end) end)
+
+{micro_anneau, :ok} =
+  :timer.tc(fn ->
+    send(dernier, :jeton)
+
+    receive do
+      :jeton -> :ok
+    end
+  end)
+
+Kino.DataTable.new([
+  %{
+    epreuve: "diffusion à #{n} processus",
+    total_ms: Float.round(micro_diff / 1000, 1),
+    ns_par_operation: round(micro_diff * 1000 / n)
+  },
+  %{
+    epreuve: "anneau de #{n} maillons",
+    total_ms: Float.round(micro_anneau / 1000, 1),
+    ns_par_operation: round(micro_anneau * 1000 / n)
+  }
+])
+```
+
+L'anneau est le plus parlant : le jeton traverse cent mille processus, chacun le recevant et le repassant au suivant, et le tour complet se compte en dizaines de millisecondes. Un envoi de message coûte donc **moins d'une microseconde**, copie de la donnée comprise.
+
+## 6. Pourquoi une boucle infinie ne gèle rien
+
+```elixir
+defmodule Charge do
+  def boucle_infinie, do: boucle_infinie()
+
+  # un aller-retour de message, en microsecondes
+  def aller_retour do
+    parent = self()
+
+    p =
+      spawn(fn ->
+        receive do
+          :ping -> send(parent, :pong)
+        end
+      end)
+
+    {micro, :ok} =
+      :timer.tc(fn ->
+        send(p, :ping)
+
+        receive do
+          :pong -> :ok
+        end
+      end)
+
+    micro
+  end
+
+  def moyenne(liste), do: Float.round(Enum.sum(liste) / length(liste), 1)
+end
+
+au_repos = for _ <- 1..20, do: Charge.aller_retour()
+
+# deux fois plus de boucles infinies que de cœurs.
+# spawn_link, et non spawn : si vous arrêtez la cellule en cours de route, elles meurent
+# avec l'évaluateur au lieu de saturer vos cœurs sans plus aucun pid pour les tuer.
+combien = :erlang.system_info(:schedulers_online) * 2
+gloutons = for _ <- 1..combien, do: spawn_link(&Charge.boucle_infinie/0)
+Process.sleep(300)
+
+# moyenne sur TOUTES les boucles : la première lancée démarre en tête et l'ordonnanceur
+# la pose volontiers sur un cœur rapide, elle affiche donc le double de la moyenne
+reds_liste = for g <- gloutons, do: Process.info(g, :reductions) |> elem(1)
+reds_moyen = round(Enum.sum(reds_liste) / combien)
+sous_charge = for _ <- 1..20, do: Charge.aller_retour()
+
+# on délie avant de tuer : sinon le :killed remonterait à l'évaluateur, qui ne piège pas les sorties
+for p <- gloutons do
+  Process.unlink(p)
+  Process.exit(p, :kill)
+end
+
+Kino.render(
+  Kino.DataTable.new([
+    %{situation: "au repos", aller_retour_µs: Charge.moyenne(au_repos)},
+    %{situation: "#{combien} boucles infinies", aller_retour_µs: Charge.moyenne(sous_charge)}
+  ])
+)
+
+Kino.Markdown.new("""
+Chacune de ces #{combien} boucles a brûlé en moyenne **#{reds_moyen}** réductions en 0,3 s,
+soit environ #{round(reds_moyen / 0.3 / 1_000_000)} millions par seconde **en concurrence avec
+les #{combien - 1} autres**. Seule sur la machine, une boucle en brûle plusieurs fois plus :
+c'est la mesure même de la préemption.
+""")
+```
+
+Le rapport entre les deux lignes est net — l'aller-retour ralentit franchement — mais il reste **de l'ordre de la microseconde**. Rien n'est gelé, alors qu'il tourne deux boucles infinies par cœur.
+
+La raison est le **comptage de réductions**. Une réduction correspond grossièrement à un appel de fonction ; chaque processus reçoit un quota par tour, et quand il l'épuise l'ordonnanceur le suspend et passe au suivant, qu'il le veuille ou non. Aucune coopération n'est demandée au code : une boucle infinie sans appel bloquant est préemptée comme le reste. C'est la différence de fond avec un ordonnancement coopératif, où un seul `while (true)` fige tout.
+
+## 7. Trois fois plus léger : l'hibernation
+
+Un processus qui attend n'a pas besoin de son tas. `:erlang.hibernate/3` le lui reprend : ramasse-miettes complet, pile abandonnée, et réveil dans la fonction indiquée à l'arrivée du prochain message.
+
+```elixir
+defmodule Leger do
+  def hiberneur do
+    :erlang.hibernate(__MODULE__, :reveil, [])
+  end
+
+  def reveil do
+    receive do
+      :stop -> :ok
+    end
+  end
+
+  def poids(pid) do
+    Process.sleep(20)
+    {:memory, m} = Process.info(pid, :memory)
+    {:heap_size, h} = Process.info(pid, :heap_size)
+    %{memoire_octets: m, tas_mots: h}
+  end
+end
+
+ordinaire = spawn(&Demo.dormeur/0)
+hiberne = spawn(&Leger.hiberneur/0)
+# demander un petit tas à la création ne sert à rien : la VM impose son plancher
+petit_tas = :erlang.spawn_opt(&Demo.dormeur/0, min_heap_size: 1)
+
+table =
+  [
+    Map.put(Leger.poids(ordinaire), :facon, "spawn ordinaire"),
+    Map.put(Leger.poids(hiberne), :facon, "hiberné"),
+    Map.put(Leger.poids(petit_tas), :facon, "spawn_opt(min_heap_size: 1)")
+  ]
+
+for p <- [ordinaire, hiberne, petit_tas], do: Process.exit(p, :kill)
+
+Kino.DataTable.new(table)
+```
+
+Environ **808 octets** contre 2 632, et un tas de 5 mots au lieu de 233. La troisième ligne est instructive : demander un tas minimal à la création ne change rien, seule l'hibernation fait tomber le chiffre.
+
+Conséquence : le plafond n'est pas la machine virtuelle mais la mémoire disponible. Sur un portable de 16 Go, cinq millions de processus hibernés tiennent dans 3,95 Go — en masse le coût monte à environ 850 octets pièce, la mesure ci-dessus portant sur un processus isolé — le chiffre est dans l'article jumeau, avec `+P` relevé, parce qu'il n'a rien à faire dans un notebook.
+
+## À retenir
+
+* Un processus au repos coûte environ **2,6 Ko** (tas initial de 233 mots + structure de contrôle), et ce coût **ne varie pas** avec leur nombre.
+* Un `spawn` prend de l'ordre de la **microseconde** ; un envoi de message aussi.
+* Le plafond par défaut est **1 048 576** processus, réglable au démarrage avec `+P`, jamais à chaud. Au-delà : `** (SystemLimitError) a system limit has been reached`, précédé de `[error] Too many processes`.
+* L'ordonnanceur est **préemptif par comptage de réductions** : une boucle infinie n'affame personne, elle ralentit tout le monde un peu.
+* Conséquence de conception : un processus par connexion, par utilisateur ou par unité de travail n'est pas une extravagance, c'est le mode d'emploi.
+* `:erlang.hibernate/3` ramène un processus dormant à **808 octets** (tas de 5 mots) : trois fois moins. `spawn_opt(min_heap_size: 1)` n'y change rien, la VM impose son plancher de 233 mots.
+* Version complète, jusqu'à cinq millions de processus hibernés : [Un million de processus](https://nseaseb.github.io/ElixirPhoenixRessources/articles/un-million-de-processus/).
+* Documentation officielle : https://www.erlang.org/doc/apps/erts/erlang.html#system_info/1

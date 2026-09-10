@@ -59,6 +59,9 @@ etapes:
       - titre: "Lire une stacktrace / comprendre les erreurs"
         note: "le réflexe qui débloque quand ça plante — à garder sous la main dès maintenant"
         chemin: "Tips/lire_une_stacktrace.md"
+      - titre: "Ce que coûte un processus BEAM"
+        note: "2,6 Ko et une microseconde — mesuré par paliers, jusqu'à cent mille processus"
+        chemin: "Tips/processus_beam.livemd"
 
   - titre: "Persister des données avec Ecto"
     niveau: intermediaire

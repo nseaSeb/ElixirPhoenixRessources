@@ -106,6 +106,7 @@ De vraies applications à lire pour voir Elixir « en conditions réelles ».
 - [Débogage & outillage IEx (`iex`, `IO.inspect`, `dbg`, `pry`)](Tips/debogage_iex.md)
 - [Lire une stacktrace / comprendre les erreurs](Tips/lire_une_stacktrace.md)
 - [OTP : GenServer & Supervisor (Livebook)](OTP/genserver_supervisor.livemd)
+- [Ce que coûte un processus BEAM (Livebook)](Tips/processus_beam.livemd)
 - [Tests avec ExUnit](Test_unitaire/exunit_bases.md)
 - [🗂️ Projet fil rouge : Kanban collaboratif temps réel](Projet/kanban_collaboratif.md)
 - [Exemple d'implémentation Hook sortable.js](https://github.com/nseaSeb/SortableBoilerPlate)

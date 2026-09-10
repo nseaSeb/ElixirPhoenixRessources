@@ -28,6 +28,7 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 
 ## OTP / Concurrence
 - [GenServer & Supervisor (Livebook exécutable)](./OTP/genserver_supervisor.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/OTP/genserver_supervisor.livemd)
+- [Ce que coûte un processus BEAM](./Tips/processus_beam.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/Tips/processus_beam.livemd)
 
 ## Outillage
 - [Mesurer le partage structurel](./Tips/partage_structurel.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/Tips/partage_structurel.livemd)
