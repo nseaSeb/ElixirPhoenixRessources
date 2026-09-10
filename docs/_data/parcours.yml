@@ -155,6 +155,8 @@ outils:
     chemin: "Librairie.md"
   - titre: "Mesurer le partage structurel (Livebook)"
     chemin: "Tips/partage_structurel.livemd"
+  - titre: "Kino : construire une interface dans Livebook"
+    chemin: "Tips/kino_controles.livemd"
   - titre: "Un outil interne en trente lignes (Livebook + Kino)"
     chemin: "Tips/outil_interne_livebook.livemd"
   - titre: "Manipulation de dates avec Timex"

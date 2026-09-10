@@ -1,0 +1,320 @@
+# Kino : construire une interface dans Livebook
+
+## Section
+
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
+
+```elixir
+Mix.install([{:kino, "~> 0.19.0"}])
+```
+
+## Une seule idée à comprendre
+
+Kino offre une trentaine de composants, et on peut passer une heure à les essayer un par un sans rien comprendre. Il y a en réalité **deux façons de lire un contrôle**, et tout le reste en découle :
+
+|                         | Tirer (*pull*)                           | Pousser (*push*)                      |
+| ----------------------- | ---------------------------------------- | ------------------------------------- |
+| Quoi                    | `Kino.Input.*` + `Kino.Input.read/1`     | `Kino.Control.*` + `Kino.listen/2`    |
+| Quand la valeur est lue | quand **on réexécute la cellule**      | quand **l'utilisateur agit**          |
+| Qui exécute le code    | le processus d'évaluation de la cellule | un processus lancé par `Kino.listen` |
+| Pour quoi faire         | un paramètre de notebook                | une interface qui réagit             |
+
+Un notebook d'analyse se contente du premier. Une interface — un formulaire, un bouton, un tableau qui se rafraîchit — a besoin du second. Les mélanger est l'erreur qui fait perdre le plus de temps ; la section « Le piège » plus bas montre le message d'erreur exact que ça produit.
+
+## 1. Les entrées : `Kino.Input`
+
+Une entrée se construit par son type. Il n'y a pas de `Kino.Input.new` : chaque type a sa fonction.
+
+| Fonction                                 | Valeur lue                                      |
+| ---------------------------------------- | ----------------------------------------------- |
+| `text/2`, `textarea/2`, `password/2`     | une chaîne                                     |
+| `url/2`                                  | une chaîne d'URL valide, ou `nil`              |
+| `number/2`                               | un nombre, ou `nil`                             |
+| `range/2`                                | un flottant, entre `:min` et `:max`             |
+| `checkbox/2`                             | `true` ou `false`                               |
+| `select/3`                               | une des valeurs proposées                      |
+| `date/2`, `utc_time/2`, `utc_datetime/2` | une `Date`, `Time`, `DateTime`                  |
+| `color/2`                                | une chaîne `"#rrggbb"`                         |
+| `file/2`, `image/2`, `audio/2`           | une référence (voir `Kino.Input.file_path/1`) |
+
+Le premier argument est toujours l'étiquette affichée. Le reste passe par les options.
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## 2. Une entrée, cellule par cellule
+
+La cellule ci-dessous **définit** l'entrée. Comme elle est la dernière expression, Livebook l'affiche.
+
+```elixir
+prenom = Kino.Input.text("Prénom", default: "Ada")
+```
+
+Celle-ci la **lit**. Modifiez le champ ci-dessus, puis réexécutez cette cellule-ci : la valeur suit.
+
+```elixir
+Kino.Input.read(prenom)
+```
+
+C'est tout le modèle « tirer » : l'entrée vit dans une cellule, sa valeur se lit dans une autre, à chaque réexécution.
+
+Trois autres types, pour voir les options les plus utiles :
+
+```elixir
+# :min, :max et :step définissent la course du curseur
+tolerance = Kino.Input.range("Tolérance", min: 0, max: 1, step: 0.05, default: 0.25)
+
+# les options d'un select sont des couples {valeur, étiquette}
+langue = Kino.Input.select("Langue", [{:fr, "Français"}, {:en, "Anglais"}])
+
+# une case à cocher vaut false par défaut
+detail = Kino.Input.checkbox("Afficher le détail")
+
+# plusieurs sorties dans une même cellule : Kino.render pour les précédentes
+Kino.render(tolerance)
+Kino.render(langue)
+detail
+```
+
+```elixir
+%{
+  tolerance: Kino.Input.read(tolerance),
+  langue: Kino.Input.read(langue),
+  detail: Kino.Input.read(detail)
+}
+```
+
+## 3. Le piège : lire une entrée jamais affichée
+
+Une entrée construite mais jamais rendue n'existe pas côté navigateur, et sa lecture échoue :
+
+```elixir
+# cette entrée n'est pas la dernière expression de la cellule : elle n'est pas affichée
+_fantome = Kino.Input.text("Jamais affichée")
+Kino.Input.read(_fantome)
+```
+
+```
+** (RuntimeError) failed to read input value, input not found. Make sure to render the input before reading its value
+```
+
+Second piège, plus subtil, et c'est **la raison d'être de la seconde moitié de ce notebook** — lire une entrée depuis un autre processus :
+
+```
+** (RuntimeError) input value can only be read in the main evaluation process,
+but Kino.Input.read/1 was called by another process. (...) In case you want to read
+the latest input value from a long-running process, consider using Kino.Control.form/2,
+or subscribing to the input change using one of the functions in the Kino.Control module
+```
+
+Le message dit exactement quoi faire : dès qu'un processus vit plus longtemps que la cellule — donc dès qu'on construit une interface — on passe à `Kino.Control`.
+
+## 4. Les contrôles événementiels : `Kino.Control`
+
+Trois sources d'événements suffisent pour presque tout :
+
+```elixir
+bouton = Kino.Control.button("Dire bonjour")
+
+# Kino.listen démarre un processus et rend son pid : la cellule ne bloque pas
+Kino.listen(bouton, fn evenement ->
+  IO.inspect(evenement, label: "clic")
+end)
+
+# le contrôle en dernier, pour qu'il soit la sortie affichée
+bouton
+```
+
+Cliquez sur le bouton : chaque clic imprime `%{origin: "...", type: :click}`. Aucune cellule n'est réexécutée.
+
+> **La règle à retenir dès maintenant : un contrôle et son écouteur vivent dans la même cellule.**
+> 
+> `Kino.Control.button/1` appelle `Kino.Bridge.reference_object(ref, self())` : le contrôle est rattaché au processus d'évaluation de sa cellule. Séparer les deux donne un notebook qui marche au premier passage puis, après une réexécution, un bouton qui ne déclenche plus rien — sans le moindre message. La section 5 montre la variante bruyante du même problème.
+
+Voici la forme exacte des événements, par source :
+
+| Source                        | Événement reçu                                     |
+| ----------------------------- | ----------------------------------------------------- |
+| `Kino.Control.button/1`       | `%{type: :click, origin: _}`                          |
+| `Kino.Control.form/2`         | `%{type: :submit, data: %{champ: valeur}, origin: _}` |
+| `Kino.Control.interval/1`     | `%{type: :interval, iteration: 0, 1, 2…}`           |
+| une `Kino.Input` dans un flux | `%{type: :change, value: _, origin: _}`               |
+| `Kino.Control.keyboard/2`     | `%{type: :keydown, key: "k", origin: _}`              |
+
+`origin` identifie le client : deux personnes ouvrant le même notebook produisent deux valeurs différentes. C'est ce qui permet de répondre à un seul utilisateur.
+
+Le formulaire regroupe plusieurs entrées et n'émet qu'à la validation — ses champs sont des couples `{clé, entrée}`, et la clé se retrouve dans `data` :
+
+```elixir
+formulaire =
+  Kino.Control.form(
+    [
+      nom: Kino.Input.text("Nom"),
+      urgent: Kino.Input.checkbox("Urgent")
+    ],
+    submit: "Envoyer"
+  )
+
+Kino.listen(formulaire, fn %{data: donnees, origin: _} ->
+  IO.inspect(donnees, label: "reçu")
+end)
+
+formulaire
+```
+
+Les entrées d'un formulaire se lisent **dans l'événement**, jamais avec `Kino.Input.read/1` : c'est précisément le cas que le message d'erreur de la section 3 décrit.
+
+## 5. Mettre à jour l'affichage : `Kino.Frame`
+
+Un `Kino.Frame` est une zone réservée dans la sortie d'une cellule, qu'un autre processus peut redessiner plus tard.
+
+**La zone et son écouteur doivent tenir dans la même cellule.** C'est la règle la plus importante de ce notebook, et la raison vient de la doc de `Kino.start_child/1`, sur lequel `Kino.Frame.new/0` repose :
+
+> The process is automatically terminated when the current process terminates **or the current cell reevaluates**.
+
+Une zone est donc un processus attaché à la cellule qui l'a créée. Si la zone vit dans une cellule et l'écouteur dans une autre, réexécuter celle de la zone tue son processus — pendant que l'écouteur, lui, survit et continue d'écrire dans un pid mort :
+
+```
+** (exit) exited in: GenServer.call(#PID<0.711.0>, {:render, %Kino.Markdown{...}, :default}, :infinity)
+    ** (EXIT) no process: the process is not alive or there's no process currently associated with the given name
+```
+
+Les garder ensemble règle le problème : réexécuter la cellule recrée la zone **et** l'écouteur d'un seul coup.
+
+```elixir
+compteur = Kino.Control.button("Compter")
+zone = Kino.Frame.new()
+
+Kino.listen(compteur, 0, fn _evenement, n ->
+  # render remplace le contenu, append l'ajoute à la suite
+  Kino.Frame.render(zone, Kino.Markdown.new("**#{n + 1}** clic(s)"))
+  {:cont, n + 1}
+end)
+
+# la disposition en dernier : Kino.listen, lui, rend un pid
+Kino.Layout.grid([compteur, zone], boxed: true)
+```
+
+`Kino.listen/3` prend un état initial et une fonction à deux arguments qui rend `{:cont, nouvel_état}` — c'est l'équivalent d'un `GenServer` en trois lignes, sans en écrire un. Ici l'état est le compteur de clics, et il survit d'un clic à l'autre sans variable globale.
+
+Les trois opérations d'une zone :
+
+| Fonction                           | Effet                    |
+| ---------------------------------- | ------------------------ |
+| `Kino.Frame.render(zone, contenu)` | remplace tout le contenu |
+| `Kino.Frame.append(zone, contenu)` | ajoute à la suite       |
+| `Kino.Frame.clear(zone)`           | vide la zone             |
+
+`render/3` et `append/3` acceptent `to: origin` pour n'afficher que chez **un** client — la base d'une interface multi-utilisateur.
+
+## 6. Disposer les éléments : `Kino.Layout`
+
+```elixir
+Kino.Layout.grid(
+  [
+    Kino.Markdown.new("### Gauche"),
+    Kino.Markdown.new("### Droite")
+  ],
+  columns: 2,
+  boxed: true
+)
+```
+
+```elixir
+Kino.Layout.tabs(
+  Résumé: Kino.Markdown.new("Trois lignes de résumé."),
+  Données: Kino.DataTable.new([%{ville: "Nantes", habitants: 320_000}])
+)
+```
+
+## 7. Les sorties les plus utiles
+
+```elixir
+Kino.render(Kino.Markdown.new("Du **Markdown**, avec du `code`."))
+Kino.render(Kino.Text.new("Du texte brut, monospace."))
+
+# un arbre repliable : bien plus lisible qu'IO.inspect sur une structure imbriquée
+Kino.render(Kino.Tree.new(%{a: [1, 2, %{b: :profond}], c: {:ok, "fin"}}))
+
+# un tableau triable, à partir de n'importe quoi qui implémente Table.Reader
+Kino.render(Kino.DataTable.new([
+  %{ville: "Nantes", habitants: 320_000},
+  %{ville: "Rennes", habitants: 220_000}
+]))
+
+Kino.Mermaid.new("""
+graph LR
+  Entrée --> Contrôle --> Frame
+""")
+```
+
+`Kino.Download.new(fn -> "contenu" end, filename: "export.txt")` produit un bouton de téléchargement, et `Kino.Image`, `Kino.Audio`, `Kino.Video`, `Kino.HTML` font ce que leur nom indique.
+
+## 8. La version courte : `Kino.Shorts`
+
+`Kino.Shorts` regroupe les mêmes constructeurs sous des noms courts, à importer une fois :
+
+```elixir
+import Kino.Shorts
+
+markdown("Un titre en **une ligne**")
+```
+
+Attention aux fonctions `read_*` : elles ne bloquent pas et n'attendent personne. `read_text("Nom")` fait littéralement `Kino.Input.text("Nom") |> Kino.render() |> Kino.Input.read()` — au premier passage, elle rend donc la valeur par défaut. C'est l'affichage **et** la lecture dans une seule cellule, à réexécuter pour obtenir la saisie.
+
+```elixir
+# affiche le champ, et rend "" tant que la cellule n'a pas été réexécutée
+read_text("Votre nom")
+```
+
+## 9. Tout assembler : un mini tableau de bord
+
+Vingt lignes, et les quatre briques y sont : un formulaire, une zone, un état, une disposition.
+
+```elixir
+recherche =
+  Kino.Control.form([terme: Kino.Input.text("Filtrer par ville")], submit: "Chercher")
+
+resultats = Kino.Frame.new()
+
+villes = [
+  %{ville: "Nantes", habitants: 320_000},
+  %{ville: "Rennes", habitants: 220_000},
+  %{ville: "Angers", habitants: 155_000}
+]
+
+Kino.listen(recherche, fn %{data: %{terme: terme}} ->
+  filtrees =
+    Enum.filter(villes, &String.contains?(String.downcase(&1.ville), String.downcase(terme)))
+
+  contenu =
+    case filtrees do
+      [] -> Kino.Markdown.new("_Aucune ville pour **#{terme}**._")
+      lignes -> Kino.DataTable.new(lignes, name: "Résultats")
+    end
+
+  Kino.Frame.render(resultats, contenu)
+end)
+
+# la disposition doit être la dernière expression : Kino.listen, lui, rend un pid
+Kino.Layout.grid([recherche, resultats], boxed: true)
+```
+
+## Pour aller plus loin
+
+* `Kino.Process.render_sup_tree/1` dessine un arbre de supervision vivant — à essayer juste après la note [GenServer & Supervisor](../OTP/genserver_supervisor.livemd).
+* `Kino.Control.keyboard/2` capte les touches, `Kino.Control.interval/1` produit un tic périodique, et `Kino.Control.stream/1` fusionne plusieurs sources en un seul flux.
+* `Kino.JS` et `Kino.JS.Live` permettent d'écrire un composant en JavaScript, `Kino.SmartCell` une cellule intelligente avec son propre formulaire.
+* La version « appliquée » de ce notebook, qui interroge une vraie API : [Un outil interne en trente lignes](./outil_interne_livebook.livemd).
+
+## À retenir
+
+* Deux modes, et un seul choix à faire : **tirer** (`Kino.Input.read/1`, valeur lue à la réexécution de la cellule) ou **pousser** (`Kino.Control` + `Kino.listen/2`, code exécuté quand l'utilisateur agit).
+* Une entrée doit être **affichée** pour être lisible ; sinon `Kino.Input.read/1` lève `input not found`.
+* Une entrée ne se lit **pas** depuis un autre processus : dans ce cas, `Kino.Control.form/2` et la valeur arrive dans l'événement.
+* `Kino.listen/2` rend un pid et ne bloque pas ; `Kino.listen/3` ajoute un état et attend `{:cont, état}`.
+* **Un contrôle, sa zone et son écouteur tiennent dans une seule cellule** : les deux sont attachés au processus d'évaluation de leur cellule et meurent à sa réexécution. Séparés, on récolte soit un bouton devenu inerte en silence, soit un `(EXIT) no process` sur la zone.
+* `Kino.Frame` est la seule façon de changer une sortie sans réexécuter la cellule ; `render` remplace, `append` ajoute, et `to: origin` vise un seul client.
+* La dernière expression d'une cellule est affichée automatiquement ; pour en afficher plusieurs, `Kino.render/1`.
+* `Kino.Shorts.read_*` rend et lit dans la foulée : au premier passage, c'est la valeur par défaut.
+* Documentation officielle : https://hexdocs.pm/kino/Kino.html

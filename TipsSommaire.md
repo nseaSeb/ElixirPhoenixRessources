@@ -31,6 +31,7 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 
 ## Outillage
 - [Mesurer le partage structurel](./Tips/partage_structurel.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/Tips/partage_structurel.livemd)
+- [Kino : construire une interface dans Livebook](./Tips/kino_controles.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/Tips/kino_controles.livemd)
 - [Un outil interne en trente lignes (Kino)](./Tips/outil_interne_livebook.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/Tips/outil_interne_livebook.livemd)
 
 ## Librairies utilitaires
