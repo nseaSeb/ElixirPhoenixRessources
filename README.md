@@ -15,8 +15,9 @@ Une sorte d'awesome Elixir.
 - [🧭 Parcours d'apprentissage](https://nseaseb.github.io/ElixirPhoenixRessources/parcours/)
 - [✍️ Le blog](https://nseaseb.github.io/ElixirPhoenixRessources/)
 - [Liens majeurs](#liens-majeurs)
-- [Communauté](#communauté)
+- [Erlang et la BEAM](#erlang-et-la-beam)
 - [Contribuer](#contribuer)
+- [Communauté](#communauté)
 - [Framework et librairies](#framework-et-librairies)
 - [Projets open source à explorer](#projets-open-source-à-explorer)
 - [Ma modeste contribution](#ma-modeste-contribution)
@@ -29,11 +30,16 @@ Une sorte d'awesome Elixir.
 - [Vidéos, tutos, formations](#vidéos-tutos-formations)
 - [S'entraîner](#sentraîner)
 - [Déploiement](#déploiement)
+- [Observabilité et production](#observabilité-et-production)
+- [Sécurité et authentification](#sécurité-et-authentification)
+- [Nerves et l'embarqué](#nerves-et-lembarqué)
+- [Autres langages de la BEAM](#autres-langages-de-la-beam)
 - [Livres](#livres)
 - [Éditeurs](#éditeurs)
 - [Extensions VSCode](#extensions-vscode)
 - [Thèmes VSCode](#thèmes-vscode)
 - [Conférences](#conférences)
+- [Autres listes awesome](#autres-listes-awesome)
 - [Autres liens utiles](#autres-liens-utiles)
 - [Licence](#licence)
 
@@ -47,6 +53,17 @@ Une sorte d'awesome Elixir.
 - [Guide officiel « Getting Started »](https://hexdocs.pm/elixir/introduction.html) — le tutoriel de référence du langage
 - [Blog Elixir](https://elixir-lang.org/blog/) — annonces de versions et articles de l'équipe cœur
 - [Blog Phoenix](https://www.phoenixframework.org/blog) — annonces et nouveautés du framework
+
+## Erlang et la BEAM
+
+Elixir tourne sur la machine virtuelle d'Erlang et lui emprunte sa bibliothèque standard : dès qu'on lit une trace d'erreur ou qu'on diagnostique une application en production, on retombe sur du code et de la documentation Erlang. Ces ressources comblent le trou.
+
+- [Documentation officielle Erlang/OTP](https://www.erlang.org/doc) — la référence des modules `:gen_server`, `:ets`, `:crypto` et de tout ce qu'Elixir appelle sous le capot
+- [Learn You Some Erlang for Great Good!](https://learnyousomeerlang.com/) — **gratuit**, l'introduction la plus lisible à Erlang et à sa philosophie « let it crash »
+- [Erlang in Anger](https://erlang-in-anger.com/) — **gratuit**, comment diagnostiquer un nœud BEAM qui se comporte mal en production ; un classique de Fred Hébert
+- [Adopting Erlang](https://adoptingerlang.org/) — **gratuit**, l'accompagnement complet d'une application de l'écriture au déploiement et à la supervision
+- [Blog Erlang/OTP](https://www.erlang.org/blog) — les annonces de l'équipe qui maintient la machine virtuelle
+- [Erlang Ecosystem Foundation](https://erlef.org/) — la fondation qui chapeaute l'écosystème, avec ses groupes de travail publics
 
 ## Contribuer
 
@@ -77,7 +94,6 @@ Pas besoin d'être expert : un article écrit par quelqu'un qui vient de compren
 - [Ash Framework](https://ash-hq.org/) — modélisation de domaine déclarative
 - [Hologram](https://github.com/bartblast/hologram) — framework full-stack qui tourne **par-dessus Phoenix** : on écrit le frontend interactif en Elixir (compilé en JavaScript), une alternative à LiveView / au JS
 - [design-patterns-in-elixir](https://github.com/joshnuss/design-patterns-in-elixir) — les design patterns classiques du GoF implémentés en Elixir
-- [awesome-elixir](https://github.com/h4cc/awesome-elixir) — la méta-liste de référence (en anglais)
 - [Elixir Toolbox](https://elixir-toolbox.dev/) — annuaire de librairies et d'outils classés par catégorie
 
 ## Projets open source à explorer
@@ -121,6 +137,7 @@ De vraies applications à lire pour voir Elixir « en conditions réelles ».
 - [TypeCheck](https://github.com/Qqwy/elixir-type_check) — vérifications de types à l'exécution
 - [eqWAlizer](https://github.com/WhatsApp/eqwalizer) — le vérificateur de types de WhatsApp
 - [Gradualizer](https://github.com/josefs/Gradualizer) — typage graduel pour la BEAM
+- [Types graduels ensemblistes](https://hexdocs.pm/elixir/gradual-set-theoretic-types.html) — le système de types que l'équipe cœur intègre au langage depuis Elixir 1.17, documenté officiellement ; à lire avant de choisir un vérificateur tiers
 
 ## Style et bonnes pratiques
 
@@ -133,6 +150,7 @@ De vraies applications à lire pour voir Elixir « en conditions réelles ».
 - [Enum cheatsheet officielle](https://hexdocs.pm/elixir/enum-cheat.html) — toutes les fonctions d'`Enum` sur une page, dans HexDocs
 - [devhints.io — Elixir](https://devhints.io/elixir) — antisèche générale de la syntaxe du langage
 - [Phoenix cheatsheet](https://lib.marinovic.dev/phoenix) — surtout les générateurs `mix phx.gen.*` (travail en cours, sans version indiquée)
+- [Antisèches GenServer et Supervisor](https://github.com/benjamintanweihao/elixir-cheatsheets) — les callbacks et les stratégies de supervision résumés sur deux pages ; **attention, ces PDF datent de 2016** et ignorent `child_spec/1` comme `handle_continue/2`, à recouper avec la documentation actuelle de `Supervisor`
 - [Tailwind cheatsheet](https://tailwindcomponents.com/cheatsheet/)
 
 ## Blogs et articles
@@ -228,11 +246,46 @@ En anglais :
 - [Gigalixir](https://www.gigalixir.com/) — PaaS spécialisé Elixir (hot upgrades, clustering, sans limite de sommeil)
 - [Préparer une app Phoenix au déploiement avec les releases](https://blog.miguelcoba.com/preparing-a-phoenix-16-app-for-deployment-with-elixir-releases) (Miguel Cobá) — tutoriel pas à pas
 
+## Observabilité et production
+
+Une application qui tourne bien en local et qu'on ne sait pas observer en production reste une inconnue. La BEAM est instrumentée nativement, et l'écosystème s'est standardisé autour de `telemetry` : toutes les librairies sérieuses émettent leurs événements dans ce format.
+
+- [telemetry](https://github.com/beam-telemetry/telemetry) — la brique d'instrumentation commune à tout l'écosystème ; Phoenix, Ecto, Oban et Finch émettent leurs événements par là
+- [La télémétrie dans Phoenix](https://hexdocs.pm/phoenix/telemetry.html) — le guide officiel qui montre comment brancher des métriques sur ces événements
+- [Phoenix LiveDashboard](https://hexdocs.pm/phoenix_live_dashboard/) — un tableau de bord temps réel livré avec Phoenix : processus, mémoire, tables ETS, requêtes, le tout sans dépendance externe
+- [PromEx](https://github.com/akoutmos/prom_ex) — expose les métriques `telemetry` vers Prometheus, avec des tableaux de bord Grafana prêts à importer
+- [Sentry](https://github.com/getsentry/sentry-elixir) — remontée et agrégation des exceptions, le client officiel pour Elixir
+- [OpenTelemetry pour Erlang et Elixir](https://opentelemetry.io/docs/languages/erlang/) — le traçage distribué standardisé, quand une requête traverse plusieurs services
+- [recon](https://github.com/ferd/recon) — la boîte à outils de diagnostic d'un nœud en production, écrite pour être sûre à exécuter sur un système chargé
+- [observer_cli](https://github.com/zhongwencool/observer_cli) — l'équivalent de `:observer` dans un terminal, indispensable quand on est connecté en SSH sans interface graphique
+
+## Sécurité et authentification
+
+- [`mix phx.gen.auth`](https://hexdocs.pm/phoenix/mix_phx_gen_auth.html) — le générateur d'authentification livré avec Phoenix : il écrit le code dans votre application plutôt que de le cacher dans une dépendance, c'est le point de départ recommandé
+- [Sobelow](https://github.com/nccgroup/sobelow) — l'analyse statique de sécurité dédiée à Phoenix, déjà citée plus haut dans les vérificateurs de code
+- [mix_audit](https://github.com/mirego/mix_audit) — compare vos dépendances à la base des vulnérabilités connues, à lancer dans l'intégration continue
+- [Groupe de travail sécurité de l'ERLEF](https://www.erlef.org/wg/security) — les recommandations de la fondation, dont un guide de bonnes pratiques pour les applications de la BEAM
+- Les librairies correspondantes (Ueberauth, Assent, Argon2, Bodyguard, LetMe) sont détaillées dans la [liste de librairies](Librairie.md#authentification-et-autorisation)
+
+## Nerves et l'embarqué
+
+Le même langage et le même modèle de supervision, mais sur un Raspberry Pi plutôt que sur un serveur : Nerves construit une image système minimale qui démarre directement sur votre application Elixir.
+
+- [nerves-project.org](https://nerves-project.org/) — le site du projet, avec les cartes supportées
+- [Guide de démarrage Nerves](https://hexdocs.pm/nerves/getting-started.html) — de l'installation à la carte SD qui démarre
+- [nerves](https://github.com/nerves-project/nerves) — le dépôt principal
+
+## Autres langages de la BEAM
+
+- [Gleam](https://gleam.run/) — un langage typé statiquement qui compile vers la BEAM et vers JavaScript ; il s'interface avec les librairies Erlang et Elixir existantes
+- [awesome-gleam](https://github.com/gleam-lang/awesome-gleam) — la liste de référence de son écosystème
+
 ## Livres
 
 ### En anglais
 
 - [**Elixir in Action**](https://www.manning.com/books/elixir-in-action-third-edition) — le livre le plus apprécié (3e édition, déc. 2023)
+- [**Programming Elixir ≥ 1.6**](https://pragprog.com/titles/elixir16/programming-elixir-1-6/) — l'introduction canonique au langage, par Dave Thomas ; le complément naturel d'« Elixir in Action », qui suppose déjà la syntaxe acquise
 - [**Programming Phoenix 1.4**](https://pragprog.com/titles/phoenix14/programming-phoenix-1-4/) — un des plus appréciés à propos de Phoenix
 - [**Phoenix in Action**](https://www.manning.com/books/phoenix-in-action) — attention, ancienne version de Phoenix
 - [Programming Phoenix LiveView](https://pragprog.com/titles/liveview/programming-phoenix-liveview/) — LE livre sur LiveView (édition finale 2026)
@@ -241,6 +294,9 @@ En anglais :
 - [Designing Elixir Systems with OTP](https://pragprog.com/titles/jgotp/designing-elixir-systems-with-otp/) — comment structurer une vraie application OTP
 - [Programming Ecto](https://pragprog.com/titles/wmecto/programming-ecto/) — la référence sur Ecto
 - [Testing Elixir](https://pragprog.com/titles/lmelixir/testing-elixir/) — ExUnit, mocks, property-based testing, tests d'intégration
+- [Metaprogramming Elixir](https://pragprog.com/titles/cmelixir/metaprogramming-elixir/) — les macros et le système de quotation expliqués de l'intérieur, par Chris McCord
+- [Concurrent Data Processing in Elixir](https://pragprog.com/titles/sgdpelixir/concurrent-data-processing-in-elixir/) — `Task`, `GenStage`, `Flow` et Broadway comparés sur des cas concrets de pipelines
+- [Engineering Elixir Applications](https://pragprog.com/titles/beamops/engineering-elixir-applications/) — l'infrastructure autour de l'application : Terraform, Docker, intégration continue et observabilité ; le pendant opérationnel de la section « Déploiement »
 - [Real-Time Phoenix](https://pragprog.com/titles/sbsockets/real-time-phoenix/) — Channels, PubSub et temps réel à l'échelle
 - [Machine Learning in Elixir](https://pragprog.com/titles/smelixir/machine-learning-in-elixir/) — Nx, Axon et Bumblebee en pratique
 - [Network Programming in Elixir and Erlang](https://pragprog.com/titles/alnpee/network-programming-in-elixir-and-erlang/) — TCP/UDP et protocoles réseau (2025)
@@ -257,6 +313,9 @@ En anglais :
 ## Éditeurs
 
 - [**Zed**](https://zed.dev/) — éditeur écrit en Rust, rapide, avec collaboration intégrée. Son [extension Elixir](https://github.com/zed-extensions/elixir) gère **cinq serveurs de langage** au choix — ElixirLS par défaut, mais aussi [Expert](https://expert-lsp.org/), Dexter (pensé pour les grosses bases de code), Next LS et Lexical — ainsi que les gabarits EEx et HEEx. La [documentation](https://zed.dev/docs/languages/elixir) explique aussi comment brancher le serveur Tailwind sur les fichiers HEEx pour l'autocomplétion des classes.
+- [elixir-tools.nvim](https://github.com/elixir-tools/elixir-tools.nvim) — le greffon Neovim de référence : il installe et pilote les serveurs de langage, et ajoute les commandes `mix` courantes
+- [intellij-elixir](https://github.com/KronicDeth/intellij-elixir) — le greffon Elixir pour toute la famille JetBrains (IntelliJ IDEA, RubyMine, WebStorm, PyCharm)
+- [emacs-elixir](https://github.com/elixir-editors/emacs-elixir) — le mode majeur Elixir historique pour Emacs ; depuis Emacs 29, `elixir-ts-mode` est livré d'origine et suffit, à compléter par `eglot` ou `lsp-mode` pour l'autocomplétion
 
 ## Extensions VSCode
 
@@ -292,8 +351,18 @@ En anglais :
 - [ElixirConf](https://elixirconf.com/) — la conférence Elixir de référence (US)
 - [ElixirConf EU](https://www.elixirconf.eu/) — son pendant européen
 
+## Autres listes awesome
+
+Cette liste-ci est francophone et volontairement sélective ; celles-ci sont exhaustives et en anglais, à consulter quand on cherche une librairie précise.
+
+- [awesome-elixir](https://github.com/h4cc/awesome-elixir) — la méta-liste historique, classée par catégorie ; très complète côté librairies, mais sa rubrique « Resources » n'a plus été rafraîchie depuis longtemps
+- [Awesome Elixir by LibHunt](https://elixir.libhunt.com/) — la même matière, mais triée par activité récente, ce qui aide à repérer les projets abandonnés
+- [awesome-erlang](https://github.com/drobakowski/awesome-erlang) — son équivalent côté Erlang ; utile pour le fond, mais plus mise à jour depuis 2022
+- [awesome-elixir-cqrs](https://github.com/slashdotdash/awesome-elixir-cqrs) — spécialisée dans le CQRS et l'event sourcing, autour de Commanded
+
 ## Autres liens utiles
 
+- [Elixir Jobs](https://elixirjobs.net/) — le tableau d'offres d'emploi de l'écosystème
 - [Oh My Zsh / Git cheatsheet](https://kapeli.com/cheat_sheets/Oh-My-Zsh_Git.docset/Contents/Resources/Documents/index) — raccourcis ZSH
 - [awesome-ratatui](https://github.com/ratatui/awesome-ratatui) — la liste des applications et librairies TUI construites avec [Ratatui](https://ratatui.rs/) : beaucoup d'outils en ligne de commande utiles au quotidien d'un dev, tous domaines confondus
 - [AppFlowy](https://github.com/AppFlowy-IO/AppFlowy) — prise de note à la Notion, open source, installable en local / serveur / docker ; blocs de code avec coloration Elixir et interface en français
