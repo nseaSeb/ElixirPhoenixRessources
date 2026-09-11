@@ -117,6 +117,7 @@ De vraies applications à lire pour voir Elixir « en conditions réelles ».
 - [Mes notes à propos d'Ecto](Ecto.md) ([Ecto avancé](EctoAvance.md))
 - [Jobs en arrière-plan avec Oban](Tips/oban.md)
 - [Kino : construire une interface dans Livebook](Tips/kino_controles.livemd)
+- [Localiser une application en français : Gettext et CLDR (Livebook)](Tips/localisation_francaise.livemd)
 - [Phoenix « classique » : routing, contexts & contrôleurs](Phoenix/phoenix_sans_liveview.md)
 - [LiveView : l'essentiel](LiveView/liveview.md)
 - [Débogage & outillage IEx (`iex`, `IO.inspect`, `dbg`, `pry`)](Tips/debogage_iex.md)

@@ -162,6 +162,8 @@ outils:
     chemin: "Tips/kino_controles.livemd"
   - titre: "Un outil interne en trente lignes (Livebook + Kino)"
     chemin: "Tips/outil_interne_livebook.livemd"
+  - titre: "Localiser en français : Gettext et CLDR (Livebook)"
+    chemin: "Tips/localisation_francaise.livemd"
   - titre: "Manipulation de dates avec Timex"
     chemin: "Tips/TimexDate.livemd"
   - titre: "Stemming : réduction de mots"

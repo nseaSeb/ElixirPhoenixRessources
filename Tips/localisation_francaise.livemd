@@ -1,0 +1,359 @@
+# Localiser une application en français : qui décide de quoi
+
+```elixir
+Mix.install([
+  {:gettext, "~> 1.0"},
+  {:ex_cldr, "~> 2.47"},
+  {:ex_cldr_dates_times, "~> 2.25"},
+  {:ex_cldr_numbers, "~> 2.38"}
+])
+```
+
+## Ce que ce notebook montre
+
+« Mettre une application en français » recouvre plusieurs sujets distincts, et deux bibliothèques se partagent le travail :
+
+| Besoin | Responsable |
+| --- | --- |
+| traduire un texte | Gettext |
+| choisir entre singulier et pluriel | Gettext, avec les règles de la langue |
+| dates, dates relatives | CLDR |
+| nombres, monnaies, typographie | CLDR |
+| messages d'erreur d'Ecto | Gettext, domaine `errors` |
+| locale de la requête | un plug |
+| locale dans une LiveView | la session, puis `on_mount` |
+
+Chaque section ci-dessous exécute la démonstration correspondante. Tout tourne hors de Phoenix : il n'y a ni serveur, ni base de données, ni projet Mix à créer.
+
+## Les données de localisation : le backend CLDR
+
+Les règles typographiques d'une langue ne sont pas dans la bibliothèque standard d'Elixir. Elles viennent du **CLDR** d'Unicode, et `ex_cldr` les compile dans un module que l'on déclare soi-même, appelé un *backend*.
+
+La liste `:providers` détermine les familles de fonctions engendrées. `Cldr.Calendar` est indispensable dès qu'on met en forme une date : sans lui, l'appel échoue sur un `Boutique.Cldr.Calendar.months/2 is undefined`.
+
+La compilation prend une dizaine de secondes, le temps de transformer les données de deux locales en fonctions Elixir.
+
+```elixir
+defmodule Demo.Cldr do
+  use Cldr,
+    locales: ["fr", "en"],
+    default_locale: "fr",
+    providers: [Cldr.Number, Cldr.DateTime, Cldr.Calendar]
+end
+```
+
+## Les dates : laisser les données décider
+
+`Calendar.strftime/3` ne connaît aucune langue. Son option `:month_names` accepte une fonction, ce qui permet de traduire les noms de mois à la main, mais l'ordre des champs et le séparateur restent ceux que l'on a écrits dans le gabarit.
+
+```elixir
+date = ~D[2026-09-11]
+
+mois = ~w(janvier février mars avril mai juin juillet août septembre octobre novembre décembre)
+
+%{
+  "strftime, sans option" => Calendar.strftime(date, "%d %B %Y"),
+  "strftime, mois fournis" =>
+    Calendar.strftime(date, "%d %B %Y", month_names: fn i -> Enum.at(mois, i - 1) end)
+}
+```
+
+La même date confiée au backend CLDR change de langue **et** de structure : le français place le jour en tête, l'anglais place le mois et ajoute une virgule.
+
+```elixir
+%{
+  "fr" => Demo.Cldr.Date.to_string!(date, format: :long),
+  "en" => Demo.Cldr.Date.to_string!(date, format: :long, locale: "en")
+}
+```
+
+Les dates relatives suivent le même chemin, ce qui évite d'écrire soi-même les accords de « il y a un jour » et « il y a trois jours ».
+
+```elixir
+for n <- [-1, -3, 1, 3], into: %{} do
+  {n, Cldr.DateTime.Relative.to_string!(n, Demo.Cldr, unit: :day, locale: "fr")}
+end
+```
+
+## Les nombres : CLDR connaît aussi la typographie
+
+```elixir
+%{
+  "fr" => Demo.Cldr.Number.to_string!(1234.56, currency: :EUR),
+  "en" => Demo.Cldr.Number.to_string!(1234.56, currency: :EUR, locale: "en")
+}
+```
+
+Le montant français semble contenir deux espaces ordinaires. Regardons ses octets : ce n'en sont pas.
+
+```elixir
+montant = Demo.Cldr.Number.to_string!(1234.56, currency: :EUR)
+
+montant
+|> String.to_charlist()
+|> Enum.reject(fn c -> c in ?0..?9 or <<c::utf8>> in [",", "€"] end)
+|> Enum.map(fn c ->
+  {<<c::utf8>>, "U+" <> (c |> Integer.to_string(16) |> String.pad_leading(4, "0"))}
+end)
+```
+
+U+202F est l'espace fine insécable, qui sépare les milliers ; U+00A0 est l'espace insécable ordinaire, qui précède le symbole monétaire. Ce sont les règles de la typographie française, et elles ont une conséquence pratique : un montant ainsi formaté ne se coupe jamais en fin de ligne.
+
+C'est aussi pourquoi comparer un montant formaté à une chaîne tapée à la main dans un test échoue, sans que la différence se voie à l'écran.
+
+```elixir
+# la chaîne de droite est tapée avec des espaces ordinaires, comme dans un test écrit à la main
+montant == "1 234,56 €"
+```
+
+## Les textes : Gettext, et la grammaire de la langue
+
+Gettext lit ses traductions dans des fichiers `.po`. Hors d'un projet Phoenix, il suffit de les écrire dans un dossier temporaire et de l'indiquer au backend.
+
+La convention de Gettext veut que l'identifiant d'un message soit sa version dans la langue source, ici l'anglais.
+
+```elixir
+racine = Path.join(System.tmp_dir!(), "demo_i18n_#{System.unique_integer([:positive])}")
+
+ecrire_po = fn locale, domaine, contenu ->
+  dossier = Path.join([racine, locale, "LC_MESSAGES"])
+  File.mkdir_p!(dossier)
+  File.write!(Path.join(dossier, domaine <> ".po"), contenu)
+end
+
+ecrire_po.("fr", "default", """
+msgid ""
+msgstr ""
+"Language: fr\\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\\n"
+
+msgid "%{count} result found"
+msgid_plural "%{count} results found"
+msgstr[0] "%{count} résultat trouvé"
+msgstr[1] "%{count} résultats trouvés"
+""")
+
+Application.put_env(:demo_i18n, Demo.Gettext, priv: racine)
+
+defmodule Demo.Gettext do
+  use Gettext.Backend, otp_app: :demo_i18n
+end
+
+defmodule Demo.Textes do
+  use Gettext, backend: Demo.Gettext
+
+  def resultats(n), do: ngettext("%{count} result found", "%{count} results found", n)
+end
+
+:pret
+```
+
+L'application ne choisit jamais elle-même entre « résultat » et « résultats ». Elle passe le nombre, et la langue décide :
+
+```elixir
+for n <- [0, 1, 2], into: %{} do
+  Gettext.put_locale(Demo.Gettext, "fr")
+  fr = Demo.Textes.resultats(n)
+  Gettext.put_locale(Demo.Gettext, "en")
+  {n, %{"fr" => fr, "en" => Demo.Textes.resultats(n)}}
+end
+```
+
+Le français met zéro au singulier, l'anglais au pluriel. C'est exactement la règle que le CLDR décrit pour ces deux langues, et que `Gettext.Plural` expose :
+
+```elixir
+%{
+  "fr, 0" => Gettext.Plural.plural("fr", 0),
+  "en, 0" => Gettext.Plural.plural("en", 0),
+  "fr, 2" => Gettext.Plural.plural("fr", 2)
+}
+```
+
+La fonction rend l'indice de la forme à employer : `0` pour `msgstr[0]`, le singulier.
+
+## L'en-tête qui a le dernier mot
+
+Un fichier `.po` porte un en-tête `Plural-Forms`, et c'est lui qui décide à l'exécution lorsqu'il est présent ; les règles du CLDR ne servent que de repli.
+
+Écrivons le même message trois fois, avec trois en-têtes différents, et comparons ce que rend le nombre zéro.
+
+```elixir
+corps = """
+
+msgid "%{count} result found"
+msgid_plural "%{count} results found"
+msgstr[0] "%{count} résultat trouvé"
+msgstr[1] "%{count} résultats trouvés"
+"""
+
+entetes = %{
+  "(n > 1), la règle française" => "\"Plural-Forms: nplurals=2; plural=(n > 1);\\n\"\n",
+  "(n != 1), la règle anglaise" => "\"Plural-Forms: nplurals=2; plural=(n != 1);\\n\"\n",
+  "aucun en-tête" => ""
+}
+
+for {etiquette, entete} <- entetes, into: %{} do
+  dossier = Path.join([racine, "essai_#{:erlang.phash2(etiquette)}", "fr", "LC_MESSAGES"])
+  File.mkdir_p!(dossier)
+  File.write!(Path.join(dossier, "default.po"), "msgid \"\"\nmsgstr \"\"\n\"Language: fr\\n\"\n" <> entete <> corps)
+
+  nom = Module.concat(Demo, :"Gettext#{:erlang.phash2(etiquette)}")
+  Application.put_env(:demo_i18n, nom, priv: Path.join(racine, "essai_#{:erlang.phash2(etiquette)}"))
+
+  Code.eval_string("""
+  defmodule #{inspect(nom)} do
+    use Gettext.Backend, otp_app: :demo_i18n
+  end
+  """)
+
+  Gettext.put_locale(nom, "fr")
+  rendu = Gettext.ngettext(nom, "%{count} result found", "%{count} results found", 0)
+  {etiquette, rendu}
+end
+```
+
+L'en-tête anglais posé sur un fichier français produit « 0 résultats trouvés », alors que `Gettext.Plural.plural("fr", 0)` continue de rendre `0`. Interroger cette fonction ne dit donc rien de ce que la page affichera : c'est l'en-tête du fichier qu'il faut lire, surtout lorsqu'il a été produit par un éditeur de traduction plutôt qu'à la main.
+
+## Les erreurs de validation : une affaire de domaine
+
+Phoenix range les messages d'erreur dans un domaine séparé, `errors`, et sa fonction `translate_error/1` y va chercher les traductions avec `dgettext` et `dngettext`. Une interface entièrement traduite affiche donc encore ses erreurs en anglais tant que ce second fichier n'existe pas.
+
+Écrivons-le, en y ajoutant volontairement l'entrée que produit la fusion automatique des traductions.
+
+```elixir
+ecrire_po.("fr", "errors", """
+msgid ""
+msgstr ""
+"Language: fr\\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\\n"
+
+msgid "can't be blank"
+msgstr "ne peut pas être vide"
+
+msgid "should be at least %{count} character(s)"
+msgid_plural "should be at least %{count} character(s)"
+msgstr[0] "doit contenir au moins %{count} caractère"
+msgstr[1] "doit contenir au moins %{count} caractères"
+
+#, fuzzy
+msgid "should be at most %{count} character(s)"
+msgid_plural "should be at most %{count} character(s)"
+msgstr[0] "doit contenir au moins %{count} caractère"
+msgstr[1] "doit contenir au moins %{count} caractères"
+""")
+
+defmodule Demo.Erreurs do
+  # la fonction que le générateur de Phoenix écrit dans core_components.ex
+  def traduire({message, options}) do
+    if compte = options[:count] do
+      Gettext.dngettext(Demo.Gettext, "errors", message, message, compte, options)
+    else
+      Gettext.dgettext(Demo.Gettext, "errors", message, options)
+    end
+  end
+end
+
+:pret
+```
+
+Le backend a besoin d'être recompilé pour voir le nouveau fichier, ce que fait la cellule suivante en le redéfinissant.
+
+```elixir
+Code.eval_string("""
+defmodule Demo.Gettext do
+  use Gettext.Backend, otp_app: :demo_i18n
+end
+""")
+
+Gettext.put_locale(Demo.Gettext, "fr")
+
+erreurs = [
+  {"can't be blank", [validation: :required]},
+  {"should be at least %{count} character(s)", [count: 12, kind: :min]},
+  {"should be at most %{count} character(s)", [count: 8, kind: :max]}
+]
+
+for {message, _} = erreur <- erreurs, into: %{} do
+  {message, Demo.Erreurs.traduire(erreur)}
+end
+```
+
+La troisième ligne mérite un arrêt. La règle porte sur un maximum de huit caractères, et la traduction affichée annonce un minimum.
+
+C'est ce que produit `mix gettext.extract --merge` quand il rencontre un message nouveau très proche d'un message déjà traduit : il recopie la traduction et pose un marqueur `#, fuzzy`. Ce marqueur est une invitation à relire, adressée à un humain, et non une désactivation : l'entrée est compilée et servie telle quelle.
+
+Deux façons de travailler avec ce mécanisme plutôt que contre lui :
+
+* `mix gettext.extract --merge --no-fuzzy` laisse les entrées nouvelles vides, donc visibles à l'écran en anglais ;
+* une étape d'intégration continue refuse les marqueurs restants, en prenant garde au sens du code de retour de `grep`, qui vaut `0` quand il trouve quelque chose : `! grep -rn '^#,.*fuzzy' priv/gettext`.
+
+## Faire circuler la locale
+
+Deux bibliothèques connaissent la langue, et chacune tient sa propre variable. Poser l'une ne pose pas l'autre, y compris lorsque le backend CLDR déclare le backend Gettext.
+
+```elixir
+Gettext.put_locale(Demo.Gettext, "en")
+Demo.Cldr.put_locale("fr")
+
+%{
+  "gettext" => Gettext.get_locale(Demo.Gettext),
+  "cldr" => Demo.Cldr.get_locale().cldr_locale_name
+}
+```
+
+Dans une application Phoenix, c'est le rôle d'un plug de les poser toutes les deux au début de la requête. Le paquet `ex_cldr_plugs` en fournit un :
+
+```elixir
+# plug Cldr.Plug.PutLocale,
+#   apps: [cldr: Demo.Cldr, gettext: Demo.Gettext],
+#   from: [:session, :query, :accept_language]
+```
+
+Deux détails de cette configuration comptent autant que sa présence.
+
+L'option `:apps` écrite `[:cldr, :gettext]` pose la locale Gettext **globale**, tandis que la forme nommée la pose sur le backend ; or une locale posée sur un backend l'emporte sur la globale, si bien que la première forme peut ne rien changer à l'affichage.
+
+L'ordre de `:from` désigne la première source consultée qui l'emporte. La session avant l'en-tête du navigateur, c'est le choix explicite de l'utilisateur qui gagne ; dans l'ordre inverse, un visiteur dont le navigateur annonce `en-US` repasse en anglais malgré le sélecteur de langue de la page.
+
+## La locale suit le processus, pas la requête
+
+Gettext range la locale dans le dictionnaire du processus courant. Un plug la pose donc dans le processus de la requête HTTP, et elle ne franchit aucune frontière de processus :
+
+```elixir
+Gettext.put_locale(Demo.Gettext, "fr")
+
+%{
+  "processus courant" => Gettext.get_locale(Demo.Gettext),
+  "autre processus" => Task.async(fn -> Gettext.get_locale(Demo.Gettext) end) |> Task.await()
+}
+```
+
+C'est exactement la situation d'une LiveView après la connexion WebSocket :
+
+```
+navigateur
+   │
+   ▼
+requête HTTP  ──►  le plug pose fr pour Gettext et pour CLDR
+   │
+   ▼
+rendu initial     (même processus, tout est en français)
+   │
+   ▼
+connexion WebSocket
+   │
+   ▼
+processus LiveView  ──►  dictionnaire vide, retour à la locale par défaut
+```
+
+D'où la marche à suivre habituelle : le plug écrit la locale dans la session, et un `on_mount` la repose dans le processus de la LiveView au montage. `ex_cldr_plugs` fournit `Cldr.Plug.PutSession` pour la première moitié du trajet.
+
+## Ce qu'il faut retenir
+
+Localiser, ce n'est pas remplacer des chaînes, c'est déléguer des décisions :
+
+1. **les textes** vont à Gettext, avec le nombre passé tel quel pour que la langue choisisse la forme ;
+2. **les conventions culturelles** — dates, nombres, monnaies, typographie — vont au CLDR, qui les connaît mieux que nous ;
+3. **la locale** doit voyager avec l'utilisateur, de la requête à la session, puis de la session au processus de la LiveView.
+
+Le reste tient en deux vérifications : l'en-tête `Plural-Forms` des fichiers `.po`, et les entrées marquées `fuzzy` avant de les publier.
