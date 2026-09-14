@@ -120,6 +120,7 @@ De vraies applications à lire pour voir Elixir « en conditions réelles ».
 - [Localiser une application en français : Gettext et CLDR (Livebook)](Tips/localisation_francaise.livemd)
 - [Phoenix « classique » : routing, contexts & contrôleurs](Phoenix/phoenix_sans_liveview.md)
 - [LiveView : l'essentiel](LiveView/liveview.md)
+- [Qui est là ? Phoenix.Presence en direct (Livebook)](Tips/presence_qui_est_la.livemd)
 - [Débogage & outillage IEx (`iex`, `IO.inspect`, `dbg`, `pry`)](Tips/debogage_iex.md)
 - [Lire une stacktrace / comprendre les erreurs](Tips/lire_une_stacktrace.md)
 - [OTP : GenServer & Supervisor (Livebook)](OTP/genserver_supervisor.livemd)

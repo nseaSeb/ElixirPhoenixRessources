@@ -1,0 +1,265 @@
+# Qui est là ? Phoenix.Presence en direct
+
+## Section
+
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
+
+```elixir
+Mix.install([
+  {:phoenix, "~> 1.8"},
+  {:kino, "~> 0.19.0"}
+])
+```
+
+## De quoi s'agit-il ?
+
+`Phoenix.Presence` répond à une seule question : qui est là, maintenant ? Qui regarde ce document, qui est connecté au salon, quels appareils sont en ligne.
+
+Ce notebook la fait fonctionner sans application Phoenix ni navigateur. Les « visiteurs » seront de simples processus Elixir, ce qui permet de voir chaque mécanisme à nu : l'arrivée, le départ, le départ brutal, les deux onglets d'une même personne, et les messages qu'un abonné reçoit.
+
+L'article jumeau, qui raconte la même histoire dans une page LiveView : [Qui est là ? Découvrir Phoenix.Presence](https://nseaseb.github.io/ElixirPhoenixRessources/articles/qui-est-la-phoenix-presence/).
+
+## 1. Le décor : un PubSub et un module Presence
+
+Dans une application Phoenix, ces deux lignes vivent dans l'arbre de supervision, juste avant l'endpoint. Ici, `Kino.start_child` les place sous la supervision du notebook ; réexécuter cette cellule les redémarre à vide, et il faut alors rejouer les suivantes.
+
+Le module Presence se déclare comme dans un vrai projet : `otp_app` et `pubsub_server`, rien d'autre. Nous le compléterons plus loin avec `fetch/2`.
+
+```elixir
+defmodule Demo.Presence do
+  use Phoenix.Presence,
+    otp_app: :demo,
+    pubsub_server: Demo.PubSub
+end
+
+for enfant <- [{Phoenix.PubSub, name: Demo.PubSub}, Demo.Presence] do
+  {:ok, _pid} = Kino.start_child(enfant)
+end
+```
+
+## 2. Un visiteur arrive, puis un autre
+
+Un visiteur est un processus qui attend, et que l'on déclare présent sur un sujet (le *topic*, ici le document n° 42) sous une clé. `track/4` accepte n'importe quel pid : nul besoin que le processus se déclare lui-même. La clé est une chaîne : dans une application, ce sera l'identifiant de l'utilisateur.
+
+```elixir
+defmodule Demo.Visiteur do
+  @topic "document:42"
+
+  # lance un processus qui attend, le déclare présent sous `cle`, et rend son pid
+  def arrive(cle, meta \\ %{}) do
+    pid =
+      spawn(fn ->
+        receive do
+          :au_revoir -> :ok
+        end
+      end)
+
+    {:ok, _ref} = Demo.Presence.track(pid, @topic, cle, meta)
+    pid
+  end
+
+  # départ poli : le processus se termine normalement
+  def part(pid), do: send(pid, :au_revoir)
+
+  # attend les diffs jusqu'à ce que chaque clé soit passée dans un `leaves`
+  def attendre_departs(cles, delai \\ 2_000)
+  def attendre_departs([], _delai), do: :ok
+
+  def attendre_departs(cles, delai) do
+    receive do
+      %Phoenix.Socket.Broadcast{event: "presence_diff", payload: %{leaves: leaves}} ->
+        attendre_departs(cles -- Map.keys(leaves), delai)
+    after
+      delai -> {:toujours_la, cles}
+    end
+  end
+
+  def topic, do: @topic
+end
+
+alice = Demo.Visiteur.arrive("alice", %{navigateur: "Firefox"})
+bob = Demo.Visiteur.arrive("bob", %{navigateur: "Safari"})
+
+Demo.Presence.list(Demo.Visiteur.topic())
+```
+
+Deux clés, et pour chacune une liste `metas` d'un seul élément. Le `phx_ref` est ajouté par Presence : il identifie cette présence précise, ce qui servira quand une même personne aura plusieurs onglets.
+
+## 3. Le départ, poli ou brutal, est détecté de la même façon
+
+C'est le cœur du sujet. Presence surveille le processus qu'il suit. Le processus disparaît, la présence disparaît : il n'y a aucun message « je pars » à envoyer.
+
+Faisons partir Bob poliment, et tuons Alice sans préavis, comme un onglet fermé ou un câble arraché.
+
+```elixir
+# on s'abonne au sujet : chaque changement nous arrivera sous forme de message
+:ok = Phoenix.PubSub.subscribe(Demo.PubSub, Demo.Visiteur.topic())
+
+Demo.Visiteur.part(bob)
+Process.exit(alice, :kill)
+
+# la mise à jour est asynchrone : on attend les messages plutôt que de dormir un temps arbitraire
+resultat = Demo.Visiteur.attendre_departs(["alice", "bob"])
+
+{resultat, Demo.Presence.list(Demo.Visiteur.topic())}
+```
+
+`:ok` et une liste vide : les deux sont partis, et le code n'a rien eu à faire de spécial pour Alice. C'est ce qui rend Presence fiable : la vérité, c'est la vie du processus.
+
+## 4. Ce qu'un abonné reçoit
+
+En nous abonnant au sujet, nous recevons désormais chaque changement sous forme de *diff* : ce qui arrive, ce qui part. C'est exactement le message qu'une LiveView reçoit dans son `handle_info`.
+
+```elixir
+carol = Demo.Visiteur.arrive("carol", %{navigateur: "Chrome"})
+
+receive do
+  %Phoenix.Socket.Broadcast{event: "presence_diff", topic: topic, payload: %{joins: %{"carol" => _}} = diff} ->
+    IO.puts("sujet : #{topic}")
+    diff
+after
+  2_000 -> :rien_recu
+end
+```
+
+`joins` contient Carol, `leaves` est vide. Au départ, ce sera l'inverse.
+
+Dans une LiveView, on ne s'embarrasse généralement pas d'appliquer le diff soi-même : à la réception, on rappelle `list/1` et on redessine. Le diff sert surtout quand la liste est grande, ou côté JavaScript, où `Presence.syncDiff` l'applique pour nous.
+
+## 5. Une personne, deux onglets
+
+Carol ouvre le même document dans un second onglet : un second processus, la même clé. Presence regroupe les deux sous une seule entrée dont la liste `metas` compte alors deux éléments.
+
+```elixir
+carol_bis = Demo.Visiteur.arrive("carol", %{navigateur: "Chrome, second onglet"})
+
+# on consomme le diff correspondant pour ne pas le confondre avec les suivants
+receive do
+  %Phoenix.Socket.Broadcast{event: "presence_diff", payload: %{joins: %{"carol" => _}}} -> :ok
+after
+  2_000 -> :rien_recu
+end
+
+# fin de l'écoute depuis cette cellule ; la démo interactive plus bas fera son propre abonnement
+:ok = Phoenix.PubSub.unsubscribe(Demo.PubSub, Demo.Visiteur.topic())
+
+Demo.Presence.list(Demo.Visiteur.topic())
+```
+
+Une seule clé, deux `metas`. Un compteur « personnes présentes » compte les clés ; un compteur « connexions » additionne les `metas`. Les deux se déduisent de la même carte.
+
+Et si le même processus se déclarait deux fois sous la même clé ? Presence refuse, ce qui évite les doublons fantômes :
+
+```elixir
+Demo.Presence.track(carol, Demo.Visiteur.topic(), "carol", %{})
+```
+
+## 6. Enrichir la liste sans requête par visiteur
+
+Les métadonnées doivent rester petites : elles sont répliquées entre tous les nœuds à chaque changement. Le prénom affiché, l'avatar, tout ce qui vient de la base, se rattache au moment de la lecture grâce au rappel `fetch/2`, qui reçoit toutes les clés d'un coup et non une par visiteur.
+
+Nous redéfinissons le module avec `fetch/2` et un annuaire en dur qui joue le rôle de la base de données ; les prénoms qu'il ignore sont simplement mis en majuscule. Comme le module est déjà chargé, cette cellule le redéfinit à chaud : Presence, lui, continue de tourner.
+
+```elixir
+defmodule Demo.Presence do
+  use Phoenix.Presence,
+    otp_app: :demo,
+    pubsub_server: Demo.PubSub
+
+  @annuaire %{"alice" => "Alice Martin", "bob" => "Bob Nguyen", "carol" => "Carol Diallo"}
+
+  # reçoit toutes les clés d'un coup : une requête, quel que soit le nombre de présents
+  def fetch(_topic, presences) do
+    for {cle, %{metas: metas}} <- presences, into: %{} do
+      {cle, %{metas: metas, nom: Map.get(@annuaire, cle, String.capitalize(cle))}}
+    end
+  end
+end
+
+Demo.Presence.list(Demo.Visiteur.topic())
+```
+
+Chaque entrée porte maintenant un `nom`, calculé sans qu'aucune requête ne soit faite depuis la boucle d'affichage.
+
+## 7. En direct : une salle qui se remplit et se vide
+
+Trois boutons, une table qui se redessine à chaque changement. La cellule tient en un seul bloc parce que les boutons, la zone d'affichage et l'écouteur sont attachés à son processus d'évaluation.
+
+À la réexécuter, les boutons repartent d'une pile vide alors que les visiteurs déjà lancés restent présents : leurs lignes ne pourront plus être retirées par les boutons. Pour repartir proprement, rejouez la cellule du décor.
+
+```elixir
+zone = Kino.Frame.new() |> Kino.render()
+
+arrivee = Kino.Control.button("Un visiteur arrive")
+depart = Kino.Control.button("Le dernier arrivé part")
+coupure = Kino.Control.button("Coupure brutale du dernier")
+Kino.render(Kino.Layout.grid([arrivee, depart, coupure], columns: 3))
+
+prenoms = ~w(dora emile fatou gaspard hedi ines jules)
+topic = Demo.Visiteur.topic()
+
+dessiner = fn ->
+  presences = Demo.Presence.list(topic)
+
+  lignes =
+    for {cle, %{metas: metas} = presence} <- presences do
+      %{nom: Map.get(presence, :nom, cle), cle: cle, connexions: length(metas)}
+    end
+
+  table =
+    Kino.DataTable.new(lignes,
+      keys: [:nom, :cle, :connexions],
+      name: "#{map_size(presences)} personne(s) présente(s)"
+    )
+
+  Kino.Frame.render(zone, table)
+end
+
+dessiner.()
+
+# un flux des diffs reçus sur le sujet : la table se redessine à chaque changement
+diffs =
+  Stream.resource(
+    fn -> Phoenix.PubSub.subscribe(Demo.PubSub, topic) end,
+    fn etat ->
+      receive do
+        %Phoenix.Socket.Broadcast{event: "presence_diff"} = diff -> {[diff], etat}
+      end
+    end,
+    fn _ -> :ok end
+  )
+
+Kino.listen(diffs, fn _diff -> dessiner.() end)
+
+# les boutons : l'état est la pile des visiteurs lancés ici, et un compteur pour tourner sur les prénoms
+Kino.Control.tagged_stream(arrivee: arrivee, depart: depart, coupure: coupure)
+|> Kino.listen(%{pile: [], n: 0}, fn
+  {:arrivee, _evt}, etat ->
+    cle = Enum.at(prenoms, rem(etat.n, length(prenoms)))
+    pid = Demo.Visiteur.arrive(cle)
+    {:cont, %{etat | pile: [pid | etat.pile], n: etat.n + 1}}
+
+  {:depart, _evt}, %{pile: [pid | reste]} = etat ->
+    Demo.Visiteur.part(pid)
+    {:cont, %{etat | pile: reste}}
+
+  {:coupure, _evt}, %{pile: [pid | reste]} = etat ->
+    Process.exit(pid, :kill)
+    {:cont, %{etat | pile: reste}}
+
+  _evt, etat ->
+    {:cont, etat}
+end)
+```
+
+Cliquez plusieurs fois sur « arrive » : les sept prénoms tournent, et à partir du huitième clic les entrées gagnent une seconde connexion au lieu d'une nouvelle ligne. Puis alternez départs polis et coupures brutales : la table ne fait pas la différence, et c'est exactement le point.
+
+## À retenir
+
+- Presence suit des **processus** : quand le processus meurt, poliment ou non, la présence disparaît sans qu'aucun code de départ soit nécessaire.
+- La structure rendue par `list/1` est `%{cle => %{metas: [...]}}` ; une clé par personne, un élément de `metas` par connexion, chacun avec son `phx_ref`.
+- Un abonné au sujet reçoit un `%Phoenix.Socket.Broadcast{event: "presence_diff"}` à chaque changement, avec `joins` et `leaves`.
+- Un même processus ne peut pas se déclarer deux fois sous la même clé : `{:error, {:already_tracked, ...}}`.
+- Les métadonnées restent petites ; `fetch/2` enrichit la liste en un seul passage, jamais par une requête par visiteur, et ne doit jamais lever.
+- Documentation : [Phoenix.Presence](https://hexdocs.pm/phoenix/Phoenix.Presence.html)

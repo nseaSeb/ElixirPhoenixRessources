@@ -25,6 +25,7 @@ Vous trouverez ici quelques notes d'astuces que je conserve ici.
 
 ## Phoenix LiveView
 - [LiveView : l'essentiel (cycle de vie, assigns, events, streams)](./LiveView/liveview.md)
+- [Qui est là ? Phoenix.Presence en direct](./Tips/presence_qui_est_la.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/Tips/presence_qui_est_la.livemd)
 
 ## OTP / Concurrence
 - [GenServer & Supervisor (Livebook exécutable)](./OTP/genserver_supervisor.livemd) [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https://raw.githubusercontent.com/nseaSeb/ElixirPhoenixRessources/main/OTP/genserver_supervisor.livemd)

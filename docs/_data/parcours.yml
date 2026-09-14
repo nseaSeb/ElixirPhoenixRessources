@@ -123,6 +123,9 @@ etapes:
         url: "https://github.com/nseaSeb/SortableBoilerPlate"
       - titre: "Exemple de Hook : clic droit"
         url: "https://github.com/nseaSeb/right-click-elixir"
+      - titre: "Qui est là ? Phoenix.Presence en direct"
+        note: "des processus en guise de visiteurs : arrivées, départs brutaux, deux onglets, et le diff qu'une LiveView reçoit"
+        chemin: "Tips/presence_qui_est_la.livemd"
 
   - titre: "Le projet fil rouge"
     niveau: projet
