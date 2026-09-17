@@ -126,6 +126,9 @@ etapes:
       - titre: "Qui est là ? Phoenix.Presence en direct"
         note: "des processus en guise de visiteurs : arrivées, départs brutaux, deux onglets, et le diff qu'une LiveView reçoit"
         chemin: "Tips/presence_qui_est_la.livemd"
+      - titre: "Les uploads LiveView à nu : déclarer, envoyer, consommer"
+        note: "trois lignes déclarent ce que la page accepte, et LiveView fournit le reste : la route du fichier, sa progression, son temporaire et sa consommation, rejoués sans navigateur avec LiveViewTest"
+        chemin: "Tips/uploads_liveview_a_nu.livemd"
 
   - titre: "Le projet fil rouge"
     niveau: projet

@@ -121,6 +121,7 @@ De vraies applications à lire pour voir Elixir « en conditions réelles ».
 - [Phoenix « classique » : routing, contexts & contrôleurs](Phoenix/phoenix_sans_liveview.md)
 - [LiveView : l'essentiel](LiveView/liveview.md)
 - [Qui est là ? Phoenix.Presence en direct (Livebook)](Tips/presence_qui_est_la.livemd)
+- [Les uploads LiveView à nu : déclarer, envoyer, consommer (Livebook)](Tips/uploads_liveview_a_nu.livemd)
 - [Débogage & outillage IEx (`iex`, `IO.inspect`, `dbg`, `pry`)](Tips/debogage_iex.md)
 - [Lire une stacktrace / comprendre les erreurs](Tips/lire_une_stacktrace.md)
 - [OTP : GenServer & Supervisor (Livebook)](OTP/genserver_supervisor.livemd)

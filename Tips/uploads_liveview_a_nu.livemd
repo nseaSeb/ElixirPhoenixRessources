@@ -1,0 +1,440 @@
+# Les uploads LiveView à nu : déclarer, envoyer, consommer
+
+## Section
+
+[Retour vers le sommaire des tips](../TipsSommaire.md)
+[Accueil](../README.md)
+
+```elixir
+Mix.install([
+  {:phoenix, "~> 1.8"},
+  {:phoenix_live_view, "~> 1.2"},
+  {:jason, "~> 1.4"},
+  {:lazy_html, ">= 0.1.0"},
+  {:kino, "~> 0.19.0"}
+])
+```
+
+## De quoi s'agit-il ?
+
+Recevoir un fichier en LiveView tient à trois lignes qui déclarent ce que la page accepte. Ce notebook démonte le mécanisme sans navigateur ni serveur HTTP, et fait apparaître une à une les pièces que LiveView met en place en échange de cette déclaration : `allow_upload`, l'entrée et sa progression, le fichier temporaire tenu par un processus, la consommation, et les règles appliquées avant le premier octet.
+
+Le « navigateur » sera `Phoenix.LiveViewTest`, c'est-à-dire exactement les fonctions qu'un test LiveView utilise. Ce qu'il montre est donc ce qu'un test peut affirmer.
+
+L'article jumeau, qui raconte la même histoire dans une application complète : [Les uploads LiveView : déclarer ce qu'on accepte, et laisser le fichier arriver](https://nseaseb.github.io/ElixirPhoenixRessources/articles/uploads-liveview/).
+
+## 1. Le décor : un endpoint en mémoire et un navigateur de test
+
+Un endpoint Phoenix peut démarrer sans écouter aucun port : `server: false`. Il lui faut une clé secrète, un sel pour signer les sessions LiveView et un PubSub, par lequel passent les canaux d'upload. Tout cela est posé ici en configuration.
+
+Le module `Navigateur` enveloppe deux macros de `Phoenix.LiveViewTest` qui ont besoin de connaître l'endpoint : `live/2` pour ouvrir une page, `file_input/4` pour choisir des fichiers dans un champ. Tout le reste s'appelle directement. Ces fonctions refusent de tourner ailleurs que dans un processus de test, et elles cherchent le répertoire `priv` de l'application : les lignes `ExUnit` déclarent le processus du notebook comme processus de test, et un répertoire vide dans le chemin de code tient lieu d'application `:demo`.
+
+```elixir
+Application.put_env(:demo, Demo.Endpoint,
+  secret_key_base: String.duplicate("s", 64),
+  live_view: [signing_salt: "justificatifs"],
+  pubsub_server: Demo.PubSub,
+  server: false
+)
+
+ExUnit.start(autorun: false)
+ExUnit.OnExitHandler.register(self())
+
+repertoire_demo = Path.join(System.tmp_dir!(), "demo/ebin")
+File.mkdir_p!(repertoire_demo)
+Code.append_path(repertoire_demo)
+
+# Phoenix journalise chaque requête et chaque connexion : inutile ici
+Logger.configure(level: :warning)
+
+# nous ferons tomber des vues plus loin ; leur mandataire de test est lié à ce processus
+Process.flag(:trap_exit, true)
+
+defmodule Navigateur do
+  import Phoenix.ConnTest
+  import Phoenix.LiveViewTest
+  @endpoint Demo.Endpoint
+
+  # ouvre une page LiveView et rend la vue pilotable
+  def ouvrir(chemin) do
+    {:ok, vue, _html} = live(build_conn(), chemin)
+    vue
+  end
+
+  # choisit des fichiers dans le champ `justificatif` du formulaire `#note`
+  def choisir(vue, fichiers), do: file_input(vue, "#note", :justificatif, fichiers)
+
+  # ce que la LiveView tient en assign pour ce champ
+  def config(vue), do: :sys.get_state(vue.pid).socket.assigns.uploads.justificatif
+
+  # tous les assigns de la vue, sans passer par le HTML rendu (qui est échappé)
+  def assigns(vue), do: :sys.get_state(vue.pid).socket.assigns
+
+  # le formulaire seul, sans le reste de la page
+  def formulaire(html) do
+    html
+    |> String.replace(~r/\s+/, " ")
+    |> then(&Regex.run(~r/<form.*?<\/form>/, &1))
+    |> List.first()
+  end
+end
+```
+
+L'endpoint lui-même est défini plus loin, avec le routeur, une fois les pages écrites : il les référence à la compilation.
+
+## 2. Ce que le formulaire transporte, et ce qu'il délègue
+
+Une note de frais, avec un libellé et un justificatif. Commençons par le geste naturel, un `<input type="file">` ordinaire dans un formulaire `phx-submit`, qui va nous dire où passe la frontière.
+
+```elixir
+defmodule Demo.FormulaireSeulLive do
+  use Phoenix.LiveView
+
+  def mount(_params, _session, socket), do: {:ok, assign(socket, recu: nil)}
+
+  def handle_event("enregistrer", params, socket), do: {:noreply, assign(socket, recu: params)}
+
+  def render(assigns) do
+    ~H"""
+    <form id="note" phx-submit="enregistrer">
+      <input type="text" name="libelle" value="Taxi" />
+      <input type="file" name="justificatif" />
+      <button>Enregistrer</button>
+    </form>
+    <pre id="recu">{inspect(@recu)}</pre>
+    """
+  end
+end
+```
+
+Voici la page qui recevra les fichiers pour de bon. Elle diffère de la première par trois choses : `allow_upload` dans `mount`, `<.live_file_input>` à la place de l'input, et `consume_uploaded_entries` à l'enregistrement. Nous les regarderons une par une.
+
+```elixir
+defmodule Demo.NoteLive do
+  use Phoenix.LiveView
+
+  @dossier Path.join(System.tmp_dir!(), "justificatifs")
+
+  def mount(_params, _session, socket) do
+    socket =
+      socket
+      |> assign(enregistres: [], recu: nil)
+      |> allow_upload(:justificatif,
+        accept: ~w(.jpg .jpeg .png .pdf),
+        max_entries: 2,
+        max_file_size: 2_000_000
+      )
+
+    {:ok, socket}
+  end
+
+  # phx-change : LiveView valide les fichiers choisis ; nous n'avons rien à faire
+  def handle_event("valider", _params, socket), do: {:noreply, socket}
+
+  def handle_event("retirer", %{"ref" => ref}, socket) do
+    {:noreply, cancel_upload(socket, :justificatif, ref)}
+  end
+
+  def handle_event("enregistrer", params, socket) do
+    File.mkdir_p!(@dossier)
+
+    chemins =
+      consume_uploaded_entries(socket, :justificatif, fn %{path: path}, entry ->
+        # jamais le nom envoyé par le client dans un chemin : l'uuid, et l'extension seule
+        dest = Path.join(@dossier, "#{entry.uuid}#{Path.extname(entry.client_name)}")
+        File.cp!(path, dest)
+        {:ok, dest}
+      end)
+
+    {:noreply, assign(socket, enregistres: socket.assigns.enregistres ++ chemins, recu: params)}
+  end
+
+  def render(assigns) do
+    ~H"""
+    <form id="note" phx-submit="enregistrer" phx-change="valider">
+      <input type="text" name="libelle" value="Taxi" />
+      <.live_file_input upload={@uploads.justificatif} />
+      <p :for={err <- upload_errors(@uploads.justificatif)} class="erreur">{traduire(err)}</p>
+      <div :for={entry <- @uploads.justificatif.entries} id={"entree-#{entry.ref}"}>
+        {entry.client_name} — {entry.progress}%
+        <p :for={err <- upload_errors(@uploads.justificatif, entry)} class="erreur">{traduire(err)}</p>
+        <button type="button" phx-click="retirer" phx-value-ref={entry.ref}>Retirer</button>
+      </div>
+      <button>Enregistrer</button>
+    </form>
+    <ul id="enregistres"><li :for={c <- @enregistres}>{c}</li></ul>
+    <pre id="recu">{inspect(@recu)}</pre>
+    """
+  end
+
+  defp traduire(:too_large), do: "fichier trop volumineux (2 Mo au plus)"
+  defp traduire(:not_accepted), do: "format non accepté (jpg, png ou pdf)"
+  defp traduire(:too_many_files), do: "deux justificatifs au plus"
+  defp traduire(autre), do: inspect(autre)
+end
+```
+
+Le routeur, l'endpoint qui le branche derrière une session, puis le démarrage du PubSub et de l'endpoint. Réexécuter cette cellule les redémarre.
+
+```elixir
+defmodule Demo.Router do
+  use Phoenix.Router
+  import Phoenix.LiveView.Router
+
+  pipeline :browser do
+    plug :accepts, ["html"]
+    plug :fetch_session
+  end
+
+  scope "/" do
+    pipe_through :browser
+    live "/formulaire-seul", Demo.FormulaireSeulLive
+    live "/note", Demo.NoteLive
+  end
+end
+
+defmodule Demo.Endpoint do
+  use Phoenix.Endpoint, otp_app: :demo
+
+  plug Plug.Session, store: :cookie, key: "_demo", signing_salt: "justificatifs"
+  plug Demo.Router
+end
+
+for enfant <- [{Phoenix.PubSub, name: Demo.PubSub}, Demo.Endpoint] do
+  {:ok, _pid} = Kino.start_child(enfant)
+end
+```
+
+Ouvrons la première page et soumettons le formulaire. Que reçoit `handle_event` ?
+
+```elixir
+import Phoenix.LiveViewTest
+
+vue = Navigateur.ouvrir("/formulaire-seul")
+
+vue |> form("#note", %{"libelle" => "Taxi"}) |> render_submit()
+
+Navigateur.assigns(vue).recu
+```
+
+`%{"justificatif" => "", "libelle" => "Taxi"}`. Le champ est bien là, mais vide : le formulaire porte ce que l'on tape, et rien de plus.
+
+Dans un vrai navigateur, la clé n'existe même pas. Le JavaScript de LiveView rassemble les champs dans un `FormData`, en retire toute valeur qui est un fichier, puis sérialise le reste comme une chaîne de requête. `Phoenix.LiveViewTest`, lui, sérialise depuis le HTML rendu, où un champ fichier sans attribut `value` vaut la chaîne vide. L'écart est sans conséquence, puisque ni l'un ni l'autre ne porte le fichier, mais il vaut mieux le connaître avant de chercher cette clé vide dans une session réelle.
+
+## 3. `allow_upload` : trois lignes ouvrent la route
+
+Le fichier doit prendre une autre route que le formulaire. C'est ce que `allow_upload` met en place : pour chaque fichier choisi, le navigateur ouvre un canal dédié sur le même socket, et y pousse le contenu par morceaux de 64 Ko. Le formulaire, lui, ne transporte toujours rien.
+
+Ouvrons la vraie page et choisissons un fichier. Rien n'est encore envoyé : nous regardons ce que la LiveView sait à cet instant.
+
+```elixir
+vue = Navigateur.ouvrir("/note")
+
+png = <<137, 80, 78, 71, 13, 10, 26, 10>> <> :binary.copy(<<0>>, 1_000)
+ticket = Navigateur.choisir(vue, [%{name: "ticket-taxi.png", content: png, type: "image/png"}])
+
+Navigateur.config(vue)
+```
+
+Une structure `UploadConfig` : le nom du champ, les limites que nous avons posées, et une liste `entries` encore vide. Le formulaire porte un attribut `accept=".jpg,.jpeg,.png,.pdf"` et `multiple`, déduits de nos options.
+
+Envoyons le fichier en deux temps, 40 % puis le reste. `render_upload/3` joue le rôle du navigateur : le pourcentage est celui du morceau envoyé, et les appels s'additionnent.
+
+```elixir
+html = render_upload(ticket, "ticket-taxi.png", 40)
+IO.puts(Navigateur.formulaire(html))
+
+[entree] = Navigateur.config(vue).entries
+entree
+```
+
+Une `UploadEntry`, avec `progress: 40`, `done?: false`, et ce que le navigateur a déclaré : `client_name`, `client_size`, `client_type`. Le préfixe `client_` est un rappel : ces valeurs viennent du navigateur, et rien ne les garantit.
+
+```elixir
+render_upload(ticket, "ticket-taxi.png", 60)
+
+[entree] = Navigateur.config(vue).entries
+{entree.progress, entree.done?}
+```
+
+`{100, true}`. Le fichier est arrivé. Mais où ?
+
+## 4. Le fichier reçu a la durée de vie de la page
+
+L'entrée ne contient pas de chemin. Le contenu est dans un fichier temporaire, et ce fichier appartient au canal d'upload, un processus par fichier, lié à la LiveView. La configuration en garde la trace :
+
+```elixir
+[{_ref, canal}] = Map.to_list(Navigateur.config(vue).entry_refs_to_pids)
+
+chemin_temporaire = :sys.get_state(canal).assigns.writer_state.path
+{chemin_temporaire, File.exists?(chemin_temporaire), File.stat!(chemin_temporaire).size}
+```
+
+Mille huit octets dans un fichier `live_view_upload-…` du répertoire temporaire du système. Ce chemin, la LiveView ne nous le donnera que dans `consume_uploaded_entries`, et pour une bonne raison : il n'existe que tant que le processus existe.
+
+Faisons mourir la vue sans préavis, comme un onglet fermé avant d'avoir cliqué sur « Enregistrer ».
+
+```elixir
+Process.exit(vue.pid, :kill)
+Process.sleep(100)
+
+File.exists?(chemin_temporaire)
+```
+
+`false`. Le fichier est parti avec le processus. Un upload que personne ne consomme ne laisse rien derrière lui, et c'est le comportement souhaité.
+
+## 5. Consommer : le seul moment où le fichier nous est confié
+
+Nouvelle page, nouveau fichier, envoyé en entier cette fois. Puis « Enregistrer » : le `handle_event` appelle `consume_uploaded_entries`, qui nous prête le chemin le temps d'une fonction. Nous copions, nous rendons un `{:ok, destination}`, et LiveView rend la liste de ces destinations.
+
+```elixir
+vue = Navigateur.ouvrir("/note")
+ticket = Navigateur.choisir(vue, [%{name: "ticket-taxi.png", content: png, type: "image/png"}])
+render_upload(ticket, "ticket-taxi.png")
+
+[{_ref, canal}] = Map.to_list(Navigateur.config(vue).entry_refs_to_pids)
+chemin_temporaire = :sys.get_state(canal).assigns.writer_state.path
+
+html = vue |> form("#note", %{"libelle" => "Taxi"}) |> render_submit()
+[[_, copie]] = Regex.scan(~r/<li>(.*?)<\/li>/, html)
+Process.sleep(100)
+
+%{
+  copie: copie,
+  taille: File.stat!(copie).size,
+  temporaire_encore_la: File.exists?(chemin_temporaire),
+  entrees_restantes: length(Navigateur.config(vue).entries),
+  params_recus: Navigateur.assigns(vue).recu
+}
+```
+
+La copie a la bonne taille, le temporaire a été supprimé, la liste `entries` est vide, et les `params` de l'événement ne portent toujours rien du fichier. C'est `@uploads` qui porte les fichiers, et `consume_uploaded_entries` qui les remet.
+
+Copier plutôt que déplacer : `File.cp!` fonctionne même quand le répertoire temporaire et la destination sont sur deux disques différents, ce que `File.rename` refuse.
+
+Et si l'on consomme trop tôt ? Envoyons la moitié d'un fichier et cliquons sur « Enregistrer ».
+
+```elixir
+vue = Navigateur.ouvrir("/note")
+ticket = Navigateur.choisir(vue, [%{name: "ticket-taxi.png", content: png, type: "image/png"}])
+render_upload(ticket, "ticket-taxi.png", 50)
+
+try do
+  vue |> form("#note", %{}) |> render_submit()
+catch
+  :exit, {{%ArgumentError{message: message}, _pile}, _appel} -> message
+end
+```
+
+`cannot consume uploaded files when entries are still in progress`. La LiveView plante, et la page avec. Dans un vrai projet, le bouton d'enregistrement se désactive tant qu'une entrée n'est pas `done?`, et le serveur reste garanti par cette exception.
+
+## 6. Les règles sont appliquées avant le premier octet
+
+Trois limites ont été posées dans `allow_upload`. LiveView les vérifie avant tout transfert : le navigateur annonce le nom, le type et la taille, et le serveur répond oui ou non. Un fichier de 3 Mo n'envoie donc pas un octet.
+
+```elixir
+vue = Navigateur.ouvrir("/note")
+gros = Navigateur.choisir(vue, [%{name: "scan.pdf", content: :binary.copy(<<0>>, 3_000_000), type: "application/pdf"}])
+
+{render_upload(gros, "scan.pdf"), Navigateur.formulaire(render(vue))}
+```
+
+`render_upload` rend `{:error, [[ref, :too_large]]}` au lieu du HTML, l'entrée reste à 0 %, et le message « fichier trop volumineux » est déjà dans la page : `upload_errors/2` l'a rendu dès la validation, sans attendre l'envoi. La même chose avec un tableur, dont l'extension n'est pas dans `accept`.
+
+Cette cellule continue la précédente, sur la même page : le tableur y rejoint le PDF refusé, et la liste des erreurs porte donc les deux. Pour la rejouer seule, reprenez la cellule précédente d'abord.
+
+```elixir
+tableur =
+  Navigateur.choisir(vue, [
+    %{
+      name: "tableur.xlsx",
+      content: "x",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    }
+  ])
+
+{render_upload(tableur, "tableur.xlsx"), Navigateur.config(vue).entries |> Enum.map(&{&1.client_name, &1.valid?})}
+```
+
+La liste des refus contient maintenant les deux entrées, `:too_large` puis `:not_accepted`, et toutes deux sont `valid?: false`. La troisième limite ne porte pas sur une entrée mais sur le champ : trois fichiers quand `max_entries` en accepte deux.
+
+```elixir
+vue = Navigateur.ouvrir("/note")
+
+trois =
+  Navigateur.choisir(vue, [
+    %{name: "a.png", content: png, type: "image/png"},
+    %{name: "b.png", content: png, type: "image/png"},
+    %{name: "c.png", content: png, type: "image/png"}
+  ])
+
+{render_upload(trois, "a.png"), Navigateur.config(vue).errors}
+```
+
+`:too_many_files` est rangé dans `errors` de la configuration, pas dans une entrée : c'est `upload_errors/1` qui le lit, et notre page l'affiche au-dessus de la liste.
+
+## 7. Retirer une entrée d'un geste
+
+Un fichier choisi par erreur se retire par son `ref`, avec `cancel_upload/3`. Le bouton « Retirer » de notre page le fait ; ici un envoi à moitié fait.
+
+```elixir
+vue = Navigateur.ouvrir("/note")
+ticket = Navigateur.choisir(vue, [%{name: "a.png", content: png, type: "image/png"}])
+render_upload(ticket, "a.png", 30)
+
+[entree] = Navigateur.config(vue).entries
+vue |> element("#entree-#{entree.ref} button") |> render_click()
+Process.sleep(100)
+
+{length(Navigateur.config(vue).entries), Navigateur.formulaire(render(vue))}
+```
+
+Aucune entrée, et le formulaire est revenu à son état initial. Le canal de ce fichier a été arrêté, son temporaire supprimé, comme à la mort de la vue.
+
+## 8. À vous : un vrai fichier de votre disque
+
+Tout ce qui précède a envoyé des octets fabriqués. Choisissez un fichier sur votre machine : il traverse la même LiveView, avec les mêmes règles.
+
+```elixir
+fichier = Kino.Input.file("Un justificatif (jpg, png ou pdf, 2 Mo au plus)")
+```
+
+```elixir
+vue = Navigateur.ouvrir("/note")
+
+resultat =
+  case Kino.Input.read(fichier) do
+    nil ->
+      "Choisissez un fichier dans la cellule précédente."
+
+    %{file_ref: ref, client_name: nom} ->
+      contenu = ref |> Kino.Input.file_path() |> File.read!()
+      entree = Navigateur.choisir(vue, [%{name: nom, content: contenu, type: MIME.from_path(nom)}])
+
+      case render_upload(entree, nom) do
+        {:error, erreurs} ->
+          "Refusé avant tout envoi : #{inspect(erreurs)}"
+
+        _html ->
+          html = vue |> form("#note", %{"libelle" => "Taxi"}) |> render_submit()
+          [[_, copie]] = Regex.scan(~r/<li>(.*?)<\/li>/, html)
+          "#{nom} (#{byte_size(contenu)} octets) copié vers #{copie}"
+      end
+  end
+
+Kino.Markdown.new(resultat)
+```
+
+Essayez un fichier trop gros, ou un `.txt` : le refus arrive sans qu'un octet ait été poussé dans le canal.
+
+## À retenir
+
+- Un formulaire LiveView voyage par le WebSocket, comme une chaîne de requête dont le JavaScript retire les fichiers : avec un `<input type="file">` ordinaire, la clé du champ n'arrive pas dans les `params`. Sous `Phoenix.LiveViewTest`, elle arrive à `""`.
+- `allow_upload` ouvre une route séparée par fichier, sur le même socket, par morceaux de 64 Ko ; le formulaire ne transporte toujours rien, c'est `@uploads` qui porte les entrées.
+- Une entrée est une `UploadEntry` : `progress`, `done?`, `valid?`, et des champs `client_*` déclarés par le navigateur, à ne jamais utiliser dans un chemin.
+- Le contenu est dans un fichier temporaire tenu par un processus lié à la vue : il disparaît avec elle, et n'est accessible que dans `consume_uploaded_entries`, dont la fonction copie et rend `{:ok, valeur}`.
+- Consommer une entrée pas terminée lève `cannot consume uploaded files when entries are still in progress`.
+- Les refus sont décidés avant le premier octet : `:too_large` et `:not_accepted` sur l'entrée, `:too_many_files` sur le champ, lus par `upload_errors/2` et `upload_errors/1`.
+- `cancel_upload/3` retire une entrée par son `ref` et arrête son canal.
+- Dans un test, `file_input/4` choisit, `render_upload/3` envoie par morceaux cumulés, et un `render_submit` consomme.
+- Documentation : [Uploads](https://hexdocs.pm/phoenix_live_view/uploads.html)
